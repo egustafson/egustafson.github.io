@@ -84,6 +84,10 @@ Todo(s)
 Further exploration and refinement I'd like to undertake -- in no
 particular order:
 
+Cleanup blogroll
+  The blogroll and social links at the bottom of each page could use
+  some tweaking.
+
 Tweak the Theme
   I used the example theme from the getting started by `Smashing
   Magazine`_ and it's a pretty good starting point.  There are
