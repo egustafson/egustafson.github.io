@@ -1,4 +1,4 @@
-egustafson.github.io
-====================
+Eric Gustafson's personal blog site.
 
-Personal Blog -- 
+Instructions to self -- how to update & publish:
+
