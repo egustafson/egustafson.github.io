@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="https://egustafson.github.io/" rel="alternate"></link><link href="https://egustafson.github.io/feeds/eric-gustafson.atom.xml" rel="self"></link><id>https://egustafson.github.io/</id><updated>2012-04-10T00:00:00-06:00</updated><entry><title>Simple collectd with Web Graphs</title><link href="https://egustafson.github.io/collectd-web-graphs.html" rel="alternate"></link><updated>2012-04-10T00:00:00-06:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2012-04-10:collectd-web-graphs.html</id><summary type="html">&lt;p&gt;I want to collect machine metrics and I want to display them as a
+pretty set of graphs through a web browser.  Here's how I do it:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Install &lt;a class="reference external" href="http://collectd.org/"&gt;collectd&lt;/a&gt; -- this gathers the metrics.&lt;/li&gt;
+&lt;li&gt;Install &lt;a class="reference external" href="http://lighttpd.net/"&gt;lighttpd&lt;/a&gt; -- my web server preference, also install php.&lt;/li&gt;
+&lt;li&gt;Download and install collectd graph panel (&lt;a class="reference external" href="https://github.com/pommi/CGP"&gt;CGP&lt;/a&gt;) -- a PHP webapp.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;That's the short version.&lt;/p&gt;
+&lt;div class="section" id="installation"&gt;
+&lt;h2&gt;Installation&lt;/h2&gt;
+&lt;p&gt;The following walk through will demonstrate the installation using
+Ubuntu Oneiric (11.10). Note, the &lt;tt class="docutils literal"&gt;sudo&lt;/tt&gt; is generally required, but
+dropped from the commands listed below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install collectd lighttpd php5-cgi php5
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;next, edit &lt;tt class="docutils literal"&gt;/etc/php5/cgi/php.ini&lt;/tt&gt; to enable php5 in lighttpd.
+Uncomment the line &amp;quot;&lt;tt class="docutils literal"&gt;cgi.fix_pathinfo=1&lt;/tt&gt;&amp;quot;.&lt;/p&gt;
+&lt;p&gt;Restart lighttpd and you have a working lighttpd+php5.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;lighttpd-enable-mod fastcgi
+lighttpd-enable-mod fastcgi-php
+service lighttpd force-reload
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Next, download and &amp;quot;&lt;cite&gt;install&lt;/cite&gt;&amp;quot; collectd graph panel (CGP).  CGP is
+downloaded with &lt;tt class="docutils literal"&gt;git&lt;/tt&gt;, if you do not have git installed then:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install git
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Download CGP into the lighttpd root directory:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /var/www
+git clone http://git.nethuis.nl/pub/cgp.git
+chown -R www-data.www-data cgp   &lt;span class="c"&gt;## optional&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Done!  Browse to &lt;a class="reference external" href="http://localhost/cgp/"&gt;http://localhost/cgp/&lt;/a&gt; to access the graphs.&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="configuring-what-metrics-collectd-collects"&gt;
+&lt;h2&gt;Configuring what metrics collectd collects&lt;/h2&gt;
+&lt;p&gt;The primary configuration for &lt;a class="reference external" href="http://collectd.org/"&gt;collectd&lt;/a&gt; as
+Ubuntu installs it is placed in &lt;tt class="docutils literal"&gt;/etc/collectd/collectd.conf&lt;/tt&gt;.  The
+configuration file is commented.  Refer to the collectd &lt;a class="reference external" href="http://collectd.org/documentation.shtml"&gt;documentation&lt;/a&gt;
+page for further details.  For each plugin see the plugin pages listed
+along the side of the documentation page.  Many plugins do not require
+additional configuration -- simply uncommenting them is a good
+starting point.&lt;/p&gt;
+&lt;p&gt;After editing the collectd configuration, the service must be
+restarted with the typical service restart command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;service collectd restart
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Many of the plugins default to collecting all possible metrics covered
+by the plugin.  It is possible, via the plugin's specific
+configuration, to prune out unwanted metrics.  A good example of this
+is the '&lt;tt class="docutils literal"&gt;interfaces&lt;/tt&gt;' plugin which includes statistics for the
+loopback interface by default.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="customizing-cgp"&gt;
+&lt;h2&gt;Customizing CGP&lt;/h2&gt;
+&lt;p&gt;The &lt;a class="reference external" href="https://github.com/pommi/CGP"&gt;CGP&lt;/a&gt; website does not provide any configuration documentation,
+however it is not difficult to customize CGP.  If installed, as shown
+above, CGP's configuration file will be:
+&lt;tt class="docutils literal"&gt;/var/www/cgp/conf/config.php&lt;/tt&gt;.  This file is commented with details
+for changing the configuration.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="adding-additional-hosts"&gt;
+&lt;h2&gt;Adding additional hosts&lt;/h2&gt;
+&lt;p&gt;Nothing is required of CGP to add additional hosts.  Simply install
+&lt;a class="reference external" href="http://collectd.org/"&gt;collectd&lt;/a&gt; on the additional machines and configure the &lt;a class="reference external" href="http://collectd.org/wiki/index.php/Plugin:Network"&gt;network
+plugin&lt;/a&gt; on both the client and server.  In most cases, the commented
+out configuration, which uses multicast, will suffice for configuring
+the network plugin.&lt;/p&gt;
+&lt;p&gt;Now sit back and enjoy the pretty graphs of your running servers.&lt;/p&gt;
+&lt;/div&gt;
+</summary><category term="http"></category><category term="monitoring"></category><category term="lighttpd"></category><category term="collectd"></category><category term="cgp"></category></entry><entry><title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu</title><link href="https://egustafson.github.io/mediawiki-lighttpd-sqlite.html" rel="alternate"></link><updated>2012-02-18T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2012-02-18:mediawiki-lighttpd-sqlite.html</id><summary type="html">&lt;p&gt;In rebuilding an old, and rarely used server that runs &lt;a class="reference external" href="https://www.mediawiki.org/"&gt;MediaWiki&lt;/a&gt; I
+reconsidered how to install all of the dependencies that MediaWiki
+sits on top of. My goal was to choose lightweight components. The only
+thing that would run on this web server would be MediaWiki, and the
+wiki would be lightly used. I concluded the following components were
+likely more suitable choices than the defaults MediaWiki and/or
+Ubuntu’s package system used.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="http://www.lighttpd.net"&gt;Lighttpd&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.sqlite.org"&gt;SQLite&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The second goal was, based on my preference for Ubuntu as a
+distribution, build MediaWiki on top of Ubuntu using just Ubuntu
+packages, no source installation. The principal value in this is that
+over time the components in use can be simply upgraded using the stock
+Ubuntu package mechanisms (i.e. &lt;code&gt;apt-get upgrade&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;The following is the sequence I used to install MediaWiki. This
+installation guide is based on Ubuntu Oneiric (11.10).&lt;/p&gt;
+&lt;div class="section" id="install-prerequisites"&gt;
+&lt;h2&gt;Install Prerequisites&lt;/h2&gt;
+&lt;p&gt;(note, &lt;cite&gt;sudo&lt;/cite&gt; is generally required, but dropped from the commands
+below)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install lighttpd
+apt-get install php5-cgi php5
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;next, edit &lt;tt class="docutils literal"&gt;/etc/php5/cgi/php.ini&lt;/tt&gt; to enable php5 in lighttpd and
+uncomment the line:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+`cgi.fix_pathinfo=1`
+&lt;/pre&gt;
+&lt;p&gt;Then enable the fastcgi configuration in lighttpd:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;lighttpd-enable-mod fastcgi
+lighttpd-enable-mod fastcgi-php
+service lighttpd force-reload
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Install php5-sqlite:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install php5-sqlite
+service lighttpd restart
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Install optional extras that MediaWiki will take advantage of:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install imagemagick php5-gd php5-cli
+service lighttpd restart
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="install-mediawiki"&gt;
+&lt;h2&gt;Install MediaWiki&lt;/h2&gt;
+&lt;p&gt;Note: The MediaWiki package in Ubuntu (Oneiric) has 'mysql-server’
+listed as a ’&lt;em&gt;recommends&lt;/em&gt;’ dependency. This has the implication that
+unless explicitly forced to &lt;strong&gt;not&lt;/strong&gt; include the dependency, it will be
+included as part of the package install. This is accomplished with the
+&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;--no-install-recommends&lt;/span&gt;&lt;/tt&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;apt-get --no-install-recommends install mediawiki
+apt-get install mediawiki-math
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="configure-mediawiki"&gt;
+&lt;h2&gt;Configure MediaWiki&lt;/h2&gt;
+&lt;p&gt;Add the following to lighttpd's configuration:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;alias.url += ( &amp;quot;/wiki&amp;quot; =&amp;gt; &amp;quot;/var/lib/mediawiki/&amp;quot; )
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;restart lighttpd to effect the configuration change:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;service lighttpd restart
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Create a data directory for MediaWiki to store the SQLite database in:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;mkdir /var/lib/mediawiki-data
+chown www-data.www-data /var/lib/mediawiki-data
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Browse to the wiki root: &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;http://hostname/wiki&lt;/span&gt;&lt;/tt&gt; and complete
+configuration through the web browser.&lt;/p&gt;
+&lt;blockquote&gt;
+...&lt;/blockquote&gt;
+&lt;p&gt;Following browser configuration, copy the generated configuration to
+the permanent location, as specified on the final browser page:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;cp /var/lib/mediawiki/config/LocalSettings.php /etc/mediawiki/LocalSettings.php
+chown www-data /etc/mediawiki/LocalSettings.php
+chmod 600 /etc/mediawiki/LocalSettings.php
+rm -rf /var/lib/mediawiki/config
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Done.&lt;/p&gt;
+&lt;/div&gt;
+</summary><category term="http"></category><category term="lighttpd"></category><category term="sqlite"></category><category term="mediawiki"></category></entry><entry><title>Hello, World</title><link href="https://egustafson.github.io/hello-world.html" rel="alternate"></link><updated>2011-12-09T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2011-12-09:hello-world.html</id><summary type="html">&lt;p&gt;Obligatory first post:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;Hello, world.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;I've chosen to follow the GitHub masses and publish this blog with
+Brandon Mathis' most excellent &lt;a class="reference external" href="http://octopress.org/"&gt;Octopress&lt;/a&gt;.  Next on the agenda is to
+port a number of my wiki notes and how-to's to a more ... revision
+controlled outlet:  GitHub.&lt;/p&gt;
+&lt;p&gt;Stay tuned - Eric&lt;/p&gt;
+</summary></entry></feed>

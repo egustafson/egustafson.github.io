@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Migrating to Pelican</title>
+        <link rel="stylesheet" href="https://egustafson.github.io/theme/css/main.css" />
+        <link href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Stuff I've Figured Out Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://egustafson.github.io/">Stuff I've Figured Out  <strong>A catalog of technical solutions, or hackery -- you decide.</strong></a></h1>
+                <nav><ul>
+                    <li class="active"><a href="https://egustafson.github.io/category/blog.html">Blog</a></li>
+                    <li><a href="https://egustafson.github.io/category/monitoring.html">Monitoring</a></li>
+                    <li><a href="https://egustafson.github.io/category/web-sites.html">Web Sites</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://egustafson.github.io/drafts/migrating-pelican.html" rel="bookmark"
+           title="Permalink to Migrating to Pelican">Migrating to Pelican</a></h1>
+<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="elfwerks">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-07-10T00:00:00">
+                Published: Thu 10 July 2014
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://egustafson.github.io/author/eric-gustafson.html">Eric Gustafson</a>
+        </address>
+<p>In <a href="https://egustafson.github.io/category/blog.html">Blog</a>. </p>
+<p>tags: <a href="https://egustafson.github.io/tag/pelican.html">pelican</a> <a href="https://egustafson.github.io/tag/blog.html">blog</a> <a href="https://egustafson.github.io/tag/python.html">python</a> <a href="https://egustafson.github.io/tag/static-site.html">static site</a> </p>
+</footer><!-- /.post-info -->      <p>After a 2 year hiatus, I'm working towards writing more about work and
+technology.  I gave <a class="reference external" href="http://octopres.org">Octopress</a> a try, but in the end concluded that I
+wanted a <a class="reference external" href="http://python.org">Python</a> solution.  I evaluated a few packages:  <a class="reference external" href="http://hyde.github.io/">Hyde</a>,
+<a class="reference external" href="http://getnikola.com/">Nikola</a>, and <a class="reference external" href="http://blog.getpelican.com/">Pelican</a>.  There were two other Python based static site
+generators that I did not look at, but should probably take a look at
+-- both got positive mentions in the blogosphere:  <a class="reference external" href="http://posativ.org/acrylamid/index.html">Acrylamid</a> and <a class="reference external" href="http://mynt.uhnomoli.com/">mynt</a>.</p>
+<p>Why did I choose what I chose?  Everyone has different motivations and
+I find understanding peoples motivations in more insightful than
+debating &quot;what's better&quot; -- to that end, here were my motivations and
+conclusions:</p>
+<dl class="docutils">
+<dt>Static Site</dt>
+<dd>My motivations are the standard and obvious.  This is a simple site
+that I'm blogging to.  I'm a software developer so I have greater
+mastery of emacs than Word as well as a hard time keeping files in a
+folder when there's version control.  GitHub has turned common
+development tool into a social movement and to that end <a class="reference external" href="https://pages.github.com">GitHub
+Pages</a> is an awesome advancement to the &quot;state of the art&quot; and a
+key aspect of the <cite>Social</cite> in Social Coding.</dd>
+</dl>
+<dl class="docutils">
+<dt>Python</dt>
+<dd>... why I chose Python</dd>
+</dl>
+<!-- a comment to get better spacing between items in the def-list -->
+<dl class="docutils">
+<dt>reStructuredText</dt>
+<dd>... why I'm giving <a class="reference external" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> a try (include a reference
+to the <a class="reference external" href="https://github.com/ralsina/rst-cheatsheet/blob/dfaf3e283ee5df9d4c4b50ff9be2fa7db93c0427/rst-cheatsheet.pdf?raw=true">rst-cheetsheet</a>)</dd>
+</dl>
+<dl class="docutils">
+<dt>Pelican</dt>
+<dd>... why I chose Pelican</dd>
+</dl>
+<div class="section" id="migration-process">
+<h2>Migration Process</h2>
+<p>So that I have a (reproducible) record of how I to where I am, the
+following is what I did to setup the site, including migrating the
+old, Octopress content.</p>
+<ol class="arabic simple">
+<li>Get up and running under Pelican</li>
+</ol>
+<blockquote>
+<ol class="arabic simple">
+<li>Install Pelican from pip (use GitHub source)</li>
+<li>Port old articles from Markdown to reStructuredText</li>
+<li>Tweak basic configuration to align with existing GH-Pages site.</li>
+</ol>
+</blockquote>
+<ol class="arabic simple" start="2">
+<li>Move things under git and commit</li>
+</ol>
+<blockquote>
+<ol class="arabic simple">
+<li>Clone a new copy of the GH repo.</li>
+<li>Create an archival branch and push the old source to it.</li>
+<li>Stomp the 'source' branch with the new, Pelican source.</li>
+<li>Generate the production site into a local directory.</li>
+<li>?? use :code:<tt class="docutils literal"><span class="pre">ghp-import</span></tt> to commit to the 'gh-pages' branch.</li>
+<li>git-push from 'gh-pages' to the 'master' branch on GitHub.</li>
+</ol>
+</blockquote>
+</div>
+<div class="section" id="todo-s">
+<h2>Todo(s)</h2>
+<p>Further exploration and refinement I'd like to undertake -- in no
+particular order:</p>
+<dl class="docutils">
+<dt>Tweak the Theme</dt>
+<dd>I used the example theme from the getting started by <a class="reference external" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing
+Magazine</a> and it's a pretty good starting point.  There are
+certainly a few tweaks that may or may not be doable through the
+config.  I'd also like to change the color scheme which I'm sure
+will require tweaking the theme.</dd>
+</dl>
+<dl class="docutils">
+<dt>(re)Theme</dt>
+<dd>I've let my HTML / CSS skills dwindle; I don't use them much, but
+being able to craft an HTML page for some evil purpose is a good
+skill for any software person to have in their back pocket.  It
+looks like the <a class="reference external" href="http://getbootstrap.com">Bootstrap</a> project has gained a reasonable reputation
+in this space and creating a <a class="reference external" href="http://getbootstrap.com">Bootstrap</a> derived theme would
+certainly blow the dust off of my web page-ie skills.</dd>
+</dl>
+</div>
+
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="http://ipv6-address.eu/">IPv6 Check</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://twitter.com/elfwerks">twitter</a></li>
+                            <li><a href="http://delicious.com/elfwerks">delicious</a></li>
+                            <li><a href="http://www.linkedin.com/in/ericggustafson/">linkedin</a></li>
+                            <li><a href="https://github.com/egustafson">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
