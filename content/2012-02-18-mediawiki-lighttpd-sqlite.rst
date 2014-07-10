@@ -22,13 +22,13 @@ The second goal was, based on my preference for Ubuntu as a
 distribution, build MediaWiki on top of Ubuntu using just Ubuntu
 packages, no source installation. The principal value in this is that
 over time the components in use can be simply upgraded using the stock
-Ubuntu package mechansims (i.e. :code:`apt-get upgrade`).
+Ubuntu package mechanisms (i.e. :code:`apt-get upgrade`).
 
 The following is the sequence I used to install MediaWiki. This
 installation guide is based on Ubuntu Oneiric (11.10).
 
-Install Prequsites
-------------------
+Install Prerequisites
+---------------------
 
 (note, `sudo` is generally required, but dropped from the commands
 below)
@@ -71,7 +71,7 @@ Install MediaWiki
 Note: The MediaWiki package in Ubuntu (Oneiric) has 'mysql-server’
 listed as a ’*recommends*’ dependency. This has the implication that
 unless explicitly forced to **not** include the dependency, it will be
-included as part of the package install. This is acomplished with the
+included as part of the package install. This is accomplished with the
 ``--no-install-recommends``. 
 
 .. code-block:: tcsh
@@ -107,7 +107,7 @@ configuration through the web browser.
   \.\.\.
 
 Following browser configuration, copy the generated configuration to
-the permenant location, as specified on the final browser page:
+the permanent location, as specified on the final browser page:
 
 .. code-block:: tcsh
 

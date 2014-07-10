@@ -21,19 +21,19 @@ generators that I did not look at, but should probably take a look at
 .. _mynt:       http://mynt.uhnomoli.com/
 .. _Acrylamid:  http://posativ.org/acrylamid/index.html
 
-Why did I choose what I chose?  Everyone has different modivations and
-I find understanding peoples modivations in more insightful than
-debating "what's better" -- to that end, here were my modivations and
+Why did I choose what I chose?  Everyone has different motivations and
+I find understanding peoples motivations in more insightful than
+debating "what's better" -- to that end, here were my motivations and
 conclusions:
 
 Static Site
-  My modivations are the standard and obvious.  This is a simple site
+  My motivations are the standard and obvious.  This is a simple site
   that I'm blogging to.  I'm a software developer so I have greater
   mastery of emacs than Word as well as a hard time keeping files in a
   folder when there's version control.  GitHub has turned common
   development tool into a social movement and to that end `GitHub
   Pages`_ is an awesome advancement to the "state of the art" and a
-  key aspect of the `Social` in Socal Coding.
+  key aspect of the `Social` in Social Coding.
 
 .. _`GitHub Pages`:  https://pages.github.com
 
@@ -55,16 +55,18 @@ Pelican
 Migration Process
 -----------------
 
-So that I have a (reproducable) record of how I to where I am, the
+So that I have a (reproducible) record of how I to where I am, the
 following is what I did to setup the site, including migrating the
 old, Octopress content.
 
 1. Get up and running under Pelican
+
   1. Install Pelican from pip (use GitHub source)
   2. Port old articles from Markdown to reStructuredText
   3. Tweak basic configuration to align with existing GH-Pages site.
 
 2. Move things under git and commit
+
   1. Clone a new copy of the GH repo.
   2. Create an archival branch and push the old source to it.
   3. Stomp the 'source' branch with the new, Pelican source.
@@ -85,7 +87,7 @@ particular order:
 Tweak the Theme
   I used the example theme from the getting started by `Smashing
   Magazine`_ and it's a pretty good starting point.  There are
-  certainly a few tweaks that may or may not be dooable through the
+  certainly a few tweaks that may or may not be doable through the
   config.  I'd also like to change the color scheme which I'm sure
   will require tweaking the theme.
 
