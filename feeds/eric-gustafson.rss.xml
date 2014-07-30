@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Stuff I've Figured Out</title><link>https://egustafson.github.io/</link><description>A catalog of technical solutions, or hackery -- you decide.</description><atom:link href="https://egustafson.github.io/feeds/eric-gustafson.rss.xml" rel="self"></atom:link><lastBuildDate>Tue, 10 Apr 2012 00:00:00 -0600</lastBuildDate><item><title>Simple collectd with Web Graphs</title><link>https://egustafson.github.io/collectd-web-graphs.html</link><description>&lt;p&gt;I want to collect machine metrics and I want to display them as a
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Stuff I've Figured Out</title><link>/</link><description>A catalog of technical solutions, or hackery -- you decide.</description><atom:link href="/feeds/eric-gustafson.rss.xml" rel="self"></atom:link><lastBuildDate>Tue, 10 Apr 2012 00:00:00 -0600</lastBuildDate><item><title>Simple collectd with Web Graphs</title><link>/collectd-web-graphs.html</link><description>&lt;p&gt;I want to collect machine metrics and I want to display them as a
 pretty set of graphs through a web browser.  Here's how I do it:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
 &lt;li&gt;Install &lt;a class="reference external" href="http://collectd.org/"&gt;collectd&lt;/a&gt; -- this gathers the metrics.&lt;/li&gt;
@@ -69,7 +69,7 @@ out configuration, which uses multicast, will suffice for configuring
 the network plugin.&lt;/p&gt;
 &lt;p&gt;Now sit back and enjoy the pretty graphs of your running servers.&lt;/p&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Tue, 10 Apr 2012 00:00:00 -0600</pubDate><guid>tag:egustafson.github.io,2012-04-10:collectd-web-graphs.html</guid><category>http</category><category>monitoring</category><category>lighttpd</category><category>collectd</category><category>cgp</category></item><item><title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu</title><link>https://egustafson.github.io/mediawiki-lighttpd-sqlite.html</link><description>&lt;p&gt;In rebuilding an old, and rarely used server that runs &lt;a class="reference external" href="https://www.mediawiki.org/"&gt;MediaWiki&lt;/a&gt; I
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Tue, 10 Apr 2012 00:00:00 -0600</pubDate><guid>tag:,2012-04-10:collectd-web-graphs.html</guid><category>http</category><category>monitoring</category><category>lighttpd</category><category>collectd</category><category>cgp</category></item><item><title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu</title><link>/mediawiki-lighttpd-sqlite.html</link><description>&lt;p&gt;In rebuilding an old, and rarely used server that runs &lt;a class="reference external" href="https://www.mediawiki.org/"&gt;MediaWiki&lt;/a&gt; I
 reconsidered how to install all of the dependencies that MediaWiki
 sits on top of. My goal was to choose lightweight components. The only
 thing that would run on this web server would be MediaWiki, and the
@@ -149,7 +149,7 @@ rm -rf /var/lib/mediawiki/config
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Done.&lt;/p&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Sat, 18 Feb 2012 00:00:00 -0700</pubDate><guid>tag:egustafson.github.io,2012-02-18:mediawiki-lighttpd-sqlite.html</guid><category>http</category><category>lighttpd</category><category>sqlite</category><category>mediawiki</category></item><item><title>Hello, World</title><link>https://egustafson.github.io/hello-world.html</link><description>&lt;p&gt;Obligatory first post:&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Sat, 18 Feb 2012 00:00:00 -0700</pubDate><guid>tag:,2012-02-18:mediawiki-lighttpd-sqlite.html</guid><category>http</category><category>lighttpd</category><category>sqlite</category><category>mediawiki</category></item><item><title>Hello, World</title><link>/hello-world.html</link><description>&lt;p&gt;Obligatory first post:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;Hello, world.
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;I've chosen to follow the GitHub masses and publish this blog with
@@ -157,4 +157,4 @@ Brandon Mathis' most excellent &lt;a class="reference external" href="http://oct
 port a number of my wiki notes and how-to's to a more ... revision
 controlled outlet:  GitHub.&lt;/p&gt;
 &lt;p&gt;Stay tuned - Eric&lt;/p&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Fri, 09 Dec 2011 00:00:00 -0700</pubDate><guid>tag:egustafson.github.io,2011-12-09:hello-world.html</guid></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Fri, 09 Dec 2011 00:00:00 -0700</pubDate><guid>tag:,2011-12-09:hello-world.html</guid></item></channel></rss>

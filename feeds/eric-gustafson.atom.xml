@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="https://egustafson.github.io/" rel="alternate"></link><link href="https://egustafson.github.io/feeds/eric-gustafson.atom.xml" rel="self"></link><id>https://egustafson.github.io/</id><updated>2012-04-10T00:00:00-06:00</updated><entry><title>Simple collectd with Web Graphs</title><link href="https://egustafson.github.io/collectd-web-graphs.html" rel="alternate"></link><updated>2012-04-10T00:00:00-06:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2012-04-10:collectd-web-graphs.html</id><summary type="html">&lt;p&gt;I want to collect machine metrics and I want to display them as a
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="/" rel="alternate"></link><link href="/feeds/eric-gustafson.atom.xml" rel="self"></link><id>/</id><updated>2012-04-10T00:00:00-06:00</updated><entry><title>Simple collectd with Web Graphs</title><link href="/collectd-web-graphs.html" rel="alternate"></link><updated>2012-04-10T00:00:00-06:00</updated><author><name>Eric Gustafson</name></author><id>tag:,2012-04-10:collectd-web-graphs.html</id><summary type="html">&lt;p&gt;I want to collect machine metrics and I want to display them as a
 pretty set of graphs through a web browser.  Here's how I do it:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
 &lt;li&gt;Install &lt;a class="reference external" href="http://collectd.org/"&gt;collectd&lt;/a&gt; -- this gathers the metrics.&lt;/li&gt;
@@ -69,7 +69,7 @@ out configuration, which uses multicast, will suffice for configuring
 the network plugin.&lt;/p&gt;
 &lt;p&gt;Now sit back and enjoy the pretty graphs of your running servers.&lt;/p&gt;
 &lt;/div&gt;
-</summary><category term="http"></category><category term="monitoring"></category><category term="lighttpd"></category><category term="collectd"></category><category term="cgp"></category></entry><entry><title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu</title><link href="https://egustafson.github.io/mediawiki-lighttpd-sqlite.html" rel="alternate"></link><updated>2012-02-18T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2012-02-18:mediawiki-lighttpd-sqlite.html</id><summary type="html">&lt;p&gt;In rebuilding an old, and rarely used server that runs &lt;a class="reference external" href="https://www.mediawiki.org/"&gt;MediaWiki&lt;/a&gt; I
+</summary><category term="http"></category><category term="monitoring"></category><category term="lighttpd"></category><category term="collectd"></category><category term="cgp"></category></entry><entry><title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu</title><link href="/mediawiki-lighttpd-sqlite.html" rel="alternate"></link><updated>2012-02-18T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:,2012-02-18:mediawiki-lighttpd-sqlite.html</id><summary type="html">&lt;p&gt;In rebuilding an old, and rarely used server that runs &lt;a class="reference external" href="https://www.mediawiki.org/"&gt;MediaWiki&lt;/a&gt; I
 reconsidered how to install all of the dependencies that MediaWiki
 sits on top of. My goal was to choose lightweight components. The only
 thing that would run on this web server would be MediaWiki, and the
@@ -149,7 +149,7 @@ rm -rf /var/lib/mediawiki/config
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Done.&lt;/p&gt;
 &lt;/div&gt;
-</summary><category term="http"></category><category term="lighttpd"></category><category term="sqlite"></category><category term="mediawiki"></category></entry><entry><title>Hello, World</title><link href="https://egustafson.github.io/hello-world.html" rel="alternate"></link><updated>2011-12-09T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2011-12-09:hello-world.html</id><summary type="html">&lt;p&gt;Obligatory first post:&lt;/p&gt;
+</summary><category term="http"></category><category term="lighttpd"></category><category term="sqlite"></category><category term="mediawiki"></category></entry><entry><title>Hello, World</title><link href="/hello-world.html" rel="alternate"></link><updated>2011-12-09T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:,2011-12-09:hello-world.html</id><summary type="html">&lt;p&gt;Obligatory first post:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;Hello, world.
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;I've chosen to follow the GitHub masses and publish this blog with

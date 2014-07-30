@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Installing Pelican on Cygwin</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Stuff I've Figured Out  <strong>A catalog of technical solutions, or hackery -- you decide.</strong></a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/category/blog.html">Blog</a></li>
+                    <li><a href="/category/monitoring.html">Monitoring</a></li>
+                    <li><a href="/category/web-sites.html">Web Sites</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/drafts/pelican-cygwin.html" rel="bookmark"
+           title="Permalink to Installing Pelican on Cygwin">Installing Pelican on Cygwin</a></h1>
+<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="elfwerks">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-07-29T00:00:00">
+                Published: Tue 29 July 2014
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/eric-gustafson.html">Eric Gustafson</a>
+        </address>
+<p>In <a href="/category/blog.html">Blog</a>. </p>
+<p>tags: <a href="/tag/pelican.html">pelican</a> <a href="/tag/cygwin.html">cygwin</a> <a href="/tag/blog.html">blog</a> </p>
+</footer><!-- /.post-info -->      <p>One of the many good reasons I chose <a class="reference external" href="http://blog.getpelican.com/">Pelican</a> as a static blog site
+generator was because I felt confident I could deploy and use the
+tools under Windows, with <a class="reference external" href="https://www.cygwin.com/">Cygwin</a>.  What I couldn't find was any
+reference to success installing Pelican under Cygwin.  It turns out
+that the combination is not difficult to make work.  Here is my
+success story installing <a class="reference external" href="http://blog.getpelican.com/">Pelican</a> under <a class="reference external" href="https://www.cygwin.com/">Cygwin</a>.</p>
+<div class="section" id="prerequisites">
+<h2>Prerequisites</h2>
+<ul class="simple">
+<li>Windows -- hopefully obvious.</li>
+<li><a class="reference external" href="https://www.cygwin.com/">Cygwin</a> -- also hopefully obvious</li>
+<li><a class="reference external" href="http://cygwinports.org/">Cygwin Ports</a></li>
+<li>Cygwin Packages<ul>
+<li>git</li>
+<li>python</li>
+<li>python-setuptools</li>
+</ul>
+</li>
+</ul>
+<p>I consistently add <a class="reference external" href="http://cygwinports.org/">Cygwin Ports</a> to my Cygwin installation.  Its
+possible these instructions work with out adding the ports collection in.</p>
+</div>
+<div class="section" id="procedure">
+<h2>Procedure</h2>
+<p>Installing <a class="reference external" href="http://blog.getpelican.com/">Pelican</a> under <a class="reference external" href="https://www.cygwin.com/">Cygwin</a> ended up being fairly straight
+forward.  I encountered one small problem: some of Pelican's
+dependencies would not install from source.  This is easily
+circumvented by using the equivalent <a class="reference external" href="https://www.cygwin.com/">Cygwin</a> packages.  With out
+further ado.</p>
+<div class="section" id="install-pelican-dependencies-from-cygwin">
+<h3>1. Install <a class="reference external" href="http://docs.getpelican.com/en/3.4.0/install.html#dependencies">Pelican Dependencies</a> from Cygwin</h3>
+<p>Start Cygwin's <tt class="docutils literal"><span class="pre">setup-x86.exe</span></tt> <a class="footnote-reference" href="#id2" id="id1">[1]</a> to update your installation.
+Install the following packages, if not already present.</p>
+<blockquote>
+<ul class="simple">
+<li>pypy-jinja2</li>
+<li>pypy-pygments</li>
+<li>python-docutils</li>
+<li>python-pytz</li>
+<li>python-six</li>
+<li>pypy-markupsafe</li>
+<li>pypy-dateutil</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="complete-using-the-command-line">
+<h3>2. Complete using the command line</h3>
+<p>Start a cygwin terminal window and use command line tools to complete
+the installation.  If you do not already have <tt class="docutils literal">pip</tt>
+&lt;<a class="reference external" href="http://pip.readthedocs.org/">http://pip.readthedocs.org/</a>&gt; installed, use <tt class="docutils literal">easy_install</tt>, from
+<tt class="docutils literal"><span class="pre">python-setuptools</span></tt> to install <tt class="docutils literal">pip</tt>.</p>
+<div class="highlight"><pre>&gt; easy_install pip
+...
+&gt; pip install <span class="s2">&quot;git+https://github.com/getpelican/pelican.git#egg-pelican&quot;</span>
+...
+<span class="c"># ... a lot of output as the recursive dependencies are resolved ...</span>
+<span class="c"># expect warnings, but a final notice saying pelican was successfully</span>
+<span class="c"># installed along with additional, dependent packages.</span>
+...
+&gt; pelican --help
+...
+<span class="c"># output consistent with the help from pelican.</span>
+</pre></div>
+<p>Note:  Pelican can be simply installed with <tt class="docutils literal">pip</tt> using <tt class="docutils literal">pip
+install pelican</tt>.  I chose to pull Pelican from source so I could
+stay on their trunk.</p>
+</div>
+</div>
+<div class="section" id="verify">
+<h2>Verify</h2>
+<p>It doesn't count if it doesn't work.  The following steps are the smoke
+test I ran to convince myself the installation was working reasonably
+correct.</p>
+<div class="highlight"><pre>&gt; mkdir tmp; <span class="nb">cd </span>tmp   <span class="c"># (optional, do what makes sense)</span>
+&gt; pelican-quickstart
+...
+<span class="c"># give reasonable answers</span>
+...
+&gt; pelican content
+...
+&gt; ./develop_server start
+...
+</pre></div>
+<ul class="simple">
+<li>point your favorite web browser at <a class="reference external" href="http://localhost:8000/">http://localhost:8000/</a> and the
+template site should be visible.</li>
+</ul>
+<p>Note: my first instinct was to simply point a browser directly at
+the files generated by Pelican in the <tt class="docutils literal">output</tt> directory; this was
+only partially successful.  I observed the rendered HTML, but no
+styling; it threw me off for a minute,</p>
+<p>So far I have not encountered any problems; using
+Windows/Cygwin is always a small adventure for *nix native projects,
+so I'm ... cautiously optimistic.</p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>&lt;<a class="reference external" href="https://www.cygwin.com/install.html">https://www.cygwin.com/install.html</a>&gt;</td></tr>
+</tbody>
+</table>
+<!-- LocalWords:  Cygwin cygwin Gustafson pypy -->
+</div>
+
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="http://ipv6-address.eu/">IPv6 Check</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="http://twitter.com/elfwerks">twitter</a></li>
+                            <li><a href="http://delicious.com/elfwerks">delicious</a></li>
+                            <li><a href="http://www.linkedin.com/in/ericggustafson/">linkedin</a></li>
+                            <li><a href="https://github.com/egustafson">github</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
