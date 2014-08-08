@@ -32,6 +32,8 @@ SOCIAL = ( ('twitter', 'http://twitter.com/elfwerks'),
 
 DEFAULT_PAGINATION = 4
 
+TYPOGRIFY = True
+
 TWITTER_USERNAME = 'elfwerks'
 #GITHUB_URL = 'https://github.com/egustafson/egustafson.github.com'
 

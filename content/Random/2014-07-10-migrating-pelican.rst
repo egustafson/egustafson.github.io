@@ -2,8 +2,7 @@
 :date:       2014-07-10
 :slug:       migrating-pelican
 :author:     Eric Gustafson
-:category:   Blog
-:tags:       pelican, blog, python, static site
+:tags:       pelican, blog, python
 :status:     draft
 
 After a 2 year hiatus, I'm working towards writing more about work and

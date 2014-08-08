@@ -2,8 +2,7 @@
 :date:      2012-04-10
 :slug:      collectd-web-graphs
 :author:    Eric Gustafson
-:category:  Monitoring
-:tags:      http, monitoring, lighttpd, collectd, cgp
+:tags:      monitoring, lighttpd, collectd, CGP
 
 I want to collect machine metrics and I want to display them as a
 pretty set of graphs through a web browser.  Here's how I do it:

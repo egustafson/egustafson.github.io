@@ -2,7 +2,6 @@
 :date:      2014-07-29
 :slug:      pelican-cygwin
 :author:    Eric Gustafson
-:category:  Blog
 :tags:      pelican, cygwin, blog
 
 One of the many good reasons I chose Pelican_ as a static blog site

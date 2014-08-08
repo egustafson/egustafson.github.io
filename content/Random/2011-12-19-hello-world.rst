@@ -2,7 +2,6 @@
 :date:       2011-12-09
 :slug:       hello-world
 :author:     Eric Gustafson
-:category:   Blog
 
 Obligatory first post:
 

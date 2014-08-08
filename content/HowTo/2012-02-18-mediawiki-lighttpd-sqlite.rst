@@ -2,8 +2,7 @@
 :date:       2012-02-18
 :slug:       mediawiki-lighttpd-sqlite
 :author:     Eric Gustafson
-:category:   Web Sites
-:tags:       http, lighttpd, sqlite, mediawiki
+:tags:       lighttpd, sqlite, mediawiki, wiki
 
 In rebuilding an old, and rarely used server that runs MediaWiki_ I
 reconsidered how to install all of the dependencies that MediaWiki
