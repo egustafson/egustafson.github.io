@@ -1,49 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="https://egustafson.github.io/" rel="alternate"></link><link href="https://egustafson.github.io/feeds/eric-gustafson.atom.xml" rel="self"></link><id>https://egustafson.github.io/</id><updated>2014-07-31T00:00:00-06:00</updated><entry><title>OSCON 2014 Trip Report, part 1</title><link href="https://egustafson.github.io/oscon-2014-p1.html" rel="alternate"></link><updated>2014-07-31T00:00:00-06:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2014-07-31:oscon-2014-p1.html</id><summary type="html">&lt;p&gt;This year&amp;#8217;s &lt;a class="reference external" href="http://www.oscon.com/oscon2014"&gt;&lt;span class="caps"&gt;OSCON&lt;/span&gt;&lt;/a&gt; was my first attendance of the conference; I was pleasantly
-surprised.  The conference is 5 days, the first two of which are half day
-tutorial sessions, and the remaining 3 being the core conference.  I attended
-the 3 core days of the conference, and my brain was completely overflowed by the&amp;nbsp;end.&lt;/p&gt;
-&lt;p&gt;In this post, part 1 of 2, the interesting items of note in the Keynote
-presentations are discussed.  A follow on post will catalog the main sessions I&amp;nbsp;attended.&lt;/p&gt;
-&lt;div class="section" id="keynotes"&gt;
-&lt;h2&gt;Keynotes&lt;/h2&gt;
-&lt;p&gt;Each morning &lt;span class="caps"&gt;OSCON&lt;/span&gt; has an hour&amp;#8217;s worth of 5-15 keynote presentations &amp;#8212; a format
-I hadn&amp;#8217;t seen, but like.  High density and thought provoking, each keynote is
-recorded and available for every one to view.  The following are my picks for
-most intriguing, (in no particular&amp;nbsp;order).&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/36202"&gt;Building an &lt;span class="caps"&gt;API&lt;/span&gt; for the Planet with a new Approach to&amp;nbsp;Satellites&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The folks at &lt;a class="reference external" href="https://www.planet.com/"&gt;Planet Labs&lt;/a&gt; are building bird sized,
-(raptor sized) satellites and deploying them in a polar orbit to create the
-worlds first &amp;quot;planet scanner&amp;quot;.  A goal being to image the entire planet, every
-day, as the earth rotates beneath the ring of satellites.  And, &amp;#8230; there&amp;#8217;s
-more - this was &lt;span class="caps"&gt;OSCON&lt;/span&gt;: make the image data available to the&amp;nbsp;public.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/35743"&gt;Anticipating the Future - an Introduction to Value Chain&amp;nbsp;Mapping&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Simon successfully argues that the &amp;quot;lemming&amp;quot; strategy of how to be successful
-in business endeavors is not necessarily the most effective.  In lieu of
-following the leader, he argues and then exemplifies a analytic, (and
-scientific), approach to determining what actions would likely be more
-successful for a business &amp;#8212; through the life cycle of a&amp;nbsp;business.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/36818"&gt;The Concert&amp;nbsp;Programmer&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Entertaining, and certainly intriguing, Andrew Sorensen does actually perform
-a live concert by programming the music live.  In this 10 minute performance
-Andrew explains the coding he performs while code-performing his musical&amp;nbsp;piece.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/36257"&gt;Yes, Your Refrigerator Is Trying To Kill You: Bad Actors and the Internet of&amp;nbsp;Things&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Yes, security updates to intelligent appliances do matter; no, they are not
-happening.  Beth Flanagan does an excellent job of relaying the increasing
-hazards lacking security in the Internet of Things could present to all humans
-on the&amp;nbsp;planet.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Coming in part two:  my notes on the sessions I&amp;nbsp;attended.&lt;/p&gt;
-&lt;!-- Local Variables: --&gt;
-&lt;!-- fill-column: 80 --&gt;
-&lt;!-- End: --&gt;
-&lt;/div&gt;
-</summary><category term="OSCON"></category><category term="trip report"></category></entry><entry><title>Installing Pelican on Cygwin</title><link href="https://egustafson.github.io/pelican-cygwin.html" rel="alternate"></link><updated>2014-07-29T00:00:00-06:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2014-07-29:pelican-cygwin.html</id><summary type="html">&lt;p&gt;One of the many good reasons I chose &lt;a class="reference external" href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt; as a static blog site
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="https://egustafson.github.io/" rel="alternate"></link><link href="https://egustafson.github.io/feeds/howto.atom.xml" rel="self"></link><id>https://egustafson.github.io/</id><updated>2014-07-29T00:00:00-06:00</updated><entry><title>Installing Pelican on Cygwin</title><link href="https://egustafson.github.io/pelican-cygwin.html" rel="alternate"></link><updated>2014-07-29T00:00:00-06:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2014-07-29:pelican-cygwin.html</id><summary type="html">&lt;p&gt;One of the many good reasons I chose &lt;a class="reference external" href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt; as a static blog site
 generator was because I felt confident I could deploy and use the
 tools under Windows, with &lt;a class="reference external" href="https://www.cygwin.com/"&gt;Cygwin&lt;/a&gt;.  What I couldn&amp;#8217;t find was any
 reference to success installing Pelican under Cygwin.  It turns out
@@ -299,12 +255,4 @@ rm -rf /var/lib/mediawiki/config
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Done.&lt;/p&gt;
 &lt;/div&gt;
-</summary><category term="lighttpd"></category><category term="sqlite"></category><category term="mediawiki"></category><category term="wiki"></category></entry><entry><title>Hello, World</title><link href="https://egustafson.github.io/hello-world.html" rel="alternate"></link><updated>2011-12-09T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2011-12-09:hello-world.html</id><summary type="html">&lt;p&gt;Obligatory first&amp;nbsp;post:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;Hello, world.
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;I&amp;#8217;ve chosen to follow the GitHub masses and publish this blog with
-Brandon Mathis&amp;#8217; most excellent &lt;a class="reference external" href="http://octopress.org/"&gt;Octopress&lt;/a&gt;.  Next on the agenda is to
-port a number of my wiki notes and how-to&amp;#8217;s to a more &amp;#8230; revision
-controlled outlet:&amp;nbsp;GitHub.&lt;/p&gt;
-&lt;p&gt;Stay tuned -&amp;nbsp;Eric&lt;/p&gt;
-</summary></entry></feed>
+</summary><category term="lighttpd"></category><category term="sqlite"></category><category term="mediawiki"></category><category term="wiki"></category></entry></feed>

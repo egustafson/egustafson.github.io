@@ -1,15 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Stuff I've Figured Out</title><link>https://egustafson.github.io/</link><description>A catalog of technical solutions, or hackery -- you decide.</description><atom:link href="https://egustafson.github.io/feeds/eric-gustafson.rss.xml" rel="self"></atom:link><lastBuildDate>Tue, 29 Jul 2014 00:00:00 -0600</lastBuildDate><item><title>Installing Pelican on Cygwin</title><link>https://egustafson.github.io/pelican-cygwin.html</link><description>&lt;p&gt;One of the many good reasons I chose &lt;a class="reference external" href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt; as a static blog site
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Stuff I've Figured Out</title><link>https://egustafson.github.io/</link><description>A catalog of technical solutions, or hackery -- you decide.</description><atom:link href="https://egustafson.github.io/feeds/eric-gustafson.rss.xml" rel="self"></atom:link><lastBuildDate>Thu, 31 Jul 2014 00:00:00 -0600</lastBuildDate><item><title>OSCON 2014 Trip Report, part 1</title><link>https://egustafson.github.io/oscon-2014-p1.html</link><description>&lt;p&gt;This year&amp;#8217;s &lt;a class="reference external" href="http://www.oscon.com/oscon2014"&gt;&lt;span class="caps"&gt;OSCON&lt;/span&gt;&lt;/a&gt; was my first attendance of the conference; I was pleasantly
+surprised.  The conference is 5 days, the first two of which are half day
+tutorial sessions, and the remaining 3 being the core conference.  I attended
+the 3 core days of the conference, and my brain was completely overflowed by the&amp;nbsp;end.&lt;/p&gt;
+&lt;p&gt;In this post, part 1 of 2, the interesting items of note in the Keynote
+presentations are discussed.  A follow on post will catalog the main sessions I&amp;nbsp;attended.&lt;/p&gt;
+&lt;div class="section" id="keynotes"&gt;
+&lt;h2&gt;Keynotes&lt;/h2&gt;
+&lt;p&gt;Each morning &lt;span class="caps"&gt;OSCON&lt;/span&gt; has an hour&amp;#8217;s worth of 5-15 keynote presentations &amp;#8212; a format
+I hadn&amp;#8217;t seen, but like.  High density and thought provoking, each keynote is
+recorded and available for every one to view.  The following are my picks for
+most intriguing, (in no particular&amp;nbsp;order).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/36202"&gt;Building an &lt;span class="caps"&gt;API&lt;/span&gt; for the Planet with a new Approach to&amp;nbsp;Satellites&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The folks at &lt;a class="reference external" href="https://www.planet.com/"&gt;Planet Labs&lt;/a&gt; are building bird sized,
+(raptor sized) satellites and deploying them in a polar orbit to create the
+worlds first &amp;quot;planet scanner&amp;quot;.  A goal being to image the entire planet, every
+day, as the earth rotates beneath the ring of satellites.  And, &amp;#8230; there&amp;#8217;s
+more - this was &lt;span class="caps"&gt;OSCON&lt;/span&gt;: make the image data available to the&amp;nbsp;public.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/35743"&gt;Anticipating the Future - an Introduction to Value Chain&amp;nbsp;Mapping&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Simon successfully argues that the &amp;quot;lemming&amp;quot; strategy of how to be successful
+in business endeavors is not necessarily the most effective.  In lieu of
+following the leader, he argues and then exemplifies a analytic, (and
+scientific), approach to determining what actions would likely be more
+successful for a business &amp;#8212; through the life cycle of a&amp;nbsp;business.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/36818"&gt;The Concert&amp;nbsp;Programmer&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Entertaining, and certainly intriguing, Andrew Sorensen does actually perform
+a live concert by programming the music live.  In this 10 minute performance
+Andrew explains the coding he performs while code-performing his musical&amp;nbsp;piece.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/36257"&gt;Yes, Your Refrigerator Is Trying To Kill You: Bad Actors and the Internet of&amp;nbsp;Things&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Yes, security updates to intelligent appliances do matter; no, they are not
+happening.  Beth Flanagan does an excellent job of relaying the increasing
+hazards lacking security in the Internet of Things could present to all humans
+on the&amp;nbsp;planet.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Coming in part two:  my notes on the sessions I&amp;nbsp;attended.&lt;/p&gt;
+&lt;!-- Local Variables: --&gt;
+&lt;!-- fill-column: 80 --&gt;
+&lt;!-- End: --&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Thu, 31 Jul 2014 00:00:00 -0600</pubDate><guid>tag:egustafson.github.io,2014-07-31:oscon-2014-p1.html</guid><category>OSCON</category><category>trip report</category></item><item><title>Installing Pelican on Cygwin</title><link>https://egustafson.github.io/pelican-cygwin.html</link><description>&lt;p&gt;One of the many good reasons I chose &lt;a class="reference external" href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt; as a static blog site
 generator was because I felt confident I could deploy and use the
-tools under Windows, with &lt;a class="reference external" href="https://www.cygwin.com/"&gt;Cygwin&lt;/a&gt;.  What I couldn't find was any
+tools under Windows, with &lt;a class="reference external" href="https://www.cygwin.com/"&gt;Cygwin&lt;/a&gt;.  What I couldn&amp;#8217;t find was any
 reference to success installing Pelican under Cygwin.  It turns out
 that the combination is not difficult to make work.  Here is my
-success story installing Pelican under Cygwin.&lt;/p&gt;
+success story installing Pelican under&amp;nbsp;Cygwin.&lt;/p&gt;
 &lt;div class="section" id="prerequisites"&gt;
 &lt;h2&gt;Prerequisites&lt;/h2&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;Windows -- hopefully obvious.&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://www.cygwin.com/"&gt;Cygwin&lt;/a&gt; -- also hopefully obvious&lt;/li&gt;
+&lt;li&gt;Windows &amp;#8212; hopefully&amp;nbsp;obvious.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.cygwin.com/"&gt;Cygwin&lt;/a&gt; &amp;#8212; also hopefully&amp;nbsp;obvious&lt;/li&gt;
 &lt;li&gt;&lt;a class="reference external" href="http://cygwinports.org/"&gt;Cygwin Ports&lt;/a&gt; &lt;a class="footnote-reference" href="#id2" id="id1"&gt;[1]&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Cygwin Packages&lt;ul&gt;
 &lt;li&gt;git&lt;/li&gt;
@@ -30,14 +74,14 @@ collection in.&lt;/td&gt;&lt;/tr&gt;
 &lt;div class="section" id="procedure"&gt;
 &lt;h2&gt;Procedure&lt;/h2&gt;
 &lt;p&gt;Installing &lt;a class="reference external" href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt; under &lt;a class="reference external" href="https://www.cygwin.com/"&gt;Cygwin&lt;/a&gt; ended up being fairly straight
-forward.  I encountered one small problem: some of Pelican's
+forward.  I encountered one small problem: some of Pelican&amp;#8217;s
 dependencies would not install from source.  This is easily
 circumvented by using the equivalent &lt;a class="reference external" href="https://www.cygwin.com/"&gt;Cygwin&lt;/a&gt; packages.  With out
-further ado.&lt;/p&gt;
+further&amp;nbsp;ado.&lt;/p&gt;
 &lt;div class="section" id="install-pelican-dependencies-from-cygwin"&gt;
-&lt;h3&gt;1. Install &lt;a class="reference external" href="http://docs.getpelican.com/en/3.4.0/install.html#dependencies"&gt;Pelican Dependencies&lt;/a&gt; from Cygwin&lt;/h3&gt;
-&lt;p&gt;Start Cygwin's &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;setup-x86.exe&lt;/span&gt;&lt;/tt&gt; &lt;a class="footnote-reference" href="#id4" id="id3"&gt;[2]&lt;/a&gt; to update your installation.
-Install the following packages, if not already present.&lt;/p&gt;
+&lt;h3&gt;1. Install &lt;a class="reference external" href="http://docs.getpelican.com/en/3.4.0/install.html#dependencies"&gt;Pelican Dependencies&lt;/a&gt; from&amp;nbsp;Cygwin&lt;/h3&gt;
+&lt;p&gt;Start Cygwin&amp;#8217;s &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;setup-x86.exe&lt;/span&gt;&lt;/tt&gt; &lt;a class="footnote-reference" href="#id4" id="id3"&gt;[2]&lt;/a&gt; to update your installation.
+Install the following packages, if not already&amp;nbsp;present.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;pypy-jinja2&lt;/li&gt;
@@ -51,7 +95,7 @@ Install the following packages, if not already present.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;/div&gt;
 &lt;div class="section" id="complete-using-the-command-line"&gt;
-&lt;h3&gt;2. Complete using the command line&lt;/h3&gt;
+&lt;h3&gt;2. Complete using the command&amp;nbsp;line&lt;/h3&gt;
 &lt;p&gt;Start a cygwin terminal window and use command line tools to complete
 the installation.  If you do not already have &lt;tt class="docutils literal"&gt;pip&lt;/tt&gt;
 &amp;lt;&lt;a class="reference external" href="http://pip.readthedocs.org/"&gt;http://pip.readthedocs.org/&lt;/a&gt;&amp;gt; installed, use &lt;tt class="docutils literal"&gt;easy_install&lt;/tt&gt;, from
@@ -70,14 +114,13 @@ the installation.  If you do not already have &lt;tt class="docutils literal"&gt
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Note:  Pelican can be simply installed with &lt;tt class="docutils literal"&gt;pip&lt;/tt&gt; using &lt;tt class="docutils literal"&gt;pip
 install pelican&lt;/tt&gt;.  I chose to pull Pelican from source so I could
-stay on their trunk.&lt;/p&gt;
+stay on their&amp;nbsp;trunk.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="verify"&gt;
 &lt;h2&gt;Verify&lt;/h2&gt;
-&lt;p&gt;It doesn't count if it doesn't work.  The following steps are the smoke
-test I ran to convince myself the installation was working reasonably
-correct.&lt;/p&gt;
+&lt;p&gt;It doesn&amp;#8217;t count if it doesn&amp;#8217;t work.  The following steps are the smoke
+test I ran to convince myself the installation was working reasonably&amp;nbsp;correct.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&amp;gt; mkdir tmp; &lt;span class="nb"&gt;cd &lt;/span&gt;tmp   &lt;span class="c"&gt;# (optional, do what makes sense)&lt;/span&gt;
 &amp;gt; pelican-quickstart
 ...
@@ -90,15 +133,15 @@ correct.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;point your favorite web browser at &lt;a class="reference external" href="http://localhost:8000/"&gt;http://localhost:8000/&lt;/a&gt; and the
-template site should be visible.&lt;/li&gt;
+template site should be&amp;nbsp;visible.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Note: my first instinct was to simply point a browser directly at
 the files generated by Pelican in the &lt;tt class="docutils literal"&gt;output&lt;/tt&gt; directory; this was
-only partially successful.  I observed the rendered HTML, but no
-styling; it threw me off for a minute,&lt;/p&gt;
+only partially successful.  I observed the rendered &lt;span class="caps"&gt;HTML&lt;/span&gt;, but no
+styling; it threw me off for a&amp;nbsp;minute,&lt;/p&gt;
 &lt;p&gt;So far I have not encountered any problems; using
 Windows/Cygwin is always a small adventure for *nix native projects,
-so I'm ... cautiously optimistic.&lt;/p&gt;
+so I&amp;#8217;m &amp;#8230; cautiously&amp;nbsp;optimistic.&lt;/p&gt;
 &lt;table class="docutils footnote" frame="void" id="id4" rules="none"&gt;
 &lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
 &lt;tbody valign="top"&gt;
@@ -107,83 +150,83 @@ so I'm ... cautiously optimistic.&lt;/p&gt;
 &lt;/table&gt;
 &lt;!-- LocalWords:  Cygwin cygwin Gustafson pypy --&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Tue, 29 Jul 2014 00:00:00 -0600</pubDate><guid>tag:egustafson.github.io,2014-07-29:pelican-cygwin.html</guid><category>pelican</category><category>cygwin</category><category>blog</category></item><item><title>Simple collectd with Web Graphs</title><link>https://egustafson.github.io/collectd-web-graphs.html</link><description>&lt;p&gt;I want to collect machine metrics and I want to display them as a
-pretty set of graphs through a web browser.  Here's how I do it:&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Tue, 29 Jul 2014 00:00:00 -0600</pubDate><guid>tag:egustafson.github.io,2014-07-29:pelican-cygwin.html</guid><category>pelican</category><category>cygwin</category><category>blog</category></item><item><title>Simple collectd with Web Graphs</title><link>https://egustafson.github.io/collectd-web-graphs.html</link><description>&lt;p&gt;I want to collect machine metrics and I want to display them as a
+pretty set of graphs through a web browser.  Here&amp;#8217;s how I do&amp;nbsp;it:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
-&lt;li&gt;Install &lt;a class="reference external" href="http://collectd.org/"&gt;collectd&lt;/a&gt; -- this gathers the metrics.&lt;/li&gt;
-&lt;li&gt;Install &lt;a class="reference external" href="http://lighttpd.net/"&gt;lighttpd&lt;/a&gt; -- my web server preference, also install php.&lt;/li&gt;
-&lt;li&gt;Download and install collectd graph panel (&lt;a class="reference external" href="https://github.com/pommi/CGP"&gt;CGP&lt;/a&gt;) -- a PHP webapp.&lt;/li&gt;
+&lt;li&gt;Install &lt;a class="reference external" href="http://collectd.org/"&gt;collectd&lt;/a&gt; &amp;#8212; this gathers the&amp;nbsp;metrics.&lt;/li&gt;
+&lt;li&gt;Install &lt;a class="reference external" href="http://lighttpd.net/"&gt;lighttpd&lt;/a&gt; &amp;#8212; my web server preference, also install&amp;nbsp;php.&lt;/li&gt;
+&lt;li&gt;Download and install collectd graph panel (&lt;a class="reference external" href="https://github.com/pommi/CGP"&gt;&lt;span class="caps"&gt;CGP&lt;/span&gt;&lt;/a&gt;) &amp;#8212; a &lt;span class="caps"&gt;PHP&lt;/span&gt;&amp;nbsp;webapp.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;That's the short version.&lt;/p&gt;
+&lt;p&gt;That&amp;#8217;s the short&amp;nbsp;version.&lt;/p&gt;
 &lt;div class="section" id="installation"&gt;
 &lt;h2&gt;Installation&lt;/h2&gt;
 &lt;p&gt;The following walk through will demonstrate the installation using
 Ubuntu Oneiric (11.10). Note, the &lt;tt class="docutils literal"&gt;sudo&lt;/tt&gt; is generally required, but
-dropped from the commands listed below:&lt;/p&gt;
+dropped from the commands listed&amp;nbsp;below:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;apt-get install collectd lighttpd php5-cgi php5
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;next, edit &lt;tt class="docutils literal"&gt;/etc/php5/cgi/php.ini&lt;/tt&gt; to enable php5 in lighttpd.
 Uncomment the line &amp;quot;&lt;tt class="docutils literal"&gt;cgi.fix_pathinfo=1&lt;/tt&gt;&amp;quot;.&lt;/p&gt;
-&lt;p&gt;Restart lighttpd and you have a working lighttpd+php5.&lt;/p&gt;
+&lt;p&gt;Restart lighttpd and you have a working&amp;nbsp;lighttpd+php5.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;lighttpd-enable-mod fastcgi
 lighttpd-enable-mod fastcgi-php
 service lighttpd force-reload
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Next, download and &amp;quot;&lt;cite&gt;install&lt;/cite&gt;&amp;quot; collectd graph panel (CGP).  CGP is
-downloaded with &lt;tt class="docutils literal"&gt;git&lt;/tt&gt;, if you do not have git installed then:&lt;/p&gt;
+&lt;p&gt;Next, download and &amp;quot;&lt;cite&gt;install&lt;/cite&gt;&amp;quot; collectd graph panel (&lt;span class="caps"&gt;CGP&lt;/span&gt;).  &lt;span class="caps"&gt;CGP&lt;/span&gt; is
+downloaded with &lt;tt class="docutils literal"&gt;git&lt;/tt&gt;, if you do not have git installed&amp;nbsp;then:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;apt-get install git
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Download CGP into the lighttpd root directory:&lt;/p&gt;
+&lt;p&gt;Download &lt;span class="caps"&gt;CGP&lt;/span&gt; into the lighttpd root&amp;nbsp;directory:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /var/www
 git clone http://git.nethuis.nl/pub/cgp.git
 chown -R www-data.www-data cgp   &lt;span class="c"&gt;## optional&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Done!  Browse to &lt;a class="reference external" href="http://localhost/cgp/"&gt;http://localhost/cgp/&lt;/a&gt; to access the graphs.&lt;/p&gt;
+&lt;p&gt;Done!  Browse to &lt;a class="reference external" href="http://localhost/cgp/"&gt;http://localhost/cgp/&lt;/a&gt; to access the&amp;nbsp;graphs.&lt;/p&gt;
 &lt;/div&gt;
 &lt;hr class="docutils" /&gt;
 &lt;div class="section" id="configuring-what-metrics-collectd-collects"&gt;
-&lt;h2&gt;Configuring what metrics collectd collects&lt;/h2&gt;
+&lt;h2&gt;Configuring what metrics collectd&amp;nbsp;collects&lt;/h2&gt;
 &lt;p&gt;The primary configuration for &lt;a class="reference external" href="http://collectd.org/"&gt;collectd&lt;/a&gt; as
 Ubuntu installs it is placed in &lt;tt class="docutils literal"&gt;/etc/collectd/collectd.conf&lt;/tt&gt;.  The
 configuration file is commented.  Refer to the collectd &lt;a class="reference external" href="http://collectd.org/documentation.shtml"&gt;documentation&lt;/a&gt;
 page for further details.  For each plugin see the plugin pages listed
 along the side of the documentation page.  Many plugins do not require
-additional configuration -- simply uncommenting them is a good
-starting point.&lt;/p&gt;
+additional configuration &amp;#8212; simply uncommenting them is a good
+starting&amp;nbsp;point.&lt;/p&gt;
 &lt;p&gt;After editing the collectd configuration, the service must be
-restarted with the typical service restart command:&lt;/p&gt;
+restarted with the typical service restart&amp;nbsp;command:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;service collectd restart
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Many of the plugins default to collecting all possible metrics covered
-by the plugin.  It is possible, via the plugin's specific
+by the plugin.  It is possible, via the plugin&amp;#8217;s specific
 configuration, to prune out unwanted metrics.  A good example of this
-is the '&lt;tt class="docutils literal"&gt;interfaces&lt;/tt&gt;' plugin which includes statistics for the
-loopback interface by default.&lt;/p&gt;
+is the &amp;#8216;&lt;tt class="docutils literal"&gt;interfaces&lt;/tt&gt;&amp;#8216; plugin which includes statistics for the
+loopback interface by&amp;nbsp;default.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="customizing-cgp"&gt;
-&lt;h2&gt;Customizing CGP&lt;/h2&gt;
-&lt;p&gt;The &lt;a class="reference external" href="https://github.com/pommi/CGP"&gt;CGP&lt;/a&gt; website does not provide any configuration documentation,
-however it is not difficult to customize CGP.  If installed, as shown
-above, CGP's configuration file will be:
+&lt;h2&gt;Customizing &lt;span class="caps"&gt;CGP&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;The &lt;a class="reference external" href="https://github.com/pommi/CGP"&gt;&lt;span class="caps"&gt;CGP&lt;/span&gt;&lt;/a&gt; website does not provide any configuration documentation,
+however it is not difficult to customize &lt;span class="caps"&gt;CGP&lt;/span&gt;.  If installed, as shown
+above, &lt;span class="caps"&gt;CGP&lt;/span&gt;&amp;#8217;s configuration file will be:
 &lt;tt class="docutils literal"&gt;/var/www/cgp/conf/config.php&lt;/tt&gt;.  This file is commented with details
-for changing the configuration.&lt;/p&gt;
+for changing the&amp;nbsp;configuration.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="adding-additional-hosts"&gt;
-&lt;h2&gt;Adding additional hosts&lt;/h2&gt;
-&lt;p&gt;Nothing is required of CGP to add additional hosts.  Simply install
+&lt;h2&gt;Adding additional&amp;nbsp;hosts&lt;/h2&gt;
+&lt;p&gt;Nothing is required of &lt;span class="caps"&gt;CGP&lt;/span&gt; to add additional hosts.  Simply install
 &lt;a class="reference external" href="http://collectd.org/"&gt;collectd&lt;/a&gt; on the additional machines and configure the &lt;a class="reference external" href="http://collectd.org/wiki/index.php/Plugin:Network"&gt;network
 plugin&lt;/a&gt; on both the client and server.  In most cases, the commented
 out configuration, which uses multicast, will suffice for configuring
-the network plugin.&lt;/p&gt;
-&lt;p&gt;Now sit back and enjoy the pretty graphs of your running servers.&lt;/p&gt;
+the network&amp;nbsp;plugin.&lt;/p&gt;
+&lt;p&gt;Now sit back and enjoy the pretty graphs of your running&amp;nbsp;servers.&lt;/p&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Tue, 10 Apr 2012 00:00:00 -0600</pubDate><guid>tag:egustafson.github.io,2012-04-10:collectd-web-graphs.html</guid><category>http</category><category>monitoring</category><category>lighttpd</category><category>collectd</category><category>cgp</category></item><item><title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu</title><link>https://egustafson.github.io/mediawiki-lighttpd-sqlite.html</link><description>&lt;p&gt;In rebuilding an old, and rarely used server that runs &lt;a class="reference external" href="https://www.mediawiki.org/"&gt;MediaWiki&lt;/a&gt; I
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Tue, 10 Apr 2012 00:00:00 -0600</pubDate><guid>tag:egustafson.github.io,2012-04-10:collectd-web-graphs.html</guid><category>monitoring</category><category>lighttpd</category><category>collectd</category><category>CGP</category></item><item><title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu</title><link>https://egustafson.github.io/mediawiki-lighttpd-sqlite.html</link><description>&lt;p&gt;In rebuilding an old, and rarely used server that runs &lt;a class="reference external" href="https://www.mediawiki.org/"&gt;MediaWiki&lt;/a&gt; I
 reconsidered how to install all of the dependencies that MediaWiki
 sits on top of. My goal was to choose lightweight components. The only
 thing that would run on this web server would be MediaWiki, and the
 wiki would be lightly used. I concluded the following components were
 likely more suitable choices than the defaults MediaWiki and/or
-Ubuntu’s package system used.&lt;/p&gt;
+Ubuntu’s package system&amp;nbsp;used.&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;a class="reference external" href="http://www.lighttpd.net"&gt;Lighttpd&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://www.sqlite.org"&gt;SQLite&lt;/a&gt;&lt;/li&gt;
@@ -194,36 +237,35 @@ packages, no source installation. The principal value in this is that
 over time the components in use can be simply upgraded using the stock
 Ubuntu package mechanisms (i.e. &lt;code&gt;apt-get upgrade&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;The following is the sequence I used to install MediaWiki. This
-installation guide is based on Ubuntu Oneiric (11.10).&lt;/p&gt;
+installation guide is based on Ubuntu Oneiric&amp;nbsp;(11.10).&lt;/p&gt;
 &lt;div class="section" id="install-prerequisites"&gt;
-&lt;h2&gt;Install Prerequisites&lt;/h2&gt;
-&lt;p&gt;(note, &lt;cite&gt;sudo&lt;/cite&gt; is generally required, but dropped from the commands
-below)&lt;/p&gt;
+&lt;h2&gt;Install&amp;nbsp;Prerequisites&lt;/h2&gt;
+&lt;p&gt;(note, &lt;cite&gt;sudo&lt;/cite&gt; is generally required, but dropped from the commands&amp;nbsp;below)&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;apt-get install lighttpd
 apt-get install php5-cgi php5
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;next, edit &lt;tt class="docutils literal"&gt;/etc/php5/cgi/php.ini&lt;/tt&gt; to enable php5 in lighttpd and
-uncomment the line:&lt;/p&gt;
+uncomment the&amp;nbsp;line:&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 `cgi.fix_pathinfo=1`
 &lt;/pre&gt;
-&lt;p&gt;Then enable the fastcgi configuration in lighttpd:&lt;/p&gt;
+&lt;p&gt;Then enable the fastcgi configuration in&amp;nbsp;lighttpd:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;lighttpd-enable-mod fastcgi
 lighttpd-enable-mod fastcgi-php
 service lighttpd force-reload
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Install php5-sqlite:&lt;/p&gt;
+&lt;p&gt;Install&amp;nbsp;php5-sqlite:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;apt-get install php5-sqlite
 service lighttpd restart
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Install optional extras that MediaWiki will take advantage of:&lt;/p&gt;
+&lt;p&gt;Install optional extras that MediaWiki will take advantage&amp;nbsp;of:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;apt-get install imagemagick php5-gd php5-cli
 service lighttpd restart
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="install-mediawiki"&gt;
-&lt;h2&gt;Install MediaWiki&lt;/h2&gt;
-&lt;p&gt;Note: The MediaWiki package in Ubuntu (Oneiric) has 'mysql-server’
+&lt;h2&gt;Install&amp;nbsp;MediaWiki&lt;/h2&gt;
+&lt;p&gt;Note: The MediaWiki package in Ubuntu (Oneiric) has &amp;#8216;mysql-server’
 listed as a ’&lt;em&gt;recommends&lt;/em&gt;’ dependency. This has the implication that
 unless explicitly forced to &lt;strong&gt;not&lt;/strong&gt; include the dependency, it will be
 included as part of the package install. This is accomplished with the
@@ -233,23 +275,23 @@ apt-get install mediawiki-math
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="configure-mediawiki"&gt;
-&lt;h2&gt;Configure MediaWiki&lt;/h2&gt;
-&lt;p&gt;Add the following to lighttpd's configuration:&lt;/p&gt;
+&lt;h2&gt;Configure&amp;nbsp;MediaWiki&lt;/h2&gt;
+&lt;p&gt;Add the following to lighttpd&amp;#8217;s&amp;nbsp;configuration:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;alias.url += ( &amp;quot;/wiki&amp;quot; =&amp;gt; &amp;quot;/var/lib/mediawiki/&amp;quot; )
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;restart lighttpd to effect the configuration change:&lt;/p&gt;
+&lt;p&gt;restart lighttpd to effect the configuration&amp;nbsp;change:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;service lighttpd restart
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Create a data directory for MediaWiki to store the SQLite database in:&lt;/p&gt;
+&lt;p&gt;Create a data directory for MediaWiki to store the SQLite database&amp;nbsp;in:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;mkdir /var/lib/mediawiki-data
 chown www-data.www-data /var/lib/mediawiki-data
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Browse to the wiki root: &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;http://hostname/wiki&lt;/span&gt;&lt;/tt&gt; and complete
-configuration through the web browser.&lt;/p&gt;
+configuration through the web&amp;nbsp;browser.&lt;/p&gt;
 &lt;blockquote&gt;
-...&lt;/blockquote&gt;
+&amp;#8230;&lt;/blockquote&gt;
 &lt;p&gt;Following browser configuration, copy the generated configuration to
-the permanent location, as specified on the final browser page:&lt;/p&gt;
+the permanent location, as specified on the final browser&amp;nbsp;page:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;cp /var/lib/mediawiki/config/LocalSettings.php /etc/mediawiki/LocalSettings.php
 chown www-data /etc/mediawiki/LocalSettings.php
 chmod 600 /etc/mediawiki/LocalSettings.php
@@ -257,12 +299,12 @@ rm -rf /var/lib/mediawiki/config
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Done.&lt;/p&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Sat, 18 Feb 2012 00:00:00 -0700</pubDate><guid>tag:egustafson.github.io,2012-02-18:mediawiki-lighttpd-sqlite.html</guid><category>http</category><category>lighttpd</category><category>sqlite</category><category>mediawiki</category></item><item><title>Hello, World</title><link>https://egustafson.github.io/hello-world.html</link><description>&lt;p&gt;Obligatory first post:&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Sat, 18 Feb 2012 00:00:00 -0700</pubDate><guid>tag:egustafson.github.io,2012-02-18:mediawiki-lighttpd-sqlite.html</guid><category>lighttpd</category><category>sqlite</category><category>mediawiki</category><category>wiki</category></item><item><title>Hello, World</title><link>https://egustafson.github.io/hello-world.html</link><description>&lt;p&gt;Obligatory first&amp;nbsp;post:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;Hello, world.
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;I've chosen to follow the GitHub masses and publish this blog with
-Brandon Mathis' most excellent &lt;a class="reference external" href="http://octopress.org/"&gt;Octopress&lt;/a&gt;.  Next on the agenda is to
-port a number of my wiki notes and how-to's to a more ... revision
-controlled outlet:  GitHub.&lt;/p&gt;
-&lt;p&gt;Stay tuned - Eric&lt;/p&gt;
+&lt;p&gt;I&amp;#8217;ve chosen to follow the GitHub masses and publish this blog with
+Brandon Mathis&amp;#8217; most excellent &lt;a class="reference external" href="http://octopress.org/"&gt;Octopress&lt;/a&gt;.  Next on the agenda is to
+port a number of my wiki notes and how-to&amp;#8217;s to a more &amp;#8230; revision
+controlled outlet:&amp;nbsp;GitHub.&lt;/p&gt;
+&lt;p&gt;Stay tuned -&amp;nbsp;Eric&lt;/p&gt;
 </description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Fri, 09 Dec 2011 00:00:00 -0700</pubDate><guid>tag:egustafson.github.io,2011-12-09:hello-world.html</guid></item></channel></rss>
