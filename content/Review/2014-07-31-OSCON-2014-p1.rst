@@ -3,7 +3,6 @@
 :slug:      oscon-2014-p1
 :author:    Eric Gustafson
 :tags:      OSCON, trip report
-:status:    draft
 
 This year's OSCON_ was my first attendance of the conference; I was pleasantly
 surprised.  The conference is 5 days, the first two of which are half day
@@ -55,7 +54,7 @@ most intriguing, (in no particular order).
 - `Yes, Your Refrigerator Is Trying To Kill You: Bad Actors and the Internet of
   Things <http://www.oscon.com/oscon2014/public/schedule/detail/36257>`_
 
-  Yes, security updates to intelegent apliances do matter; no, they are not
+  Yes, security updates to intelligent appliances do matter; no, they are not
   happening.  Beth Flanagan does an excellent job of relaying the increasing
   hazards lacking security in the Internet of Things could present to all humans
   on the planet.
