@@ -1,46 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+>
 <head>
-        <meta charset="utf-8" />
-        <title>Stuff I've Figured Out - Eric Gustafson</title>
-        <link rel="stylesheet" href="https://egustafson.github.io/theme/css/main.css" />
-        <link href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Stuff I've Figured Out Atom Feed" />
+    <title>Articles by Eric Gustafson - Stuff I've Figured Out</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+
+
+
+        <meta name="author" content="Eric Gustafson" />
+
+    <!-- Open Graph tags -->
+        <meta property="og:site_name" content="Stuff I've Figured Out" />
+        <meta property="og:type" content="website"/>
+        <meta property="og:title" content="Stuff I've Figured Out"/>
+        <meta property="og:url" content="https://egustafson.github.io"/>
+        <meta property="og:description" content="Stuff I've Figured Out"/>
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://egustafson.github.io/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="https://egustafson.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://egustafson.github.io/theme/css/pygments/native.css" rel="stylesheet">
+        <link href="https://egustafson.github.io/theme/css/typogrify.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://egustafson.github.io/theme/css/style.css" type="text/css"/>
+
+        <link href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Stuff I've Figured Out ATOM Feed"/>
+
 </head>
+<body>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="https://egustafson.github.io/">Stuff I've Figured Out  <strong>A catalog of technical solutions, or hackery -- you decide.</strong></a></h1>
-                <nav><ul>
-                    <li><a href="https://egustafson.github.io/category/howto.html">HowTo</a></li>
-                    <li><a href="https://egustafson.github.io/category/random.html">Random</a></li>
-                    <li><a href="https://egustafson.github.io/category/review.html">Review</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="https://egustafson.github.io/" class="navbar-brand">
+Stuff I've Figured Out            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                        <li >
+                            <a href="https://egustafson.github.io/category/howto.html">Howto</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/random.html">Random</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/review.html">Review</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="https://egustafson.github.io/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
 
-                <section id="content" class="body">
-                    <ol id="posts-list" class="hfeed" start="3">
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://egustafson.github.io/hello-world.html" rel="bookmark"
-                           title="Permalink to Hello, World">Hello,&nbsp;World</a></h1>
-                </header>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
 
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2011-12-09T00:00:00">
-                Published: Fri 09 December 2011
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://egustafson.github.io/author/eric-gustafson.html">Eric Gustafson</a>
-        </address>
-<p>In <a href="https://egustafson.github.io/category/random.html">Random</a>. </p>
-
-</footer><!-- /.post-info -->                <p>Obligatory first&nbsp;post:</p>
+            <article>
+                <h2><a href="https://egustafson.github.io/hello-world.html">Hello,&nbsp;World</a></h2>
+                <div class="summary"><p>Obligatory first&nbsp;post:</p>
 <div class="highlight"><pre>Hello, world.
 </pre></div>
 <p>I&#8217;ve chosen to follow the GitHub masses and publish this blog with
@@ -49,43 +82,150 @@ port a number of my wiki notes and how-to&#8217;s to a more &#8230; revision
 controlled outlet:&nbsp;GitHub.</p>
 <p>Stay tuned -&nbsp;Eric</p>
 
-                <a class="readmore" href="https://egustafson.github.io/hello-world.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-<p class="paginator">
-        <a href="https://egustafson.github.io/author/eric-gustafson.html">&laquo;</a>
-    Page 2 / 2
-</p>
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                            <li><a href="http://ipv6-address.eu/">IPv6 Check</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                    <a class="btn btn-default btn-xs" href="https://egustafson.github.io/hello-world.html">more ...</a>
+                </div>
+            </article>
+            <hr/>
 
-                            <li><a href="http://twitter.com/elfwerks">twitter</a></li>
-                            <li><a href="http://delicious.com/elfwerks">delicious</a></li>
-                            <li><a href="http://www.linkedin.com/in/ericggustafson/">linkedin</a></li>
-                            <li><a href="https://github.com/egustafson">github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+        <ul class="pagination">
+                <li class="prev"><a href="https://egustafson.github.io/author/eric-gustafson.html">&laquo;</a>
+                </li>
+                    <li class=""><a
+                            href="https://egustafson.github.io/author/eric-gustafson.html">1</a></li>
+                    <li class="active"><a
+                            href="https://egustafson.github.io/author/eric-gustafson2.html">2</a></li>
+                <li class="next disabled"><a href="#">&raquo;</a></li>
+        </ul>
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
 
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="http://twitter.com/elfwerks"><i class="fa fa-twitter-square fa-lg"></i> twitter</a></li>
+                <li class="list-group-item"><a href="http://delicious.com/elfwerks"><i class="fa fa-delicious-square fa-lg"></i> delicious</a></li>
+                <li class="list-group-item"><a href="http://www.linkedin.com/in/ericggustafson/"><i class="fa fa-linkedin-square fa-lg"></i> linkedin</a></li>
+                <li class="list-group-item"><a href="https://github.com/egustafson"><i class="fa fa-github-square fa-lg"></i> github</a></li>
+              </ul>
+            </li>
 
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
+
+
+            <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                <ul class="list-group " id="tags">
+                    <li class="list-group-item tag-1">
+                        <a href="https://egustafson.github.io/tag/lighttpd.html">
+                            lighttpd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/sqlite.html">
+                            sqlite
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/monitoring.html">
+                            monitoring
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/trip-report.html">
+                            trip report
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/mediawiki.html">
+                            mediawiki
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/pelican.html">
+                            pelican
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/blog.html">
+                            blog
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/cgp.html">
+                            CGP
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/oscon.html">
+                            OSCON
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/cygwin.html">
+                            cygwin
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/collectd.html">
+                            collectd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/wiki.html">
+                            wiki
+                        </a>
+                    </li>
+                </ul>
+            </li>
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://getpelican.com/" target="_blank">
+                Pelican
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://python.org/" target="_blank">
+                Python.org
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://jinja.pocoo.org/" target="_blank">
+                Jinja2
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://ipv6-address.eu/" target="_blank">
+                IPv6 Check
+            </a>
+        </li>
+      </ul>
+    </li>
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2014 Eric Gustafson
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="https://egustafson.github.io/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://egustafson.github.io/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="https://egustafson.github.io/theme/js/respond.min.js"></script>
 
 </body>
 </html>

@@ -1,118 +1,218 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+>
 <head>
-        <meta charset="utf-8" />
-        <title>Stuff I've Figured Out - OSCON</title>
-        <link rel="stylesheet" href="https://egustafson.github.io/theme/css/main.css" />
-        <link href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Stuff I've Figured Out Atom Feed" />
+    <title>OSCON - Stuff I've Figured Out</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+
+
+
+    <meta name="author" content="Eric Gustafson" />
+    <meta name="keywords" content="OSCON" />
+
+    <!-- Open Graph tags -->
+        <meta property="og:site_name" content="Stuff I've Figured Out" />
+        <meta property="og:type" content="website"/>
+        <meta property="og:title" content="Stuff I've Figured Out"/>
+        <meta property="og:url" content="https://egustafson.github.io"/>
+        <meta property="og:description" content="Stuff I've Figured Out"/>
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://egustafson.github.io/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="https://egustafson.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://egustafson.github.io/theme/css/pygments/native.css" rel="stylesheet">
+        <link href="https://egustafson.github.io/theme/css/typogrify.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://egustafson.github.io/theme/css/style.css" type="text/css"/>
+
+        <link href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Stuff I've Figured Out ATOM Feed"/>
+
 </head>
+<body>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="https://egustafson.github.io/">Stuff I've Figured Out  <strong>A catalog of technical solutions, or hackery -- you decide.</strong></a></h1>
-                <nav><ul>
-                    <li><a href="https://egustafson.github.io/category/howto.html">HowTo</a></li>
-                    <li><a href="https://egustafson.github.io/category/random.html">Random</a></li>
-                    <li><a href="https://egustafson.github.io/category/review.html">Review</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="https://egustafson.github.io/" class="navbar-brand">
+Stuff I've Figured Out            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                        <li >
+                            <a href="https://egustafson.github.io/category/howto.html">Howto</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/random.html">Random</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/review.html">Review</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="https://egustafson.github.io/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="https://egustafson.github.io/oscon-2014-p1.html"><span class="caps">OSCON</span> 2014 Trip Report, part&nbsp;1</a></h1>
-<footer class="post-info">
-        <abbr class="published" title="2014-07-31T00:00:00">
-                Published: Thu 31 July 2014
-        </abbr>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
 
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://egustafson.github.io/author/eric-gustafson.html">Eric Gustafson</a>
-        </address>
-<p>In <a href="https://egustafson.github.io/category/review.html">Review</a>. </p>
-<p>tags: <a href="https://egustafson.github.io/tag/oscon.html">OSCON</a> <a href="https://egustafson.github.io/tag/trip-report.html">trip report</a> </p>
-</footer><!-- /.post-info --><p>This year&#8217;s <a class="reference external" href="http://www.oscon.com/oscon2014"><span class="caps">OSCON</span></a> was my first attendance of the conference; I was pleasantly
+            <article>
+                <h2><a href="https://egustafson.github.io/oscon-2014-p1.html"><span class="caps">OSCON</span> 2014 Trip Report, part&nbsp;1</a></h2>
+                <div class="summary"><p>This year&#8217;s <a class="reference external" href="http://www.oscon.com/oscon2014"><span class="caps">OSCON</span></a> was my first attendance of the conference; I was pleasantly
 surprised.  The conference is 5 days, the first two of which are half day
 tutorial sessions, and the remaining 3 being the core conference.  I attended
-the 3 core days of the conference, and my brain was completely overflowed by the&nbsp;end.</p>
-<p>In this post, part 1 of 2, the interesting items of note in the Keynote
-presentations are discussed.  A follow on post will catalog the main sessions I&nbsp;attended.</p>
-<div class="section" id="keynotes">
-<h2>Keynotes</h2>
-<p>Each morning <span class="caps">OSCON</span> has an hour&#8217;s worth of 5-15 keynote presentations &#8212; a format
-I hadn&#8217;t seen, but like.  High density and thought provoking, each keynote is
-recorded and available for every one to view.  The following are my picks for
-most intriguing, (in no particular&nbsp;order).</p>
-<ul>
-<li><p class="first"><a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/36202">Building an <span class="caps">API</span> for the Planet with a new Approach to&nbsp;Satellites</a></p>
-<p>The folks at <a class="reference external" href="https://www.planet.com/">Planet Labs</a> are building bird sized,
-(raptor sized) satellites and deploying them in a polar orbit to create the
-worlds first &quot;planet scanner&quot;.  A goal being to image the entire planet, every
-day, as the earth rotates beneath the ring of satellites.  And, &#8230; there&#8217;s
-more - this was <span class="caps">OSCON</span>: make the image data available to the&nbsp;public.</p>
-</li>
-<li><p class="first"><a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/35743">Anticipating the Future - an Introduction to Value Chain&nbsp;Mapping</a></p>
-<p>Simon successfully argues that the &quot;lemming&quot; strategy of how to be successful
-in business endeavors is not necessarily the most effective.  In lieu of
-following the leader, he argues and then exemplifies a analytic, (and
-scientific), approach to determining what actions would likely be more
-successful for a business &#8212; through the life cycle of a&nbsp;business.</p>
-</li>
-<li><p class="first"><a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/36818">The Concert&nbsp;Programmer</a></p>
-<p>Entertaining, and certainly intriguing, Andrew Sorensen does actually perform
-a live concert by programming the music live.  In this 10 minute performance
-Andrew explains the coding he performs while code-performing his musical&nbsp;piece.</p>
-</li>
-<li><p class="first"><a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/36257">Yes, Your Refrigerator Is Trying To Kill You: Bad Actors and the Internet of&nbsp;Things</a></p>
-<p>Yes, security updates to intelligent appliances do matter; no, they are not
-happening.  Beth Flanagan does an excellent job of relaying the increasing
-hazards lacking security in the Internet of Things could present to all humans
-on the&nbsp;planet.</p>
-</li>
-</ul>
-<p>Coming in part two:  my notes on the sessions I&nbsp;attended.</p>
-<!-- Local Variables: -->
-<!-- fill-column: 80 -->
-<!-- End: -->
+the 3 core days of the conference, and my brain ...</p>
+                    <a class="btn btn-default btn-xs" href="https://egustafson.github.io/oscon-2014-p1.html">more ...</a>
+                </div>
+            </article>
+            <hr/>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="http://twitter.com/elfwerks"><i class="fa fa-twitter-square fa-lg"></i> twitter</a></li>
+                <li class="list-group-item"><a href="http://delicious.com/elfwerks"><i class="fa fa-delicious-square fa-lg"></i> delicious</a></li>
+                <li class="list-group-item"><a href="http://www.linkedin.com/in/ericggustafson/"><i class="fa fa-linkedin-square fa-lg"></i> linkedin</a></li>
+                <li class="list-group-item"><a href="https://github.com/egustafson"><i class="fa fa-github-square fa-lg"></i> github</a></li>
+              </ul>
+            </li>
+
+
+
+            <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                <ul class="list-group " id="tags">
+                    <li class="list-group-item tag-1">
+                        <a href="https://egustafson.github.io/tag/lighttpd.html">
+                            lighttpd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/sqlite.html">
+                            sqlite
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/monitoring.html">
+                            monitoring
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/trip-report.html">
+                            trip report
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/mediawiki.html">
+                            mediawiki
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/pelican.html">
+                            pelican
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/blog.html">
+                            blog
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/cgp.html">
+                            CGP
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/oscon.html">
+                            OSCON
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/cygwin.html">
+                            cygwin
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/collectd.html">
+                            collectd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/wiki.html">
+                            wiki
+                        </a>
+                    </li>
+                </ul>
+            </li>
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://getpelican.com/" target="_blank">
+                Pelican
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://python.org/" target="_blank">
+                Python.org
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://jinja.pocoo.org/" target="_blank">
+                Jinja2
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://ipv6-address.eu/" target="_blank">
+                IPv6 Check
+            </a>
+        </li>
+      </ul>
+    </li>
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
 </div>
-                </article>
-<p class="paginator">
-    Page 1 / 1
-</p>
-            </aside><!-- /#featured -->
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                            <li><a href="http://ipv6-address.eu/">IPv6 Check</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2014 Eric Gustafson
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="https://egustafson.github.io/theme/js/jquery.min.js"></script>
 
-                            <li><a href="http://twitter.com/elfwerks">twitter</a></li>
-                            <li><a href="http://delicious.com/elfwerks">delicious</a></li>
-                            <li><a href="http://www.linkedin.com/in/ericggustafson/">linkedin</a></li>
-                            <li><a href="https://github.com/egustafson">github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://egustafson.github.io/theme/js/bootstrap.min.js"></script>
 
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
-
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="https://egustafson.github.io/theme/js/respond.min.js"></script>
 
 </body>
 </html>

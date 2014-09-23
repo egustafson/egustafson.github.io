@@ -1,144 +1,220 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+>
 <head>
-        <meta charset="utf-8" />
-        <title>Stuff I've Figured Out - monitoring</title>
-        <link rel="stylesheet" href="https://egustafson.github.io/theme/css/main.css" />
-        <link href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Stuff I've Figured Out Atom Feed" />
+    <title>monitoring - Stuff I've Figured Out</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+
+
+
+    <meta name="author" content="Eric Gustafson" />
+    <meta name="keywords" content="monitoring" />
+
+    <!-- Open Graph tags -->
+        <meta property="og:site_name" content="Stuff I've Figured Out" />
+        <meta property="og:type" content="website"/>
+        <meta property="og:title" content="Stuff I've Figured Out"/>
+        <meta property="og:url" content="https://egustafson.github.io"/>
+        <meta property="og:description" content="Stuff I've Figured Out"/>
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://egustafson.github.io/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="https://egustafson.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://egustafson.github.io/theme/css/pygments/native.css" rel="stylesheet">
+        <link href="https://egustafson.github.io/theme/css/typogrify.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://egustafson.github.io/theme/css/style.css" type="text/css"/>
+
+        <link href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Stuff I've Figured Out ATOM Feed"/>
+
 </head>
+<body>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="https://egustafson.github.io/">Stuff I've Figured Out  <strong>A catalog of technical solutions, or hackery -- you decide.</strong></a></h1>
-                <nav><ul>
-                    <li><a href="https://egustafson.github.io/category/howto.html">HowTo</a></li>
-                    <li><a href="https://egustafson.github.io/category/random.html">Random</a></li>
-                    <li><a href="https://egustafson.github.io/category/review.html">Review</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="https://egustafson.github.io/" class="navbar-brand">
+Stuff I've Figured Out            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                        <li >
+                            <a href="https://egustafson.github.io/category/howto.html">Howto</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/random.html">Random</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/review.html">Review</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="https://egustafson.github.io/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="https://egustafson.github.io/collectd-web-graphs.html">Simple collectd with Web&nbsp;Graphs</a></h1>
-<footer class="post-info">
-        <abbr class="published" title="2012-04-10T00:00:00">
-                Published: Tue 10 April 2012
-        </abbr>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
 
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://egustafson.github.io/author/eric-gustafson.html">Eric Gustafson</a>
-        </address>
-<p>In <a href="https://egustafson.github.io/category/howto.html">HowTo</a>. </p>
-<p>tags: <a href="https://egustafson.github.io/tag/monitoring.html">monitoring</a> <a href="https://egustafson.github.io/tag/lighttpd.html">lighttpd</a> <a href="https://egustafson.github.io/tag/collectd.html">collectd</a> <a href="https://egustafson.github.io/tag/cgp.html">CGP</a> </p>
-</footer><!-- /.post-info --><p>I want to collect machine metrics and I want to display them as a
+            <article>
+                <h2><a href="https://egustafson.github.io/collectd-web-graphs.html">Simple collectd with Web&nbsp;Graphs</a></h2>
+                <div class="summary"><p>I want to collect machine metrics and I want to display them as a
 pretty set of graphs through a web browser.  Here&#8217;s how I do&nbsp;it:</p>
 <ol class="arabic simple">
 <li>Install <a class="reference external" href="http://collectd.org/">collectd</a> &#8212; this gathers the&nbsp;metrics.</li>
 <li>Install <a class="reference external" href="http://lighttpd.net/">lighttpd</a> &#8212; my web server preference, also install&nbsp;php.</li>
-<li>Download and install collectd graph panel (<a class="reference external" href="https://github.com/pommi/CGP"><span class="caps">CGP</span></a>) &#8212; a <span class="caps">PHP</span>&nbsp;webapp.</li>
-</ol>
-<p>That&#8217;s the short&nbsp;version.</p>
-<div class="section" id="installation">
-<h2>Installation</h2>
-<p>The following walk through will demonstrate the installation using
-Ubuntu Oneiric (11.10). Note, the <tt class="docutils literal">sudo</tt> is generally required, but
-dropped from the commands listed&nbsp;below:</p>
-<div class="highlight"><pre>apt-get install collectd lighttpd php5-cgi php5
-</pre></div>
-<p>next, edit <tt class="docutils literal">/etc/php5/cgi/php.ini</tt> to enable php5 in lighttpd.
-Uncomment the line &quot;<tt class="docutils literal">cgi.fix_pathinfo=1</tt>&quot;.</p>
-<p>Restart lighttpd and you have a working&nbsp;lighttpd+php5.</p>
-<div class="highlight"><pre>lighttpd-enable-mod fastcgi
-lighttpd-enable-mod fastcgi-php
-service lighttpd force-reload
-</pre></div>
-<p>Next, download and &quot;<cite>install</cite>&quot; collectd graph panel (<span class="caps">CGP</span>).  <span class="caps">CGP</span> is
-downloaded with <tt class="docutils literal">git</tt>, if you do not have git installed&nbsp;then:</p>
-<div class="highlight"><pre>apt-get install git
-</pre></div>
-<p>Download <span class="caps">CGP</span> into the lighttpd root&nbsp;directory:</p>
-<div class="highlight"><pre><span class="nb">cd</span> /var/www
-git clone http://git.nethuis.nl/pub/cgp.git
-chown -R www-data.www-data cgp   <span class="c">## optional</span>
-</pre></div>
-<p>Done!  Browse to <a class="reference external" href="http://localhost/cgp/">http://localhost/cgp/</a> to access the&nbsp;graphs.</p>
-</div>
-<hr class="docutils" />
-<div class="section" id="configuring-what-metrics-collectd-collects">
-<h2>Configuring what metrics collectd&nbsp;collects</h2>
-<p>The primary configuration for <a class="reference external" href="http://collectd.org/">collectd</a> as
-Ubuntu installs it is placed in <tt class="docutils literal">/etc/collectd/collectd.conf</tt>.  The
-configuration file is commented.  Refer to the collectd <a class="reference external" href="http://collectd.org/documentation.shtml">documentation</a>
-page for further details.  For each plugin see the plugin pages listed
-along the side of the documentation page.  Many plugins do not require
-additional configuration &#8212; simply uncommenting them is a good
-starting&nbsp;point.</p>
-<p>After editing the collectd configuration, the service must be
-restarted with the typical service restart&nbsp;command:</p>
-<div class="highlight"><pre>service collectd restart
-</pre></div>
-<p>Many of the plugins default to collecting all possible metrics covered
-by the plugin.  It is possible, via the plugin&#8217;s specific
-configuration, to prune out unwanted metrics.  A good example of this
-is the &#8216;<tt class="docutils literal">interfaces</tt>&#8216; plugin which includes statistics for the
-loopback interface by&nbsp;default.</p>
-</div>
-<div class="section" id="customizing-cgp">
-<h2>Customizing <span class="caps">CGP</span></h2>
-<p>The <a class="reference external" href="https://github.com/pommi/CGP"><span class="caps">CGP</span></a> website does not provide any configuration documentation,
-however it is not difficult to customize <span class="caps">CGP</span>.  If installed, as shown
-above, <span class="caps">CGP</span>&#8217;s configuration file will be:
-<tt class="docutils literal">/var/www/cgp/conf/config.php</tt>.  This file is commented with details
-for changing the&nbsp;configuration.</p>
-</div>
-<div class="section" id="adding-additional-hosts">
-<h2>Adding additional&nbsp;hosts</h2>
-<p>Nothing is required of <span class="caps">CGP</span> to add additional hosts.  Simply install
-<a class="reference external" href="http://collectd.org/">collectd</a> on the additional machines and configure the <a class="reference external" href="http://collectd.org/wiki/index.php/Plugin:Network">network
-plugin</a> on both the client and server.  In most cases, the commented
-out configuration, which uses multicast, will suffice for configuring
-the network&nbsp;plugin.</p>
-<p>Now sit back and enjoy the pretty graphs of your running&nbsp;servers.</p>
-</div>
-                </article>
-<p class="paginator">
-    Page 1 / 1
-</p>
-            </aside><!-- /#featured -->
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                            <li><a href="http://ipv6-address.eu/">IPv6 Check</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+<li>Download and install collectd graph panel (<a class="reference external" href="https://github.com/pommi/CGP"><span class="caps">CGP ...</span></a></li></ol>
+                    <a class="btn btn-default btn-xs" href="https://egustafson.github.io/collectd-web-graphs.html">more ...</a>
+                </div>
+            </article>
+            <hr/>
 
-                            <li><a href="http://twitter.com/elfwerks">twitter</a></li>
-                            <li><a href="http://delicious.com/elfwerks">delicious</a></li>
-                            <li><a href="http://www.linkedin.com/in/ericggustafson/">linkedin</a></li>
-                            <li><a href="https://github.com/egustafson">github</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
 
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="http://twitter.com/elfwerks"><i class="fa fa-twitter-square fa-lg"></i> twitter</a></li>
+                <li class="list-group-item"><a href="http://delicious.com/elfwerks"><i class="fa fa-delicious-square fa-lg"></i> delicious</a></li>
+                <li class="list-group-item"><a href="http://www.linkedin.com/in/ericggustafson/"><i class="fa fa-linkedin-square fa-lg"></i> linkedin</a></li>
+                <li class="list-group-item"><a href="https://github.com/egustafson"><i class="fa fa-github-square fa-lg"></i> github</a></li>
+              </ul>
+            </li>
 
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
+
+
+            <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                <ul class="list-group " id="tags">
+                    <li class="list-group-item tag-1">
+                        <a href="https://egustafson.github.io/tag/lighttpd.html">
+                            lighttpd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/sqlite.html">
+                            sqlite
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/monitoring.html">
+                            monitoring
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/trip-report.html">
+                            trip report
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/mediawiki.html">
+                            mediawiki
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/pelican.html">
+                            pelican
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/blog.html">
+                            blog
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/cgp.html">
+                            CGP
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/oscon.html">
+                            OSCON
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/cygwin.html">
+                            cygwin
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/collectd.html">
+                            collectd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/wiki.html">
+                            wiki
+                        </a>
+                    </li>
+                </ul>
+            </li>
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://getpelican.com/" target="_blank">
+                Pelican
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://python.org/" target="_blank">
+                Python.org
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://jinja.pocoo.org/" target="_blank">
+                Jinja2
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://ipv6-address.eu/" target="_blank">
+                IPv6 Check
+            </a>
+        </li>
+      </ul>
+    </li>
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2012 Eric Gustafson
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="https://egustafson.github.io/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://egustafson.github.io/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="https://egustafson.github.io/theme/js/respond.min.js"></script>
 
 </body>
 </html>
