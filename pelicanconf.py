@@ -39,3 +39,5 @@ TWITTER_USERNAME = 'elfwerks'
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
+
+THEME = '/home/gustafer/scm/pelican-bootstrap3'
