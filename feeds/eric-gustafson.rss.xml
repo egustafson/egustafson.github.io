@@ -1,5 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Stuff I've Figured Out</title><link>https://egustafson.github.io/</link><description>A catalog of technical solutions, or hackery -- you decide.</description><atom:link href="https://egustafson.github.io/feeds/eric-gustafson.rss.xml" rel="self"></atom:link><lastBuildDate>Thu, 31 Jul 2014 00:00:00 -0600</lastBuildDate><item><title>OSCON 2014 Trip Report, part 1</title><link>https://egustafson.github.io/oscon-2014-p1.html</link><description>&lt;p&gt;This year&amp;#8217;s &lt;a class="reference external" href="http://www.oscon.com/oscon2014"&gt;&lt;span class="caps"&gt;OSCON&lt;/span&gt;&lt;/a&gt; was my first attendance of the conference; I was pleasantly
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Stuff I've Figured Out</title><link>https://egustafson.github.io/</link><description>A catalog of technical solutions, or hackery -- you decide.</description><atom:link href="https://egustafson.github.io/feeds/eric-gustafson.rss.xml" rel="self"></atom:link><lastBuildDate>Fri, 09 Jan 2015 00:00:00 -0700</lastBuildDate><item><title>Syncthing on Ubuntu</title><link>https://egustafson.github.io/syncthing-ubuntu.html</link><description>&lt;p&gt;Last month, after looking at &lt;a class="reference external" href="http://www.getsync.com/"&gt;BitTorrent Sync&lt;/a&gt; and realizing it was
+encrypted and private, but &lt;em&gt;not&lt;/em&gt; open source, I went digging for an
+alternative.  I found the perfect project, for me:  &lt;a class="reference external" href="http://syncthing.net/"&gt;Syncthing&lt;/a&gt;.  The
+project is still relatively young and while it has proven to be
+perfectly functional, it did not come with batteries included &amp;#8212; an
+installer package.   It does come with init scripts for some
+environments, but not for Ubuntu &amp;#8212; at least until Ubuntu transitions
+to systemd.  So, without further ado, here&amp;#8217;s what I did to install
+Syncthing as daemon (service) under&amp;nbsp;Ubuntu.&lt;/p&gt;
+&lt;table class="docutils field-list" frame="void" rules="none"&gt;
+&lt;col class="field-name" /&gt;
+&lt;col class="field-body" /&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;Run as:&lt;/th&gt;&lt;td class="field-body"&gt;User: &amp;#8216;synct&amp;#8217; // Group: &amp;#8216;synct&amp;#8217;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;Service Name:&lt;/th&gt;&lt;td class="field-body"&gt;syncthing&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;Install to:&lt;/th&gt;&lt;td class="field-body"&gt;/opt/syncthing&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;Config:&lt;/th&gt;&lt;td class="field-body"&gt;/opt/syncthing/etc&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;&lt;span class="caps"&gt;GUI&lt;/span&gt;:&lt;/th&gt;&lt;td class="field-body"&gt;Exposed at 0.0.0.0:8080&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;Public Access:&lt;/th&gt;&lt;td class="field-body"&gt;Firewall port redirect.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr class="docutils" /&gt;
+&lt;p&gt;There&amp;#8217;s nothing out of the ordinary about installing Syncthing as a service.
+Above are the details I chose for how I&amp;#8217;d install the service.  There are two
+points are worth noting.  First, after the initial install the service&amp;#8217;s
+configuration is editable through the web-gui; the &lt;span class="caps"&gt;XML&lt;/span&gt; config will be in
+/opt/syncthing/etc.  Second, sync-able repositories do not have to live in the
+installation directory.  Installing is mostly about creating the extra fluff
+needed to have init start the&amp;nbsp;binary.&lt;/p&gt;
+&lt;p&gt;A reminder - this is aimed at an &lt;strong&gt;Ubuntu&lt;/strong&gt; system.  Specifically, 14.10
+(Utopic) was used, although earlier versions should work too.  When Ubuntu
+transitions to systemd as an init system, the included Upstart script will not
+be applicable.  (Current rumor is that the transition will be in the next
+release &amp;#8212; caveat&amp;nbsp;emptor)&lt;/p&gt;
+&lt;div class="section" id="create-user-and-group-for-the-daemon"&gt;
+&lt;h2&gt;1. Create User and Group for the&amp;nbsp;Daemon&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;## add home dir first so adduser does not populate it with skel files.&lt;/span&gt;
+sudo mkdir /opt/syncthing
+sudo mkdir /opt/syncthing/etc
+sudo adduser --system --group --home /opt/syncthing synct
+sudo chown -R synct.synct /opt/syncthing
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The &lt;tt class="docutils literal"&gt;synct&lt;/tt&gt; group provides the opportunity to add authorized users to make
+&amp;#8216;syncable&amp;#8217; folders with the &lt;tt class="docutils literal"&gt;synct&lt;/tt&gt; group.  Those users can manage their
+folder(s) with out the need for sudo/root&amp;nbsp;privilege.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="install-the-syncthing-binary"&gt;
+&lt;h2&gt;2. Install the Syncthing&amp;nbsp;Binary&lt;/h2&gt;
+&lt;p&gt;Fetch the binary from the &lt;a class="reference external" href="https://github.com/syncthing/syncthing"&gt;Syncthing GitHub Project&lt;/a&gt;.  The releases &lt;span class="caps"&gt;URL&lt;/span&gt; is:
+&lt;a class="reference external" href="https://github.com/syncthing/syncthing/releases"&gt;https://github.com/syncthing/syncthing/releases&lt;/a&gt;.  Download the tarball
+appropriate for your architecture.  (The example uses &lt;tt class="docutils literal"&gt;amd64&lt;/tt&gt;, and version&amp;nbsp;0.10.18)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /tmp
+tar -xvf /path-to/syncthing-linux-amd64-v0.10.18.tar.gz
+sudo mkdir /opt/syncthing/bin
+sudo cp syncthing-linux-amd64-v0.10.18/syncthing /opt/syncthing/bin
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The only file needed from the release tarball is the executable itself.  The
+executable is tar&amp;#8217;ed with execute permission, but it never hurts to verify its&amp;nbsp;executable.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="install-an-upstart-script"&gt;
+&lt;h2&gt;4. Install an Upstart&amp;nbsp;&amp;quot;Script&amp;quot;&lt;/h2&gt;
+&lt;p&gt;Install the following Upstart configuration file in &lt;tt class="docutils literal"&gt;/etc/init/syncthing.conf&lt;/tt&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;description  &amp;quot;syncthing daemon&amp;quot;
+author       &amp;quot;Eric Gustafson &amp;lt;egustafson in launchpad&amp;gt;&amp;quot;
+
+start on (local-filesystems and net-device-up IFACE!=lo)
+stop on runlevel [!2345]
+
+setuid synct
+setgid synct
+
+env HOME=/opt/syncthing
+
+exec /opt/syncthing/bin/syncthing -home /opt/syncthing/etc
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;A couple of notes on the conf&amp;nbsp;file:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Setting the &lt;tt class="docutils literal"&gt;&lt;span class="caps"&gt;HOME&lt;/span&gt;&lt;/tt&gt; env lets syncthing know where to create the default,
+&lt;tt class="docutils literal"&gt;Sync&lt;/tt&gt; folder on initial start-up.  I had problems before I added this&amp;nbsp;stanza.&lt;/li&gt;
+&lt;li&gt;Using the &amp;quot;&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;-home&lt;/span&gt; /opt/syncthing/etc&lt;/tt&gt;&amp;quot; flag instructs syncthing to place
+all configuration files &lt;em&gt;directly&lt;/em&gt; into the &lt;tt class="docutils literal"&gt;etc&lt;/tt&gt; directory.  If this flag
+is missing it will place the configuration in a hidden directory under
+&lt;tt class="docutils literal"&gt;$&lt;span class="caps"&gt;HOME&lt;/span&gt;&lt;/tt&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;It would be nice to get a list of supported environment variables and command
+line switches, but the docs are not there yet.  Conversely, I could &amp;quot;read the
+source luke&amp;quot;, so I should stop whining and go contribute&amp;nbsp;;)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="start-and-verify-the-service"&gt;
+&lt;h2&gt;5. Start and Verify the&amp;nbsp;Service&lt;/h2&gt;
+&lt;p&gt;If the stars are aligned, then the service will&amp;nbsp;start:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sudo service syncthing start
+sudo tail -f /var/log/upstart/syncthing.log
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;At this point the service is (hopefully) up.  There is a small problem, however:
+the configuration created on first-run restricts the web-gui to loopback only
+(127.0.0.1).  This is fine if the machine is your desktop, but can be a snag if
+its remote.  The config file can be edited by hand to change&amp;nbsp;this.&lt;/p&gt;
+&lt;p&gt;In preparation for changing the listening address for the&amp;nbsp;web-gui:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sudo service syncthing stop
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="modify-the-configuration-to-expose-the-web-gui"&gt;
+&lt;h2&gt;6. Modify the Configuration to expose the Web &lt;span class="caps"&gt;GUI&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;Edit the config file:  &lt;tt class="docutils literal"&gt;/opt/syncthing/etc/config.xml&lt;/tt&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;## syncthing changes the permissions on etc, sudo is required&lt;/span&gt;
+sudo emacs /opt/syncthing/etc/config.xml
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The following line should be changed as depicted.  The important aspect is to
+change the &lt;tt class="docutils literal"&gt;127.0.0.1&lt;/tt&gt; to the wildcard address, &lt;tt class="docutils literal"&gt;0.0.0.0&lt;/tt&gt;.  [The port could
+be changed too, if need&amp;nbsp;be.]&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nt"&gt;&amp;lt;gui&lt;/span&gt; &lt;span class="na"&gt;enabled=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;true&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;tls=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;false&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;lt;address&amp;gt;&lt;/span&gt;0.0.0.0:8080&lt;span class="nt"&gt;&amp;lt;/address&amp;gt;&lt;/span&gt;
+    ...
+&lt;span class="nt"&gt;&amp;lt;/gui&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now restart the&amp;nbsp;service&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sudo service syncthing start
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;and point a web browser at port 8080 of the&amp;nbsp;host.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="optional-firewall-port-redirect"&gt;
+&lt;h2&gt;7. (Optional) Firewall Port&amp;nbsp;Redirect&lt;/h2&gt;
+&lt;p&gt;At this point you have a perfectly good, working Syncthing &amp;#8212;&amp;nbsp;congratulations.&lt;/p&gt;
+&lt;p&gt;However, if your host is behind a firewall it may not be reachable for
+sync-ing.  The first point:  if you have a consumer firewall that supports UPnP
+then Syncthing is likely visible as it supports, and enables by default, UPnP.
+If you don&amp;#8217;t have UPnP enabled on your firewall or the Syncthing instance is not
+visible then following the &amp;quot;&lt;a class="reference external" href="https://github.com/syncthing/syncthing/wiki/Firewalls-and-Port-Forwards"&gt;Firewalls and Port Forwards&lt;/a&gt;&amp;quot; instructions on the
+&lt;a class="reference external" href="https://github.com/syncthing/syncthing/wiki"&gt;wiki&lt;/a&gt; will help you resolve the&amp;nbsp;issue.&lt;/p&gt;
+&lt;p&gt;In short: plumb &lt;span class="caps"&gt;TCP&lt;/span&gt; port 22000 through from your firewall to the server.  Port
+22000 is the default port for the Block Exchange Protocol &lt;a class="footnote-reference" href="#id2" id="id1"&gt;[1]&lt;/a&gt; (&lt;span class="caps"&gt;BEP&lt;/span&gt;), and the
+only port necessary for a remote agent to connect with your&amp;nbsp;server.&lt;/p&gt;
+&lt;table class="docutils footnote" frame="void" id="id2" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id1"&gt;[1]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;The protocols Syncthing uses are documented here:  &lt;a class="reference external" href="https://github.com/syncthing/specs"&gt;https://github.com/syncthing/specs&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr class="docutils" /&gt;
+&lt;p&gt;That&amp;#8217;s it, you&amp;#8217;re done.  Happy&amp;nbsp;syncing.&lt;/p&gt;
+&lt;!-- Local Variables: --&gt;
+&lt;!-- fill-column: 80 --&gt;
+&lt;!-- End: --&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Fri, 09 Jan 2015 00:00:00 -0700</pubDate><guid>tag:egustafson.github.io,2015-01-09:syncthing-ubuntu.html</guid><category>install</category><category>ubuntu</category><category>sync</category><category>syncthing</category></item><item><title>OSCON 2014 Trip Report, part 1</title><link>https://egustafson.github.io/oscon-2014-p1.html</link><description>&lt;p&gt;This year&amp;#8217;s &lt;a class="reference external" href="http://www.oscon.com/oscon2014"&gt;&lt;span class="caps"&gt;OSCON&lt;/span&gt;&lt;/a&gt; was my first attendance of the conference; I was pleasantly
 surprised.  The conference is 5 days, the first two of which are half day
 tutorial sessions, and the remaining 3 being the core conference.  I attended
 the 3 core days of the conference, and my brain was completely overflowed by the&amp;nbsp;end.&lt;/p&gt;
