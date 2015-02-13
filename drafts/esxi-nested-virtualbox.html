@@ -118,14 +118,14 @@ nested virtualization &#8212; needed if all one has is the free bits from&nbsp;V
 <div class="section" id="the-process">
 <h2>The&nbsp;Process</h2>
 <ol class="arabic simple" start="0">
-<li>Enable <span class="caps">SSH</span> access to the ESXi&nbsp;instance.</li>
+<li>Enable <span class="caps">SSH</span> access to the ESXi&nbsp;server.</li>
 <li>Create an ESXi <span class="caps">VM</span> for the initial, outer&nbsp;guest.</li>
 <li>Shutdown the ESXi <span class="caps">VM</span>.</li>
 <li><strong>Edit the <span class="caps">VM</span>&#8217;s .vmx file, adding &quot;vhv.enable = <span class="caps">TRUE</span>&quot;.</strong></li>
 <li>Done.</li>
 </ol>
-<div class="section" id="enable-ssh-access-to-the-esxi-instance">
-<h3>0. - Enable <span class="caps">SSH</span> access to the ESXi&nbsp;instance.</h3>
+<div class="section" id="enable-ssh-access-to-the-esxi-server">
+<h3>0. - Enable <span class="caps">SSH</span> access to the ESXi&nbsp;Server</h3>
 <p>If you have not already done so, this process will require direct access to the
 ESXi instance&#8217;s configuration.  VMWare often calls this &quot;Tech Support Mode&quot;.
 This can be done from the ESXi host&#8217;s console, or through the vSphere Client.
