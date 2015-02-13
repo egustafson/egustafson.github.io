@@ -20,5 +20,5 @@ DELETE_OUTPUT_DIRECTORY = True
 
 # Following items are often useful when publishing
 
-#DISQUS_SITENAME = "egustafson"
+DISQUS_SITENAME = "egustafson.disqus.com"
 #GOOGLE_ANALYTICS = ""
