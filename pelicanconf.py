@@ -54,7 +54,7 @@ TWITTER_USERNAME = 'elfwerks'
 ## Comments - Disqus
 
 ## enabled in the publishconf.py
-#DISQUS_SITENAME = "egustafson.disqus.com"
+#DISQUS_SITENAME = "egustafson"
 
 ######################################################################
 ## Theme specific -- pelican-bootstrap3
