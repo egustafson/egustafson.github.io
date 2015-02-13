@@ -27,14 +27,14 @@ nested virtualization -- needed if all one has is the free bits from VMWare.
 The Process
 ===========
 
-0. Enable SSH access to the ESXi instance.
+0. Enable SSH access to the ESXi server.
 1. Create an ESXi VM for the initial, outer guest.  
 2. Shutdown the ESXi VM. 
 3. **Edit the VM's .vmx file, adding "vhv.enable = TRUE".**
 4. Done.
 
-0. - Enable SSH access to the ESXi instance.
---------------------------------------------
+0. - Enable SSH access to the ESXi Server
+-----------------------------------------
 
 If you have not already done so, this process will require direct access to the
 ESXi instance's configuration.  VMWare often calls this "Tech Support Mode".
