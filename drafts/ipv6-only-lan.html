@@ -2,7 +2,7 @@
 <html lang="en"
 >
 <head>
-    <title>Simple collectd with Web Graphs - Stuff I've Figured Out</title>
+    <title>IPv6 only Network using SLAAC and DHCPv6 - Stuff I've Figured Out</title>
     <!-- Using the latest rendering mode for IE -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
@@ -10,11 +10,11 @@
 
 
 
-<link rel="canonical" href="https://egustafson.github.io/collectd-web-graphs.html">
+<link rel="canonical" href="https://egustafson.github.io/drafts/ipv6-only-lan.html">
 
         <meta name="author" content="Eric Gustafson" />
-        <meta name="keywords" content="monitoring,lighttpd,collectd,CGP" />
-        <meta name="description" content="I want to collect machine metrics and I want to display them as a pretty set of graphs through a web browser. Here’s how I do it: Install collectd — this gathers the metrics. Install lighttpd — my web server preference, also install php. Download and install collectd graph panel (CGP ..." />
+        <meta name="keywords" content="IPv6,DHCPv6,SLAAC,dnsmasq,FreeBSD,Linux" />
+        <meta name="description" content="" />
 
 
 
@@ -72,10 +72,10 @@ Stuff I've Figured Out            </a>
         <article>
             <header class="page-header">
                 <h1>
-                    <a href="https://egustafson.github.io/collectd-web-graphs.html"
+                    <a href="https://egustafson.github.io/drafts/ipv6-only-lan.html"
                        rel="bookmark"
-                       title="Permalink to Simple collectd with Web Graphs">
-                        Simple collectd with Web&nbsp;Graphs
+                       title="Permalink to IPv6 only Network using SLAAC and DHCPv6">
+                        IPv6 only Network using <span class="caps">SLAAC</span> and&nbsp;DHCPv6
                     </a>
                 </h1>
             </header>
@@ -85,92 +85,30 @@ Stuff I've Figured Out            </a>
 <footer class="post-info">
     <span class="label label-default">Date</span>
     <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2012-04-10T00:00:00"> Tue 10 April 2012</time>
+        <i class="fa fa-calendar"></i><time datetime="2015-02-12T00:00:00"> Thu 12 February 2015</time>
     </span>
 
 
 
 <span class="label label-default">Tags</span>
-	<a href="https://egustafson.github.io/tag/monitoring.html">monitoring</a>
+	<a href="https://egustafson.github.io/tag/ipv6.html">IPv6</a>
         /
-	<a href="https://egustafson.github.io/tag/lighttpd.html">lighttpd</a>
+	<a href="https://egustafson.github.io/tag/dhcpv6.html">DHCPv6</a>
         /
-	<a href="https://egustafson.github.io/tag/collectd.html">collectd</a>
+	<a href="https://egustafson.github.io/tag/slaac.html">SLAAC</a>
         /
-	<a href="https://egustafson.github.io/tag/cgp.html">CGP</a>
+	<a href="https://egustafson.github.io/tag/dnsmasq.html">dnsmasq</a>
+        /
+	<a href="https://egustafson.github.io/tag/freebsd.html">FreeBSD</a>
+        /
+	<a href="https://egustafson.github.io/tag/linux.html">Linux</a>
     
 </footer><!-- /.post-info -->                    </div>
                 </div>
-                <p>I want to collect machine metrics and I want to display them as a
-pretty set of graphs through a web browser.  Here&#8217;s how I do&nbsp;it:</p>
-<ol class="arabic simple">
-<li>Install <a class="reference external" href="http://collectd.org/">collectd</a> &#8212; this gathers the&nbsp;metrics.</li>
-<li>Install <a class="reference external" href="http://lighttpd.net/">lighttpd</a> &#8212; my web server preference, also install&nbsp;php.</li>
-<li>Download and install collectd graph panel (<a class="reference external" href="https://github.com/pommi/CGP"><span class="caps">CGP</span></a>) &#8212; a <span class="caps">PHP</span>&nbsp;webapp.</li>
-</ol>
-<p>That&#8217;s the short&nbsp;version.</p>
-<div class="section" id="installation">
-<h2>Installation</h2>
-<p>The following walk through will demonstrate the installation using
-Ubuntu Oneiric (11.10). Note, the <tt class="docutils literal">sudo</tt> is generally required, but
-dropped from the commands listed&nbsp;below:</p>
-<div class="highlight"><pre>apt-get install collectd lighttpd php5-cgi php5
-</pre></div>
-<p>next, edit <tt class="docutils literal">/etc/php5/cgi/php.ini</tt> to enable php5 in lighttpd.
-Uncomment the line &quot;<tt class="docutils literal">cgi.fix_pathinfo=1</tt>&quot;.</p>
-<p>Restart lighttpd and you have a working&nbsp;lighttpd+php5.</p>
-<div class="highlight"><pre>lighttpd-enable-mod fastcgi
-lighttpd-enable-mod fastcgi-php
-service lighttpd force-reload
-</pre></div>
-<p>Next, download and &quot;<cite>install</cite>&quot; collectd graph panel (<span class="caps">CGP</span>).  <span class="caps">CGP</span> is
-downloaded with <tt class="docutils literal">git</tt>, if you do not have git installed&nbsp;then:</p>
-<div class="highlight"><pre>apt-get install git
-</pre></div>
-<p>Download <span class="caps">CGP</span> into the lighttpd root&nbsp;directory:</p>
-<div class="highlight"><pre><span class="nb">cd</span> /var/www
-git clone http://git.nethuis.nl/pub/cgp.git
-chown -R www-data.www-data cgp   <span class="c">## optional</span>
-</pre></div>
-<p>Done!  Browse to <a class="reference external" href="http://localhost/cgp/">http://localhost/cgp/</a> to access the&nbsp;graphs.</p>
-</div>
-<hr class="docutils" />
-<div class="section" id="configuring-what-metrics-collectd-collects">
-<h2>Configuring what metrics collectd&nbsp;collects</h2>
-<p>The primary configuration for <a class="reference external" href="http://collectd.org/">collectd</a> as
-Ubuntu installs it is placed in <tt class="docutils literal">/etc/collectd/collectd.conf</tt>.  The
-configuration file is commented.  Refer to the collectd <a class="reference external" href="http://collectd.org/documentation.shtml">documentation</a>
-page for further details.  For each plugin see the plugin pages listed
-along the side of the documentation page.  Many plugins do not require
-additional configuration &#8212; simply uncommenting them is a good
-starting&nbsp;point.</p>
-<p>After editing the collectd configuration, the service must be
-restarted with the typical service restart&nbsp;command:</p>
-<div class="highlight"><pre>service collectd restart
-</pre></div>
-<p>Many of the plugins default to collecting all possible metrics covered
-by the plugin.  It is possible, via the plugin&#8217;s specific
-configuration, to prune out unwanted metrics.  A good example of this
-is the &#8216;<tt class="docutils literal">interfaces</tt>&#8216; plugin which includes statistics for the
-loopback interface by&nbsp;default.</p>
-</div>
-<div class="section" id="customizing-cgp">
-<h2>Customizing <span class="caps">CGP</span></h2>
-<p>The <a class="reference external" href="https://github.com/pommi/CGP"><span class="caps">CGP</span></a> website does not provide any configuration documentation,
-however it is not difficult to customize <span class="caps">CGP</span>.  If installed, as shown
-above, <span class="caps">CGP</span>&#8217;s configuration file will be:
-<tt class="docutils literal">/var/www/cgp/conf/config.php</tt>.  This file is commented with details
-for changing the&nbsp;configuration.</p>
-</div>
-<div class="section" id="adding-additional-hosts">
-<h2>Adding additional&nbsp;hosts</h2>
-<p>Nothing is required of <span class="caps">CGP</span> to add additional hosts.  Simply install
-<a class="reference external" href="http://collectd.org/">collectd</a> on the additional machines and configure the <a class="reference external" href="http://collectd.org/wiki/index.php/Plugin:Network">network
-plugin</a> on both the client and server.  In most cases, the commented
-out configuration, which uses multicast, will suffice for configuring
-the network&nbsp;plugin.</p>
-<p>Now sit back and enjoy the pretty graphs of your running&nbsp;servers.</p>
-</div>
+                <!-- Insert text here -->
+<!-- Local Variables: -->
+<!-- fill-column: 80 -->
+<!-- End: -->
 
             </div>
             <!-- /.entry-content -->
@@ -183,8 +121,8 @@ the network&nbsp;plugin.</p>
             /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
             var disqus_shortname = 'egustafson.disqus.com'; // required: replace example with your forum shortname
 
-                    var disqus_identifier = 'collectd-web-graphs';
-                var disqus_url = 'https://egustafson.github.io/collectd-web-graphs.html';
+                    var disqus_identifier = 'ipv6-only-lan';
+                var disqus_url = 'https://egustafson.github.io/drafts/ipv6-only-lan.html';
 
             var disqus_config = function () {
                 this.language = "en";
