@@ -3,7 +3,6 @@
 :slug: esxi-nested-virtualbox
 :author: Eric Gustafson
 :tags: virtualization, VirtualBox, VMWare
-:status: draft
 
 This process describes how to configure an ESXi Linux guest so that the guest
 can then run VirtualBox and create a nested, 64 bit guest within the ESXi guest
