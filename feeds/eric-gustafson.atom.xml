@@ -1,5 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="https://egustafson.github.io/" rel="alternate"></link><link href="https://egustafson.github.io/feeds/eric-gustafson.atom.xml" rel="self"></link><id>https://egustafson.github.io/</id><updated>2015-01-09T00:00:00-07:00</updated><entry><title>Syncthing on Ubuntu</title><link href="https://egustafson.github.io/syncthing-ubuntu.html" rel="alternate"></link><updated>2015-01-09T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2015-01-09:syncthing-ubuntu.html</id><summary type="html">&lt;p&gt;Last month, after looking at &lt;a class="reference external" href="http://www.getsync.com/"&gt;BitTorrent Sync&lt;/a&gt; and realizing it was
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="https://egustafson.github.io/" rel="alternate"></link><link href="https://egustafson.github.io/feeds/eric-gustafson.atom.xml" rel="self"></link><id>https://egustafson.github.io/</id><updated>2015-02-10T00:00:00-07:00</updated><entry><title>Nested Virtualization - VirtualBox inside ESXi</title><link href="https://egustafson.github.io/esxi-nested-virtualbox.html" rel="alternate"></link><updated>2015-02-10T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2015-02-10:esxi-nested-virtualbox.html</id><summary type="html">&lt;p&gt;This process describes how to configure an ESXi Linux guest so that the guest
+can then run VirtualBox and create a nested, 64 bit guest within the ESXi guest
+&amp;#8212; Nested&amp;nbsp;Virtualization.&lt;/p&gt;
+&lt;p&gt;There is nothing special about the use of Linux as either the ESXi guest, or the
+nested guest.  Any supported operating system &lt;em&gt;should&lt;/em&gt; work at either nesting
+level.  This includes nesting ESXi inside of ESXi, which appears to be the most
+common form of documentation to describe this&amp;nbsp;process.&lt;/p&gt;
+&lt;p&gt;This process details &lt;em&gt;manually&lt;/em&gt; editing an ESXi hosts&amp;#8217;s &lt;span class="caps"&gt;VM&lt;/span&gt; configuration file to
+direct the inclusion of support for virtualization from within the guest.  ESXi
+version 5.5 is specifically addressed.  I found a number of blog postings
+detailing earlier versions of ESXi, unfortunately the process changed in 5.5 and
+the newer version is much less prevalently documented.  I also found blog
+postings detailing how to use the vSphere Web &lt;span class="caps"&gt;UI&lt;/span&gt; to effect the reconfiguration.
+Unfortunately, the Web &lt;span class="caps"&gt;UI&lt;/span&gt; is not part of the free license VMWare grants for an
+ESXi host.  As a consequence, this posting details the manual editing to enable
+nested virtualization &amp;#8212; needed if all one has is the free bits from&amp;nbsp;VMWare.&lt;/p&gt;
+&lt;div class="section" id="the-process"&gt;
+&lt;h2&gt;The&amp;nbsp;Process&lt;/h2&gt;
+&lt;ol class="arabic simple" start="0"&gt;
+&lt;li&gt;Enable &lt;span class="caps"&gt;SSH&lt;/span&gt; access to the ESXi&amp;nbsp;server.&lt;/li&gt;
+&lt;li&gt;Create an ESXi &lt;span class="caps"&gt;VM&lt;/span&gt; for the initial, outer&amp;nbsp;guest.&lt;/li&gt;
+&lt;li&gt;Shutdown the ESXi &lt;span class="caps"&gt;VM&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Edit the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s .vmx file, adding &amp;quot;vhv.enable = &lt;span class="caps"&gt;TRUE&lt;/span&gt;&amp;quot;.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Done.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="section" id="enable-ssh-access-to-the-esxi-server"&gt;
+&lt;h3&gt;0. - Enable &lt;span class="caps"&gt;SSH&lt;/span&gt; access to the ESXi&amp;nbsp;Server&lt;/h3&gt;
+&lt;p&gt;If you have not already done so, this process will require direct access to the
+ESXi instance&amp;#8217;s configuration.  VMWare often calls this &amp;quot;Tech Support Mode&amp;quot;.
+This can be done from the ESXi host&amp;#8217;s console, or through the vSphere Client.
+See the appendix in this document titled, &lt;a class="reference internal" href="#enabling-ssh-access-to-esxi-5-5"&gt;Enabling &lt;span class="caps"&gt;SSH&lt;/span&gt; access to ESXi 5.5&lt;/a&gt;,
+for more detailed instructions on how to enable &lt;span class="caps"&gt;SSH&lt;/span&gt;&amp;nbsp;access.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="create-an-esxi-vm"&gt;
+&lt;h3&gt;1. - Create an ESXi &lt;span class="caps"&gt;VM&lt;/span&gt;&lt;/h3&gt;
+&lt;p&gt;Create an ESXi &lt;span class="caps"&gt;VM&lt;/span&gt; for the initial, outer guest.  VMWare &amp;#8216;virtual machine
+version&amp;#8217; 8 or greater should be used; this is the default for ESXi 5.5.  Install
+the operating system, (Linux), nothing special here, just perform a normal
+install; ensure the installed &lt;span class="caps"&gt;OS&lt;/span&gt; is 64 bit.  Do make sure to provision the disk
+with enough space for the nested &lt;span class="caps"&gt;OS&lt;/span&gt;&amp;#8217;s virtual disk.  An appropriate amount of
+&lt;span class="caps"&gt;CPU&lt;/span&gt; and memory will also be needed.  The first time you attempt this I recommend
+over provisioning all three: disk, memory, and &lt;span class="caps"&gt;CPU&lt;/span&gt;.  As I was experimenting I
+found that the nested &lt;span class="caps"&gt;OS&lt;/span&gt; ran notably slower; giving everything extra resources
+seemed to improve performance.  I am still experimenting with fine tuning
+resource overheads.  Generally I&amp;#8217;m finding that virtualized components do behave
+as advertised, but default configurations on install do need some finer tuning
+&amp;#8212; in short, no&amp;nbsp;surprises.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="shutdown-the-esxi-vm"&gt;
+&lt;h3&gt;2. - Shutdown the ESXi &lt;span class="caps"&gt;VM&lt;/span&gt;&lt;/h3&gt;
+&lt;p&gt;With an ESXi &lt;span class="caps"&gt;VM&lt;/span&gt; configured and installed with an operating system, you are ready
+to (re)configure the &lt;span class="caps"&gt;VM&lt;/span&gt; to allow nested virtualization.  The reconfiguration
+will happen to the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s definition, and as a consequence, the &lt;span class="caps"&gt;VM&lt;/span&gt; needs to be in
+the stopped state.  ESXi, as all others I&amp;#8217;m aware of, does not let you
+(virtually) modify the hardware while the &lt;span class="caps"&gt;VM&lt;/span&gt; is running.  Stop the ESXi &lt;span class="caps"&gt;VM&lt;/span&gt; that
+will be reconfigured to support nested&amp;nbsp;virtualization.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="edit-the-vm-s-configuration"&gt;
+&lt;h3&gt;&lt;strong&gt;3. - Edit the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s&amp;nbsp;Configuration&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;This step is the critical step.  The ESXi &lt;span class="caps"&gt;VM&lt;/span&gt; must be shutdown, as noted
+previously; if it is not the change will be reverted by ESXi.  Fundamentally,
+the change is simple:  add the configuration setting &lt;tt class="docutils literal"&gt;vhv.enable = &amp;quot;&lt;span class="caps"&gt;TRUE&lt;/span&gt;&amp;quot;&lt;/tt&gt; to
+the configuration.  This must be added to the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s &lt;tt class="docutils literal"&gt;.vmx&lt;/tt&gt; file.&lt;/p&gt;
+&lt;p&gt;&lt;span class="caps"&gt;SSH&lt;/span&gt; into the ESXi server and then locate and edit the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s .vmx&amp;nbsp;file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&amp;gt; find / -name &lt;span class="se"&gt;\*&lt;/span&gt;.vmx
+&amp;gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;vhv.enable = &amp;quot;TRUE&amp;quot;&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; /path/to/host.vmx
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="done"&gt;
+&lt;h3&gt;4. -&amp;nbsp;Done&lt;/h3&gt;
+&lt;p&gt;Once the change to the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s configuration is effected, simply boot the &lt;span class="caps"&gt;VM&lt;/span&gt; and
+use VirtualBox within the ESXi &lt;span class="caps"&gt;VM&lt;/span&gt; to create a nested &lt;span class="caps"&gt;VM&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Note:  You should be able to create 64 bit, and multiple processor/core &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s, up
+to the limits of the ESXi &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s resources.  If the (re)configuration was not
+successful then it is likely that VirtualBox will allow you to create a &lt;span class="caps"&gt;VM&lt;/span&gt;, but
+that &lt;span class="caps"&gt;VM&lt;/span&gt; will be restricted to 32 bit and will not support multiple processors -
+this is a specific pattern I noted prior to discovering the correct process for
+ESXi 5.5.  Earlier versions of ESXi have a different process, not described
+here, and without my crystal ball, I&amp;#8217;m at a loss for future&amp;nbsp;versions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="extra-credit"&gt;
+&lt;h2&gt;Extra&amp;nbsp;Credit&lt;/h2&gt;
+&lt;p&gt;In discovering the above process, which I distilled to what I felt was the
+minimum, for simplicity, I made a few &amp;quot;superfluous&amp;quot; discoveries.  So that the
+above process may be more broadly applicable, an so that the reader is
+more informed, I have detailed the &amp;quot;extras&amp;quot;&amp;nbsp;here.&lt;/p&gt;
+&lt;div class="section" id="old-wives-tales"&gt;
+&lt;h3&gt;Old Wives&amp;nbsp;Tales&lt;/h3&gt;
+&lt;p&gt;Technically not old wives tales, the following details are floating around in
+blog postings and are no longer accurate, for ESXi 5.5.  At one point in time,
+they were correct; I performed the process detailed here with out them as
+verification that they were not&amp;nbsp;necessary.&lt;/p&gt;
+&lt;div class="section" id="vhv-allow-vs-vhv-enable"&gt;
+&lt;h4&gt;&lt;tt class="docutils literal"&gt;vhv.allow&lt;/tt&gt; vs. &lt;tt class="docutils literal"&gt;vhv.enable&lt;/tt&gt;&lt;/h4&gt;
+&lt;p&gt;Earlier versions of ESXi, possibly as late as early 5.x versions, used a
+slightly different means of enabling nested virtualization.  The &lt;tt class="docutils literal"&gt;vhv.allow&lt;/tt&gt;
+parameter was applied to the ESXi server&amp;#8217;s configuration in
+&lt;tt class="docutils literal"&gt;/etc/vmware/config&lt;/tt&gt;.  This is not necessary, but does not conflict with the
+per &lt;span class="caps"&gt;VM&lt;/span&gt; configuration detailed in this posting and required by ESXi&amp;nbsp;5.5.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="editing-the-vm-s-cpu-preferences"&gt;
+&lt;h4&gt;Editing the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s &lt;span class="caps"&gt;CPU&lt;/span&gt;&amp;nbsp;Preferences&lt;/h4&gt;
+&lt;p&gt;In other postings on this subject I noted that an additional step involving
+editing the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s &lt;span class="caps"&gt;CPU&lt;/span&gt; Preferences was detailed.  Changing the &amp;quot;&lt;span class="caps"&gt;CPU&lt;/span&gt;/&lt;span class="caps"&gt;MMU&lt;/span&gt; Virtualization&amp;quot; from
+&amp;#8216;Automatic&amp;#8217; to forced settings for Intel &lt;span class="caps"&gt;VT&lt;/span&gt;-x and hardware &lt;span class="caps"&gt;MMU&lt;/span&gt; virtualization
+appears to no longer be required.  I have successfully nested VirtualBox 64 bit
+VMs inside ESXi 5.5 VMs with the &amp;#8216;Automatic&amp;#8217; setting.  Caveat:  I have found no official
+documentation discussing this for 5.5 either&amp;nbsp;way.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="esxi-networking-promiscuous-mode"&gt;
+&lt;h3&gt;ESXi Networking - Promiscuous&amp;nbsp;Mode&lt;/h3&gt;
+&lt;p&gt;Almost all of the writings I encountered that discuss nesting virtualization
+with ESXi cite setting &amp;quot;networking&amp;quot; into promiscuous mode.  This is not a
+requirement for nesting virtualization.  The basic example of nesting
+VirtualBox, (using &lt;span class="caps"&gt;NAT&lt;/span&gt;), inside an ESXi Linux instance was executed with out
+adjusting any ESXi network&amp;nbsp;parameters.&lt;/p&gt;
+&lt;p&gt;Enabling promiscuous mode &lt;em&gt;is&lt;/em&gt; required if your ESXi &lt;span class="caps"&gt;VM&lt;/span&gt; will nest virtual
+machines that require bridge mode, sometimes evidenced by the fact that the
+nested &lt;span class="caps"&gt;VM&lt;/span&gt; has a new ethernet &lt;span class="caps"&gt;MAC&lt;/span&gt; address.  Promiscuous mode, be it on ESXi, or
+other technologies, is the means by which a network interface can receive
+packets for hardware addresses, (&lt;span class="caps"&gt;MAC&lt;/span&gt; addresses), other than the one the
+interface is&amp;nbsp;assigned.&lt;/p&gt;
+&lt;p&gt;The most common nesting example I observed was ESXi inside ESXi.  In this case,
+promiscuous mode would be necessary with the default ESXi networking
+configuration because that model is a bridged model in which each &lt;span class="caps"&gt;VM&lt;/span&gt; is given a
+newly allocated, and different, &lt;span class="caps"&gt;MAC&lt;/span&gt;&amp;nbsp;address.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="disk-performance"&gt;
+&lt;h3&gt;Disk&amp;nbsp;Performance&lt;/h3&gt;
+&lt;p&gt;During my initial experimentation with nested &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s I observed a clear decrease
+in performance of the nested &lt;span class="caps"&gt;VM&lt;/span&gt;.  My initial experimentation mostly only went as
+far as installing the &lt;span class="caps"&gt;OS&lt;/span&gt; on the nested &lt;span class="caps"&gt;VM&lt;/span&gt;.  Installing an &lt;span class="caps"&gt;OS&lt;/span&gt; is generally a disk
+intensive&amp;nbsp;activity.&lt;/p&gt;
+&lt;p&gt;Disk virtualization is more expensive than most.  Nesting virtualized disks will
+accumulate &amp;quot;virtualization debt&amp;quot; quicker than other virtualized components.  The
+short, but rambling explanation goes something like&amp;nbsp;this:&lt;/p&gt;
+&lt;blockquote&gt;
+In my inner &lt;span class="caps"&gt;VM&lt;/span&gt; I write a block to &amp;quot;disk&amp;quot;.  This traverses the inner &lt;span class="caps"&gt;OS&lt;/span&gt;&amp;#8217;s
+file system code and is mapped to a sector on the inner &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s &lt;em&gt;virtual&lt;/em&gt; block
+device.  Writing is the passed to the outer &lt;span class="caps"&gt;VM&lt;/span&gt;, traverses the file system
+code, and is mapped to the outer &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s &lt;em&gt;virtual&lt;/em&gt; block device.  Finally, the
+block is passed to the host, (physical), file system, mapped through to a
+sector, and finally placed on the actual physical device.  &amp;#8212; If your head is
+spinning now, it should be.  That&amp;#8217;s &lt;strong&gt;three&lt;/strong&gt; times the block is passed
+through file system code on it&amp;#8217;s eventual path to a physical write.&lt;/blockquote&gt;
+&lt;p&gt;This problem is understood in the virtualization community, and there are
+methods for avoiding differing degrees of the penalty based on the requirements
+of an installation.  I will not cover these here.  My point:  if your nested
+&lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s strike you as slow, this may be a significant part of the&amp;nbsp;why.&lt;/p&gt;
+&lt;p&gt;Armed with the above understanding, I set out to make things run a bit smoother,
+i.e. faster.  Here are a few ideas I had; some I carried out successfully, some
+are on my &amp;quot;to try&amp;quot;&amp;nbsp;list:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Enabling &amp;quot;Host I/O Caching&amp;quot;.  This seemed to help and was quick to&amp;nbsp;try.&lt;/li&gt;
+&lt;li&gt;Giving each virtualized device some &amp;#8216;room to breath&amp;#8217; eases the pressure.
+Some extra &lt;span class="caps"&gt;CPU&lt;/span&gt; and memory felt like it&amp;nbsp;helped.&lt;/li&gt;
+&lt;li&gt;Using alternative &amp;quot;devices&amp;quot; for disk should help as well, I haven&amp;#8217;t tried
+this yet.&lt;ul&gt;
+&lt;li&gt;Raw disk device, by passing the virtualization of the device&amp;nbsp;completely.&lt;/li&gt;
+&lt;li&gt;iSCSI&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;hr class="docutils" /&gt;
+&lt;div class="section" id="appendix"&gt;
+&lt;h2&gt;Appendix&lt;/h2&gt;
+&lt;div class="section" id="enabling-ssh-access-to-esxi-5-5"&gt;
+&lt;h3&gt;Enabling &lt;span class="caps"&gt;SSH&lt;/span&gt; access to ESXi&amp;nbsp;5.5&lt;/h3&gt;
+&lt;p&gt;ESXi supports direct &lt;span class="caps"&gt;SSH&lt;/span&gt; access to the server running ESXi.  This mechanism is
+referred to in VMWare documentation as &amp;quot;Tech Support Mode&amp;quot;.  VMWare has a
+&lt;a class="reference external" href="http://kb.vmware.com/"&gt;Knowledge Base&lt;/a&gt; article elaborating the process for a range of versions: &lt;a class="reference external" href="http://kb.vmware.com/kb/1017910"&gt;&lt;span class="caps"&gt;KB&lt;/span&gt;
+article&amp;nbsp;1017910&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Here is the verbal description to enable &lt;span class="caps"&gt;SSH&lt;/span&gt; to the ESXi server from the Windows
+vSphere (thick)&amp;nbsp;Client:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Select the server&amp;#8217;s Configuration tab.  Select the server, not a child &lt;span class="caps"&gt;VM&lt;/span&gt;,
+from the left hand side and then select the &amp;#8216;Configuration&amp;#8217; tab across the&amp;nbsp;top.&lt;/li&gt;
+&lt;li&gt;Select the &amp;#8216;Security Profile&amp;#8217; from the Software section on the left hand side
+of the Configuration&amp;nbsp;tab.&lt;/li&gt;
+&lt;li&gt;Open the &amp;#8216;Services Properties&amp;#8217; dialog window.  Click on the &amp;#8216;Properties&amp;#8230;&amp;#8217;
+link along the right hand side near the top in the &amp;#8216;Services&amp;#8217; section of the
+Security Profile&amp;nbsp;table.&lt;/li&gt;
+&lt;li&gt;Open the &amp;#8216;&lt;span class="caps"&gt;SSH&lt;/span&gt; Options&amp;#8217; dialog.  In the &amp;#8216;Services Properties&amp;#8217; dialog scroll
+down to the &amp;#8216;&lt;span class="caps"&gt;SSH&lt;/span&gt;&amp;#8217; label and select it, (one click).  Then press the
+&amp;#8216;Options&amp;#8230;&amp;#8217; button in the lower right corner of the&amp;nbsp;dialog.&lt;/li&gt;
+&lt;li&gt;Use the &amp;#8216;&lt;span class="caps"&gt;SSH&lt;/span&gt; Options&amp;#8217; dialog to enable &lt;span class="caps"&gt;SSH&lt;/span&gt; by choosing &amp;quot;Start and stop with
+host&amp;quot;.  The &lt;span class="caps"&gt;SSH&lt;/span&gt; service can also be started immediately with the &amp;#8216;Start&amp;#8217;&amp;nbsp;button.&lt;/li&gt;
+&lt;li&gt;Access the host by ssh&amp;#8217;ing to the &lt;span class="caps"&gt;IP&lt;/span&gt; or hostname of the ESXi server and
+logging in with an appropriate account.  The &amp;#8216;root&amp;#8217; user and password created
+during ESXi initial installation will&amp;nbsp;work.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;!-- Local Variables: --&gt;
+&lt;!-- fill-column: 80 --&gt;
+&lt;!-- End: --&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</summary><category term="virtualization"></category><category term="VirtualBox"></category><category term="VMWare"></category></entry><entry><title>Syncthing on Ubuntu</title><link href="https://egustafson.github.io/syncthing-ubuntu.html" rel="alternate"></link><updated>2015-01-09T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2015-01-09:syncthing-ubuntu.html</id><summary type="html">&lt;p&gt;Last month, after looking at &lt;a class="reference external" href="http://www.getsync.com/"&gt;BitTorrent Sync&lt;/a&gt; and realizing it was
 encrypted and private, but &lt;em&gt;not&lt;/em&gt; open source, I went digging for an
 alternative.  I found the perfect project, for me:  &lt;a class="reference external" href="http://syncthing.net/"&gt;Syncthing&lt;/a&gt;.  The
 project is still relatively young and while it has proven to be
