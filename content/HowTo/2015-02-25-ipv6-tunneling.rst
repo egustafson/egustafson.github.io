@@ -250,31 +250,103 @@ manipulated in transit.  The IPv6 packet's hop limit is decremented by the
 tunnel endpoint as if the IPv4 transit network is a single hop.
 
 
-Using RFC-2893
-==============
+RFC-4213 Methods
+================
 
-6in4
-----
+The common name for *basic* RFC-4213 tunneling is \"6in4_\".  Utilizing the
+techniques described above, manually configuring tunnel endpoints would be
+described as 6in4.
+
+.. _6in4: https://en.wikipedia.org/wiki/6in4
 
 6to4
 ----
 
+The \"6to4_\" method builds on 6in4 by providing automated configuration.
+Tunneling is acomplished according to RFC-4213 and configuration details are
+prescribed in RFC-3056_ and RFC-3068_.  In short, RFC-3056 reserves 2002::/16
+for statically mapping IPv4 addresses to IPv6 networks and RFC-3068 specifies an
+IPv4 Anycast address to be used as a tunnel endpoint.
+
+.. _RFC-3056: https://www.ietf.org/rfc/rfc3056.txt
+.. _RFC-3068: https://www.ietf.org/rfc/rfc3068.txt
+
+The 2002::/16 IPv6 prefix is used to map public IPv4 addresses into an IPv6
+network address.  The mapping is acomplished by concatinating 2002: with the 32
+bit IPv4 address to form a /48 prefix length network for each IPv4 address.  The
+result is depicted as such::
+
+  2002:[IPv4 Addr]::/48
+
+This pattern leaves 16 bits in the network portion of each IPv6 network for
+subnetting.  
+
+The addition of an IPv4 Anycast address, defined in RFC-3068, to be used for
+tunneling completes the automation of configuration in the 6to4 scheme.  The
+address is 192.88.99.1.  Routers sending 6to4 traffic into the public Internet
+send to 192.88.99.1 and in reverse, routers send 2002::/48 traffic to the
+embedded IPv4 address.  No explicit configuration of the 6to4 tunnel is needed.
+
+There has been some criticism of 6to4 tunneling.  Two items I will call out are:
+
+- No support for tunnel endpoints behind NAT.
+- Non deterministic network routing, (and latency), because of Anycast usage.
+
+Additional criticisms have been levied against the 6to4 scheme, including
+additional RFC's (RFC-6343, RFC-3964).
+
+In general, and with the availability of **free** 6in4 tunnel brokers, discussed
+later, it is my recomendation to avoid the use of 6to4 with out specific reasons
+for choosing it.
+
 Teredo - RFC-4380
 -----------------
 
+For completeness, it is worth mentioning that Teredo_ is an additional method of
+connecting to the public IPv6 network through a tunnel.  Teredo is **NOT** an
+RFC-4213 based method.  Teredo uses UDP for encapsulation and does not tunnel
+networks, but only single IPv6 hosts.  Teredo *does* allow transitioning NAT.
+Using Teredo was popularized by its inclusion in Microsoft Windows; many Windows
+users are connected to IPv6 networks and are not even aware of it.  There is
+also a Linux/xxxBSD, open source client named Miredo_.
 
+.. _Teredo: https://en.wikipedia.org/wiki/Teredo_tunneling
+.. _Miredo: http://www.remlab.net/miredo/
 
 Tunnel Brokers
 ==============
 
-*Implementing an HE Tunnel with FreeBSD*
-========================================
+"Tunnel Broker" is the term being used to describe ISP's who will provide tunnel
+access to the IPv6 public Internet.  There are a number of brokers, and among
+them, a number that offer free access for tunneling IPv6.  The Wikipedia page,
+"\"`List of IPv6 tunnel brokers`_\" contains a list.
+
+.. _List of IPv6 tunnel brokers: https://en.wikipedia.org/wiki/List_of_IPv6_tunnel_brokers
+
+The two most popular, and well deployed brokers are `Huricane Electric`_\ 's
+(HE) \"`IPv6 Tunnel Broker`_\" service and SixXS_ (Six Access).  I chose HE
+because they appeared to have more written about them and how to connect to
+their tunnel broker.  In hindsight I have concluded that SixXS and HE are on
+comparable footing.  I would recommend starting with one of the two, but believe
+both are very comparable.
+
+.. _Huricane Electric: https://www.he.net/
+.. _IPv6 Tunnel Broker: https://tunnelbroker.net/
+.. _SixXS: https://www.sixxs.net/
+
+**Implementing an HE Tunnel with FreeBSD**
+==========================================
+
+
 
 Placing the tunnel behind NAT(v4)
 ---------------------------------
 
 Firewall Rules
 --------------
+
+PFSense
+-------
 
 Linux?
 ------
@@ -283,66 +355,50 @@ But what about Linux?  All of the above can be accomplished using Linux. HE's
 TunnelBroker site provides specifics for Linux, along with a number of
 additional operating systems.  This article will not cover Linux -- sorry.
 
+Conclusion
+==========
+
+6in4 Tunneling based on RFC-4213 is both a simple, and an effective method for
+connecting IPv6 networks across IPv4, including NAT.  There are multiple IPv6
+tunnel brokers offering free, and hastle free, tunnels using 6in4.  Modern, open
+source operating systems have good support for 6in4.  There are open source
+"firewall" appliances using these operating systems and providing simple 6in4
+configuration.  Join the IPv6 network today, there's no reason to wait.  Better
+yet, start using IPv6 to solve network problems induced by using IPv4.
+
 
 References
 ==========
 
-:IPv6:
+:IPv6 Tunneling:
    - https://en.wikipedia.org/wiki/IPv6
    - https://en.wikipedia.org/wiki/IPv6_transition_mechanisms
-:RFC 2893:
-   - *Transition Mechanisms for IPv6 Hosts and Routers*, obsoleted by RFC 4213
+   - http://ipv6.com/articles/gateways/IPv6-Tunnelling.htm
+     
+:6in4:
+   - https://en.wikipedia.org/wiki/6in4
+   - http://www.sixscape.com/joomla/sixscape/index.php/ipv6-training-certification/ipv6-forum-official-certification/ipv6-forum-network-engineer-silver/network-engineer-silver-transition-mechanisms/tunnels/6in4-tunnel
+:6to4:
+   - https://en.wikipedia.org/wiki/6to4
+   - http://www.sixscape.com/joomla/sixscape/index.php/ipv6-training-certification/ipv6-forum-official-certification/ipv6-forum-network-engineer-silver/network-engineer-silver-transition-mechanisms/tunnels/6to4-tunnel
+:RFC 2893 - Transition Mechanisms for IPv6 Hosts and Routers:
+   - obsoleted by RFC 4213
    - https://www.ietf.org/rfc/rfc2893.txt
-:RFC 4213:
-   - *Basic Transition Mechanisms for IPv6 Hosts and Routers*
+:RFC 3056 - Connection of IPv6 Domins via IPv4 Clouds:
+   - https://www.ietf.org/rfc/rfc3056.txt
+:RFC 3068 - An Anycast Prefix for 6to4 Relay Routers:
+   - https://www.ietf.org/rfc/rfc3068.txt
+:RFC 4213 - Basic Transition Mechanisms for IPv6 Hosts and Routers:
    - https://www.ietf.org/rfc/rfc4213.txt
-:Teredo - RFC 4380:
+:RFC 4380 - Teredo\: Tunneling IPv6 over UDP through Network Address Translations (NATs):
    - http://www.ietf.org/rfc/rfc4380.txt
    - https://en.wikipedia.org/wiki/Teredo_tunneling
 :Tunnel Broker (IPv6):
    - https://tunnelbroker.net/
 :IPv6 Check:
+   - http://www.test-ipv6.com/
    - http://ipv6-address.eu/
      
-----
-
-Outline:
-
-- Motivations
-- IPv6 Primer Topics
-
-  - Subnetting - works a little differently
-  - Firewall Filtering - all hosts are public.
-  - Multiple Addresses on an interface are the norm.
-
-- RFC2893 - How it works
-
-  - Basics
-  - IPv4 NAT Ramifications
-  - Problems & ICMP v4 + v6
-
-- Ways of using RFC2893
-
-  - 6 in 4
-  - 6 to 4
-  - ??
-
-- Tunnel Brokers - Hurricane Electric
-- Implementing HE w/ FreeBSD
-
-  - Behind a NATv4 Device
-  - Firewall Rules
-
-- ? Linux Implementation
-- ? Alternative Technologies
-
-  - Teredo / RFC-4380
-  
-
-
-         
-
-
 
 .. Local Variables:
 .. fill-column: 80
