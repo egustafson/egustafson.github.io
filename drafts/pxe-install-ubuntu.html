@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en"
+>
+<head>
+    <title>Diskless Install of Ubuntu with PXE & Dnsmasq - Stuff I've Figured Out</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="https://egustafson.github.io/drafts/pxe-install-ubuntu.html">
+
+        <meta name="author" content="Eric Gustafson" />
+        <meta name="keywords" content="PXE,install,debian,ubuntu,preseed,dnsmasq,virtualbox" />
+        <meta name="description" content="The other day I received a &#34;server&#34; (HP Z620) as part of work. I set out to integrate it into a new subnet to be used like a mini-cloud LAN. Since my &#34;lab&#34; is a floor down from my office my first goal was to make this &#34;server&#34; remote everything ..." />
+
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://egustafson.github.io/theme/css/bootstrap.flatly.min.css" type="text/css"/>
+    <link href="https://egustafson.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://egustafson.github.io/theme/css/pygments/manni.css" rel="stylesheet">
+        <link href="https://egustafson.github.io/theme/css/typogrify.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://egustafson.github.io/theme/css/style.css" type="text/css"/>
+
+        <link href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Stuff I've Figured Out ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="https://egustafson.github.io/" class="navbar-brand">
+Stuff I've Figured Out            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="https://egustafson.github.io/category/howto.html">Howto</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/random.html">Random</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/review.html">Review</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="https://egustafson.github.io/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="https://egustafson.github.io/drafts/pxe-install-ubuntu.html"
+                       rel="bookmark"
+                       title="Permalink to Diskless Install of Ubuntu with PXE & Dnsmasq">
+                        Diskless Install of Ubuntu with <span class="caps">PXE</span> <span class="amp">&amp;</span>&nbsp;Dnsmasq
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-08-19T00:00:00"> Tue 19 August 2014</time>
+    </span>
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://egustafson.github.io/tag/pxe.html">PXE</a>
+        /
+	<a href="https://egustafson.github.io/tag/install.html">install</a>
+        /
+	<a href="https://egustafson.github.io/tag/debian.html">debian</a>
+        /
+	<a href="https://egustafson.github.io/tag/ubuntu.html">ubuntu</a>
+        /
+	<a href="https://egustafson.github.io/tag/preseed.html">preseed</a>
+        /
+	<a href="https://egustafson.github.io/tag/dnsmasq.html">dnsmasq</a>
+        /
+	<a href="https://egustafson.github.io/tag/virtualbox.html">virtualbox</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>The other day I received a &quot;server&quot; (<span class="caps">HP</span> Z620) as part of work.  I set out to
+integrate it into a new subnet to be used like a mini-cloud <span class="caps">LAN</span>.  Since my &quot;lab&quot;
+is a floor down from my office my first goal was to make this &quot;server&quot; remote
+everything, right down to the <span class="caps">BIOS</span>.  This way I could reboot and even <em>reload</em>
+the bare metal <span class="caps">OS</span> remotely.  The Z620 has <a class="reference external" href="https://en.wikipedia.org/wiki/Intel_Active_Management_Technology">Intel <span class="caps">AMT</span></a> and I&#8217;ve progressed that
+to the point where I can remotely power on/off the machine &#8212; more on that in
+another article.  The next step was to setup <a class="reference external" href="https://en.wikipedia.org/wiki/Preboot_Execution_Environment"><span class="caps">PXE</span></a>&nbsp;booting.</p>
+<p>In my past I&#8217;ve setup <span class="caps">PXE</span> environments, but as I started to reason through what
+I needed I realized that I had over simplified.  Did I want to <span class="caps">PXE</span> install, or
+<span class="caps">PXE</span> boot a kernel with the root filesystem on local disk?  Both actually, and
+maybe some other <a class="reference internal" href="#pxe-acrobatics"><span class="caps">PXE</span> acrobatics</a>.  Step one: <span class="caps">PXE</span> boot into an installation and
+then automate the installation with a <a class="reference external" href="https://help.ubuntu.com/14.04/installation-guide/amd64/apb.html">preseed</a>&nbsp;file.</p>
+<div class="section" id="pxe-boot-to-install-ubuntu">
+<h2><span class="caps">PXE</span> Boot to Install -&nbsp;Ubuntu</h2>
+<p>The <a class="reference external" href="https://help.ubuntu.com/14.04/installation-guide/amd64/index.html">Ubuntu Installation Guide</a> covers most of what is described below.  The
+one exception is that I prefer <a class="reference external" href="http://www.thekelleys.org.uk/dnsmasq/doc.html">Dnsmasq</a> for its simplicity, and every <span class="caps">PXE</span> boot
+example I found seems to want to explain the process with the amalgamation of
+the <span class="caps">ISC</span> <span class="caps">DHCP</span> server, and one of the many, execellent tftpd servers.  Dnsmasq was
+made for this, why is a more complex tool chain being consistently pushed?  &#8212; I
+don&#8217;t&nbsp;know.</p>
+<p>Additionally, I, like many people, like prototyping in a virtual environment.  I
+use <a class="reference external" href="https://www.virtualbox.org/">VirtualBox</a>, and VirtualBox supports <span class="caps">PXE</span> booting.  In fact, there are a
+couple of ways to do a <span class="caps">PXE</span> boot in VirtualBox.  This example will <strong>not</strong> use
+any of VirtualBox&#8217;s built-in <span class="caps">PXE</span> boot features.  Instead, two (virtual) hosts
+will be configured, one as the <span class="caps">PXE</span> boot server, and a second as the booted
+client.  This pattern mimics physical hardware, and, in fact, should be
+reproducable on physical equipment by simply ignoring the VirtualBox&nbsp;commentary.</p>
+<div class="section" id="prerequesites">
+<h3>Prerequesites</h3>
+<ol class="arabic simple">
+<li>(optional) VirtualBox, host <span class="caps">OS</span> doesn&#8217;t matter.  This article is written with
+VirtualBox instructions, ignoring the VirtualBox parts and using physical
+hardware should just&nbsp;work.</li>
+<li>A linux server.  Package install commands based on Ubuntu, any distribution
+should work; infact any <span class="caps">OS</span> with Dnsmasq should work the&nbsp;same.</li>
+<li>A client host &#8212; the disk on this machine will be <strong>erased</strong>.  The example
+will use a newly created VirtualBox&nbsp;host.</li>
+<li>A &quot;dhcp free&quot; <span class="caps">LAN</span>.  In this example, a VirtualBox &quot;Internal Network&quot; will
+serve as the <span class="caps">LAN</span>.</li>
+</ol>
+</div>
+<div class="section" id="pxe-dhcp-and-a-clean-lan">
+<h3><span class="caps">PXE</span>, <span class="caps">DHCP</span>, and a &quot;clean&quot; <span class="caps">LAN</span></h3>
+<p>For those familiar with <span class="caps">DHCP</span>&#8217;s broadcast use of the <span class="caps">LAN</span>, this section may be
+safely&nbsp;skipped.</p>
+<p>The first step in a &quot;<span class="caps">PXE</span> Boot&quot; is for the client host to perform a <a class="reference external" href="https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol"><span class="caps">DHCP</span></a>
+request, or more precisely a <span class="caps">DHCP</span> discovery.  This amounts to the client sending
+a broadcast <span class="caps">IP</span> message on the connected <span class="caps">LAN</span>.  Because the client knows nothing
+of itself at this point, it can only broadcast a message requesting it&#8217;s
+configuration, the &quot;C&quot; in <span class="caps">DHCP</span>.  Many <span class="caps">LAN</span>&#8217;s support <span class="caps">DHCP</span>, including the default
+VirtualBox &quot;<span class="caps">NAT</span>&quot; <span class="caps">LAN</span>.  In order to <span class="caps">PXE</span> boot a specific response to the <span class="caps">DHCP</span>
+request must be given; the culmunation of this article in fact.  If the <span class="caps">PXE</span>
+booting client is &quot;placed&quot; on a <span class="caps">LAN</span> that already has a <span class="caps">DHCP</span> service present then
+it is possible that the existing service will respond, and respond with a
+generic response, not the <span class="caps">PXE</span> specific response this article details&nbsp;crafting.</p>
+<p>For this reason, the &quot;dhcp free&quot; <span class="caps">LAN</span> is stated above as a prerequisite.  If you
+know you have a <span class="caps">DHCP</span> free physical <span class="caps">LAN</span> then you&#8217;re good; many home &quot;routers&quot;
+provide <span class="caps">DHCP</span> as part of their functionality &#8212; you&#8217;ve been&nbsp;warned.</p>
+<p>VirtualBox&#8217;s default network is the &quot;<span class="caps">NAT</span>&quot; network and it has a <span class="caps">DHCP</span> service
+embedded in the VirtualBox &#8216;controller&#8217;.  This <span class="caps">LAN</span> network can not be used.
+Details for configuring multiple VirtualBox networks will be given below for
+this very&nbsp;reason.</p>
+</div>
+<div class="section" id="configuring-the-virtualbox-hosts-and-network-s">
+<h3>Configuring the VirtualBox Hosts and&nbsp;Network(s)</h3>
+</div>
+<div class="section" id="configuring-dnsmasq-on-the-pxe-server">
+<h3>Configuring Dnsmasq on the <span class="caps">PXE</span>&nbsp;Server</h3>
+</div>
+<div class="section" id="booting-the-pxe-client">
+<h3>Booting the <span class="caps">PXE</span>&nbsp;Client</h3>
+</div>
+</div>
+<div class="section" id="preseeding-to-automate-the-install">
+<h2>Preseeding to Automate the&nbsp;Install</h2>
+<p><span class="caps">TBD</span> - coming in the 2<sup>nd</sup> part of this&nbsp;article.</p>
+</div>
+<div class="section" id="to-be-continued">
+<h2>To be continued?&nbsp;&#8230;</h2>
+<p>Ideas for follow on articles around this&nbsp;topic:</p>
+<ul class="simple">
+<li><span class="caps">PXE</span> Boot a &quot;cloud&quot; image, (think Amazon <span class="caps">AMI</span>/<span class="caps">LXC</span> ubuntu-cloud like), on bare
+metal &#8212; there are some gotcha&#8217;s in&nbsp;this.</li>
+<li><span class="caps">PXE</span> Boot every time.  A &quot;production&quot; environment where the bootloader is <span class="caps">PXE</span>,
+the kernel comes across the network, and the filesystem already exists on one
+of {local disk, <a class="reference external" href="https://en.wikipedia.org/wiki/Storage_area_network"><span class="caps">SAN</span></a>, <a class="reference external" href="https://en.wikipedia.org/wiki/Network-attached_storage"><span class="caps">NAS</span></a>}.</li>
+<li><span class="target" id="pxe-acrobatics"><span class="caps">PXE</span> Acrobatics</span>: An advanced, intellegent system for <span class="caps">PXE</span> booting where
+sometimes an existing system is booted, and sometimes the host is
+reprovisioned, i.e.&nbsp;re-installed.</li>
+</ul>
+<!-- Local Variables: -->
+<!-- fill-column: 80 -->
+<!-- End: -->
+</div>
+
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'egustafson'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'pxe-install-ubuntu';
+                var disqus_url = 'https://egustafson.github.io/drafts/pxe-install-ubuntu.html';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="http://twitter.com/elfwerks"><i class="fa fa-twitter-square fa-lg"></i> twitter</a></li>
+                <li class="list-group-item"><a href="http://delicious.com/elfwerks"><i class="fa fa-delicious-square fa-lg"></i> delicious</a></li>
+                <li class="list-group-item"><a href="http://www.linkedin.com/in/ericggustafson/"><i class="fa fa-linkedin-square fa-lg"></i> linkedin</a></li>
+                <li class="list-group-item"><a href="https://github.com/egustafson"><i class="fa fa-github-square fa-lg"></i> github</a></li>
+              </ul>
+            </li>
+
+
+
+            <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                <ul class="list-group list-inline tagcloud" id="tags">
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/blog.html">
+                            blog
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/cgp.html">
+                            CGP
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/collectd.html">
+                            collectd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/cygwin.html">
+                            cygwin
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/install.html">
+                            install
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="https://egustafson.github.io/tag/lighttpd.html">
+                            lighttpd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/mediawiki.html">
+                            mediawiki
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/monitoring.html">
+                            monitoring
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/oscon.html">
+                            OSCON
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/pelican.html">
+                            pelican
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/sqlite.html">
+                            sqlite
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/sync.html">
+                            sync
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/syncthing.html">
+                            syncthing
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/trip-report.html">
+                            trip report
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/ubuntu.html">
+                            ubuntu
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/virtualbox.html">
+                            VirtualBox
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/virtualization.html">
+                            virtualization
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/vmware.html">
+                            VMWare
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/wiki.html">
+                            wiki
+                        </a>
+                    </li>
+                </ul>
+            </li>
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://krow.net/" target="_blank">
+                Brian Aker
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://linuxjedi.co.uk/" target="_blank">
+                Andrew Hutchings
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://patg.net/" target="_blank">
+                Patrick Galbraith
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://askyazz.com/" target="_blank">
+                Yazz Atlas
+            </a>
+        </li>
+      </ul>
+    </li>
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2015 Eric Gustafson
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="https://egustafson.github.io/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://egustafson.github.io/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="https://egustafson.github.io/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'egustafson'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-59717139-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+    <!-- End Google Analytics Code -->
+</body>
+</html>

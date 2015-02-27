@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en"
+>
+<head>
+    <title>Nested Virtualization - VirtualBox inside ESXi - Stuff I've Figured Out</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="https://egustafson.github.io/esxi-nested-virtualbox.html">
+
+        <meta name="author" content="Eric Gustafson" />
+        <meta name="keywords" content="virtualization,VirtualBox,VMWare" />
+        <meta name="description" content="This process describes how to configure an ESXi Linux guest so that the guest can then run VirtualBox and create a nested, 64 bit guest within the ESXi guest — Nested Virtualization. There is nothing special about the use of Linux as either the ESXi guest, or the nested guest. Any ..." />
+
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://egustafson.github.io/theme/css/bootstrap.flatly.min.css" type="text/css"/>
+    <link href="https://egustafson.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://egustafson.github.io/theme/css/pygments/manni.css" rel="stylesheet">
+        <link href="https://egustafson.github.io/theme/css/typogrify.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://egustafson.github.io/theme/css/style.css" type="text/css"/>
+
+        <link href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Stuff I've Figured Out ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="https://egustafson.github.io/" class="navbar-brand">
+Stuff I've Figured Out            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="https://egustafson.github.io/category/howto.html">Howto</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/random.html">Random</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/review.html">Review</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="https://egustafson.github.io/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="https://egustafson.github.io/esxi-nested-virtualbox.html"
+                       rel="bookmark"
+                       title="Permalink to Nested Virtualization - VirtualBox inside ESXi">
+                        Nested Virtualization - VirtualBox inside&nbsp;ESXi
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-02-10T00:00:00"> Tue 10 February 2015</time>
+    </span>
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://egustafson.github.io/tag/virtualization.html">virtualization</a>
+        /
+	<a href="https://egustafson.github.io/tag/virtualbox.html">VirtualBox</a>
+        /
+	<a href="https://egustafson.github.io/tag/vmware.html">VMWare</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>This process describes how to configure an ESXi Linux guest so that the guest
+can then run VirtualBox and create a nested, 64 bit guest within the ESXi guest
+&#8212; Nested&nbsp;Virtualization.</p>
+<p>There is nothing special about the use of Linux as either the ESXi guest, or the
+nested guest.  Any supported operating system <em>should</em> work at either nesting
+level.  This includes nesting ESXi inside of ESXi, which appears to be the most
+common form of documentation to describe this&nbsp;process.</p>
+<p>This process details <em>manually</em> editing an ESXi hosts&#8217;s <span class="caps">VM</span> configuration file to
+direct the inclusion of support for virtualization from within the guest.  ESXi
+version 5.5 is specifically addressed.  I found a number of blog postings
+detailing earlier versions of ESXi, unfortunately the process changed in 5.5 and
+the newer version is much less prevalently documented.  I also found blog
+postings detailing how to use the vSphere Web <span class="caps">UI</span> to effect the reconfiguration.
+Unfortunately, the Web <span class="caps">UI</span> is not part of the free license VMWare grants for an
+ESXi host.  As a consequence, this posting details the manual editing to enable
+nested virtualization &#8212; needed if all one has is the free bits from&nbsp;VMWare.</p>
+<div class="section" id="the-process">
+<h2>The&nbsp;Process</h2>
+<ol class="arabic simple" start="0">
+<li>Enable <span class="caps">SSH</span> access to the ESXi&nbsp;server.</li>
+<li>Create an ESXi <span class="caps">VM</span> for the initial, outer&nbsp;guest.</li>
+<li>Shutdown the ESXi <span class="caps">VM</span>.</li>
+<li><strong>Edit the <span class="caps">VM</span>&#8217;s .vmx file, adding &quot;vhv.enable = <span class="caps">TRUE</span>&quot;.</strong></li>
+<li>Done.</li>
+</ol>
+<div class="section" id="enable-ssh-access-to-the-esxi-server">
+<h3>0. - Enable <span class="caps">SSH</span> access to the ESXi&nbsp;Server</h3>
+<p>If you have not already done so, this process will require direct access to the
+ESXi instance&#8217;s configuration.  VMWare often calls this &quot;Tech Support Mode&quot;.
+This can be done from the ESXi host&#8217;s console, or through the vSphere Client.
+See the appendix in this document titled, <a class="reference internal" href="#enabling-ssh-access-to-esxi-5-5">Enabling <span class="caps">SSH</span> access to ESXi 5.5</a>,
+for more detailed instructions on how to enable <span class="caps">SSH</span>&nbsp;access.</p>
+</div>
+<div class="section" id="create-an-esxi-vm">
+<h3>1. - Create an ESXi <span class="caps">VM</span></h3>
+<p>Create an ESXi <span class="caps">VM</span> for the initial, outer guest.  VMWare &#8216;virtual machine
+version&#8217; 8 or greater should be used; this is the default for ESXi 5.5.  Install
+the operating system, (Linux), nothing special here, just perform a normal
+install; ensure the installed <span class="caps">OS</span> is 64 bit.  Do make sure to provision the disk
+with enough space for the nested <span class="caps">OS</span>&#8217;s virtual disk.  An appropriate amount of
+<span class="caps">CPU</span> and memory will also be needed.  The first time you attempt this I recommend
+over provisioning all three: disk, memory, and <span class="caps">CPU</span>.  As I was experimenting I
+found that the nested <span class="caps">OS</span> ran notably slower; giving everything extra resources
+seemed to improve performance.  I am still experimenting with fine tuning
+resource overheads.  Generally I&#8217;m finding that virtualized components do behave
+as advertised, but default configurations on install do need some finer tuning
+&#8212; in short, no&nbsp;surprises.</p>
+</div>
+<div class="section" id="shutdown-the-esxi-vm">
+<h3>2. - Shutdown the ESXi <span class="caps">VM</span></h3>
+<p>With an ESXi <span class="caps">VM</span> configured and installed with an operating system, you are ready
+to (re)configure the <span class="caps">VM</span> to allow nested virtualization.  The reconfiguration
+will happen to the <span class="caps">VM</span>&#8217;s definition, and as a consequence, the <span class="caps">VM</span> needs to be in
+the stopped state.  ESXi, as all others I&#8217;m aware of, does not let you
+(virtually) modify the hardware while the <span class="caps">VM</span> is running.  Stop the ESXi <span class="caps">VM</span> that
+will be reconfigured to support nested&nbsp;virtualization.</p>
+</div>
+<div class="section" id="edit-the-vm-s-configuration">
+<h3><strong>3. - Edit the <span class="caps">VM</span>&#8217;s&nbsp;Configuration</strong></h3>
+<p>This step is the critical step.  The ESXi <span class="caps">VM</span> must be shutdown, as noted
+previously; if it is not the change will be reverted by ESXi.  Fundamentally,
+the change is simple:  add the configuration setting <tt class="docutils literal">vhv.enable = &quot;<span class="caps">TRUE</span>&quot;</tt> to
+the configuration.  This must be added to the <span class="caps">VM</span>&#8217;s <tt class="docutils literal">.vmx</tt> file.</p>
+<p><span class="caps">SSH</span> into the ESXi server and then locate and edit the <span class="caps">VM</span>&#8217;s .vmx&nbsp;file:</p>
+<div class="highlight"><pre>&gt; find / -name <span class="se">\*</span>.vmx
+&gt; <span class="nb">echo</span> <span class="s1">&#39;vhv.enable = &quot;TRUE&quot;&#39;</span> &gt;&gt; /path/to/host.vmx
+</pre></div>
+</div>
+<div class="section" id="done">
+<h3>4. -&nbsp;Done</h3>
+<p>Once the change to the <span class="caps">VM</span>&#8217;s configuration is effected, simply boot the <span class="caps">VM</span> and
+use VirtualBox within the ESXi <span class="caps">VM</span> to create a nested <span class="caps">VM</span>.</p>
+<p>Note:  You should be able to create 64 bit, and multiple processor/core <span class="caps">VM</span>&#8217;s, up
+to the limits of the ESXi <span class="caps">VM</span>&#8217;s resources.  If the (re)configuration was not
+successful then it is likely that VirtualBox will allow you to create a <span class="caps">VM</span>, but
+that <span class="caps">VM</span> will be restricted to 32 bit and will not support multiple processors -
+this is a specific pattern I noted prior to discovering the correct process for
+ESXi 5.5.  Earlier versions of ESXi have a different process, not described
+here, and without my crystal ball, I&#8217;m at a loss for future&nbsp;versions.</p>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="extra-credit">
+<h2>Extra&nbsp;Credit</h2>
+<p>In discovering the above process, which I distilled to what I felt was the
+minimum, for simplicity, I made a few &quot;superfluous&quot; discoveries.  So that the
+above process may be more broadly applicable, an so that the reader is
+more informed, I have detailed the &quot;extras&quot;&nbsp;here.</p>
+<div class="section" id="old-wives-tales">
+<h3>Old Wives&nbsp;Tales</h3>
+<p>Technically not old wives tales, the following details are floating around in
+blog postings and are no longer accurate, for ESXi 5.5.  At one point in time,
+they were correct; I performed the process detailed here with out them as
+verification that they were not&nbsp;necessary.</p>
+<div class="section" id="vhv-allow-vs-vhv-enable">
+<h4><tt class="docutils literal">vhv.allow</tt> vs. <tt class="docutils literal">vhv.enable</tt></h4>
+<p>Earlier versions of ESXi, possibly as late as early 5.x versions, used a
+slightly different means of enabling nested virtualization.  The <tt class="docutils literal">vhv.allow</tt>
+parameter was applied to the ESXi server&#8217;s configuration in
+<tt class="docutils literal">/etc/vmware/config</tt>.  This is not necessary, but does not conflict with the
+per <span class="caps">VM</span> configuration detailed in this posting and required by ESXi&nbsp;5.5.</p>
+</div>
+<div class="section" id="editing-the-vm-s-cpu-preferences">
+<h4>Editing the <span class="caps">VM</span>&#8217;s <span class="caps">CPU</span>&nbsp;Preferences</h4>
+<p>In other postings on this subject I noted that an additional step involving
+editing the <span class="caps">VM</span>&#8217;s <span class="caps">CPU</span> Preferences was detailed.  Changing the &quot;<span class="caps">CPU</span>/<span class="caps">MMU</span> Virtualization&quot; from
+&#8216;Automatic&#8217; to forced settings for Intel <span class="caps">VT</span>-x and hardware <span class="caps">MMU</span> virtualization
+appears to no longer be required.  I have successfully nested VirtualBox 64 bit
+VMs inside ESXi 5.5 VMs with the &#8216;Automatic&#8217; setting.  Caveat:  I have found no official
+documentation discussing this for 5.5 either&nbsp;way.</p>
+</div>
+</div>
+<div class="section" id="esxi-networking-promiscuous-mode">
+<h3>ESXi Networking - Promiscuous&nbsp;Mode</h3>
+<p>Almost all of the writings I encountered that discuss nesting virtualization
+with ESXi cite setting &quot;networking&quot; into promiscuous mode.  This is not a
+requirement for nesting virtualization.  The basic example of nesting
+VirtualBox, (using <span class="caps">NAT</span>), inside an ESXi Linux instance was executed with out
+adjusting any ESXi network&nbsp;parameters.</p>
+<p>Enabling promiscuous mode <em>is</em> required if your ESXi <span class="caps">VM</span> will nest virtual
+machines that require bridge mode, sometimes evidenced by the fact that the
+nested <span class="caps">VM</span> has a new ethernet <span class="caps">MAC</span> address.  Promiscuous mode, be it on ESXi, or
+other technologies, is the means by which a network interface can receive
+packets for hardware addresses, (<span class="caps">MAC</span> addresses), other than the one the
+interface is&nbsp;assigned.</p>
+<p>The most common nesting example I observed was ESXi inside ESXi.  In this case,
+promiscuous mode would be necessary with the default ESXi networking
+configuration because that model is a bridged model in which each <span class="caps">VM</span> is given a
+newly allocated, and different, <span class="caps">MAC</span>&nbsp;address.</p>
+</div>
+<div class="section" id="disk-performance">
+<h3>Disk&nbsp;Performance</h3>
+<p>During my initial experimentation with nested <span class="caps">VM</span>&#8217;s I observed a clear decrease
+in performance of the nested <span class="caps">VM</span>.  My initial experimentation mostly only went as
+far as installing the <span class="caps">OS</span> on the nested <span class="caps">VM</span>.  Installing an <span class="caps">OS</span> is generally a disk
+intensive&nbsp;activity.</p>
+<p>Disk virtualization is more expensive than most.  Nesting virtualized disks will
+accumulate &quot;virtualization debt&quot; quicker than other virtualized components.  The
+short, but rambling explanation goes something like&nbsp;this:</p>
+<blockquote>
+In my inner <span class="caps">VM</span> I write a block to &quot;disk&quot;.  This traverses the inner <span class="caps">OS</span>&#8217;s
+file system code and is mapped to a sector on the inner <span class="caps">VM</span>&#8217;s <em>virtual</em> block
+device.  Writing is the passed to the outer <span class="caps">VM</span>, traverses the file system
+code, and is mapped to the outer <span class="caps">VM</span>&#8217;s <em>virtual</em> block device.  Finally, the
+block is passed to the host, (physical), file system, mapped through to a
+sector, and finally placed on the actual physical device.  &#8212; If your head is
+spinning now, it should be.  That&#8217;s <strong>three</strong> times the block is passed
+through file system code on it&#8217;s eventual path to a physical write.</blockquote>
+<p>This problem is understood in the virtualization community, and there are
+methods for avoiding differing degrees of the penalty based on the requirements
+of an installation.  I will not cover these here.  My point:  if your nested
+<span class="caps">VM</span>&#8217;s strike you as slow, this may be a significant part of the&nbsp;why.</p>
+<p>Armed with the above understanding, I set out to make things run a bit smoother,
+i.e. faster.  Here are a few ideas I had; some I carried out successfully, some
+are on my &quot;to try&quot;&nbsp;list:</p>
+<ol class="arabic simple">
+<li>Enabling &quot;Host I/O Caching&quot;.  This seemed to help and was quick to&nbsp;try.</li>
+<li>Giving each virtualized device some &#8216;room to breath&#8217; eases the pressure.
+Some extra <span class="caps">CPU</span> and memory felt like it&nbsp;helped.</li>
+<li>Using alternative &quot;devices&quot; for disk should help as well, I haven&#8217;t tried
+this yet.<ul>
+<li>Raw disk device, by passing the virtualization of the device&nbsp;completely.</li>
+<li>iSCSI</li>
+</ul>
+</li>
+</ol>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="appendix">
+<h2>Appendix</h2>
+<div class="section" id="enabling-ssh-access-to-esxi-5-5">
+<h3>Enabling <span class="caps">SSH</span> access to ESXi&nbsp;5.5</h3>
+<p>ESXi supports direct <span class="caps">SSH</span> access to the server running ESXi.  This mechanism is
+referred to in VMWare documentation as &quot;Tech Support Mode&quot;.  VMWare has a
+<a class="reference external" href="http://kb.vmware.com/">Knowledge Base</a> article elaborating the process for a range of versions: <a class="reference external" href="http://kb.vmware.com/kb/1017910"><span class="caps">KB</span>
+article&nbsp;1017910</a></p>
+<p>Here is the verbal description to enable <span class="caps">SSH</span> to the ESXi server from the Windows
+vSphere (thick)&nbsp;Client:</p>
+<ol class="arabic simple">
+<li>Select the server&#8217;s Configuration tab.  Select the server, not a child <span class="caps">VM</span>,
+from the left hand side and then select the &#8216;Configuration&#8217; tab across the&nbsp;top.</li>
+<li>Select the &#8216;Security Profile&#8217; from the Software section on the left hand side
+of the Configuration&nbsp;tab.</li>
+<li>Open the &#8216;Services Properties&#8217; dialog window.  Click on the &#8216;Properties&#8230;&#8217;
+link along the right hand side near the top in the &#8216;Services&#8217; section of the
+Security Profile&nbsp;table.</li>
+<li>Open the &#8216;<span class="caps">SSH</span> Options&#8217; dialog.  In the &#8216;Services Properties&#8217; dialog scroll
+down to the &#8216;<span class="caps">SSH</span>&#8217; label and select it, (one click).  Then press the
+&#8216;Options&#8230;&#8217; button in the lower right corner of the&nbsp;dialog.</li>
+<li>Use the &#8216;<span class="caps">SSH</span> Options&#8217; dialog to enable <span class="caps">SSH</span> by choosing &quot;Start and stop with
+host&quot;.  The <span class="caps">SSH</span> service can also be started immediately with the &#8216;Start&#8217;&nbsp;button.</li>
+<li>Access the host by ssh&#8217;ing to the <span class="caps">IP</span> or hostname of the ESXi server and
+logging in with an appropriate account.  The &#8216;root&#8217; user and password created
+during ESXi initial installation will&nbsp;work.</li>
+</ol>
+<!-- Local Variables: -->
+<!-- fill-column: 80 -->
+<!-- End: -->
+</div>
+</div>
+
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'egustafson'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'esxi-nested-virtualbox';
+                var disqus_url = 'https://egustafson.github.io/esxi-nested-virtualbox.html';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="http://twitter.com/elfwerks"><i class="fa fa-twitter-square fa-lg"></i> twitter</a></li>
+                <li class="list-group-item"><a href="http://delicious.com/elfwerks"><i class="fa fa-delicious-square fa-lg"></i> delicious</a></li>
+                <li class="list-group-item"><a href="http://www.linkedin.com/in/ericggustafson/"><i class="fa fa-linkedin-square fa-lg"></i> linkedin</a></li>
+                <li class="list-group-item"><a href="https://github.com/egustafson"><i class="fa fa-github-square fa-lg"></i> github</a></li>
+              </ul>
+            </li>
+
+
+
+            <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                <ul class="list-group list-inline tagcloud" id="tags">
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/blog.html">
+                            blog
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/cgp.html">
+                            CGP
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/collectd.html">
+                            collectd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/cygwin.html">
+                            cygwin
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/install.html">
+                            install
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="https://egustafson.github.io/tag/lighttpd.html">
+                            lighttpd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/mediawiki.html">
+                            mediawiki
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/monitoring.html">
+                            monitoring
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/oscon.html">
+                            OSCON
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/pelican.html">
+                            pelican
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/sqlite.html">
+                            sqlite
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/sync.html">
+                            sync
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/syncthing.html">
+                            syncthing
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/trip-report.html">
+                            trip report
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/ubuntu.html">
+                            ubuntu
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/virtualbox.html">
+                            VirtualBox
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/virtualization.html">
+                            virtualization
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/vmware.html">
+                            VMWare
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/wiki.html">
+                            wiki
+                        </a>
+                    </li>
+                </ul>
+            </li>
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://krow.net/" target="_blank">
+                Brian Aker
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://linuxjedi.co.uk/" target="_blank">
+                Andrew Hutchings
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://patg.net/" target="_blank">
+                Patrick Galbraith
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://askyazz.com/" target="_blank">
+                Yazz Atlas
+            </a>
+        </li>
+      </ul>
+    </li>
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2015 Eric Gustafson
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="https://egustafson.github.io/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://egustafson.github.io/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="https://egustafson.github.io/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'egustafson'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-59717139-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+    <!-- End Google Analytics Code -->
+</body>
+</html>
