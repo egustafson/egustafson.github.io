@@ -22,3 +22,7 @@ DELETE_OUTPUT_DIRECTORY = True
 
 DISQUS_SITENAME = "egustafson"
 GOOGLE_ANALYTICS = "UA-59717139-1"
+
+## Local Variables:
+## mode: Python
+## End:

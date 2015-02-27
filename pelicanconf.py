@@ -31,10 +31,6 @@ DISPLAY_TAGS_ON_SIDEBAR = True
 DISPLAY_TAGS_INLINE = True
 
 # Blogroll
-# LINKS = (('Pelican', 'http://getpelican.com/'),
-#          ('Python.org', 'http://python.org/'),
-#          ('Jinja2', 'http://jinja.pocoo.org/'),
-#          ('IPv6 Check', 'http://ipv6-address.eu/'),)
 LINKS = (('Brian Aker', 'http://krow.net/'),
          ('Andrew Hutchings', 'http://linuxjedi.co.uk/'),
          ('Patrick Galbraith', 'http://patg.net/'),
@@ -64,3 +60,8 @@ THEME = '/home/gustafer/scm/pelican-bootstrap3'
 BOOTSTRAP_THEME = 'flatly'
 BOOTSTRAP_FLUID = True
 
+PYGMENTS_STYLE = 'manni'   ## alternatives 'friendly', 'solarizeddark'
+
+## Local Variables:
+## mode: Python
+## End:

@@ -1,0 +1,46 @@
+:title: IPv6 Primers
+:date: 2015-02-26
+:slug: ipv6-primer
+:author: Eric Gustafson
+:tags: IPv6
+:status: draft
+
+-----------------------------------------------
+Some things that are helpful to know about IPv6
+-----------------------------------------------
+         
+.. IPv6 Primer topics
+
+
+Prefix Length - Subnetting
+--------------------------
+
+(take from tunneling article)
+   
+   
+Multiple Address on an Interface
+--------------------------------
+
+blah, blah, blah
+
+6to4 Addresses
+--------------
+
+The mapping of each IPv4 address into an IPv6 network (/48)
+
+4to6 Addresses
+--------------
+
+The mapping of each IPv4 address to a single IPv6 address.
+
+
+Firewall Filtering
+------------------
+
+blah, blah, blah
+
+
+   
+.. Local Variables:
+.. fill-column: 80
+.. End:
