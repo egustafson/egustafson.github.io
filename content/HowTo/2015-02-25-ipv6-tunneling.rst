@@ -323,27 +323,308 @@ them, a number that offer free access for tunneling IPv6.  The Wikipedia page,
 
 .. _List of IPv6 tunnel brokers: https://en.wikipedia.org/wiki/List_of_IPv6_tunnel_brokers
 
-The two most popular, and well deployed brokers are `Huricane Electric`_\ 's
+The two most popular, and well deployed brokers are `Hurricane Electric`_\ 's
 (HE) \"`IPv6 Tunnel Broker`_\" service and SixXS_ (Six Access).  I chose HE
 because they appeared to have more written about them and how to connect to
 their tunnel broker.  In hindsight I have concluded that SixXS and HE are on
 comparable footing.  I would recommend starting with one of the two, but believe
 both are very comparable.
 
-.. _Huricane Electric: https://www.he.net/
+.. _Hurricane Electric: https://www.he.net/
 .. _IPv6 Tunnel Broker: https://tunnelbroker.net/
 .. _SixXS: https://www.sixxs.net/
 
 **Implementing an HE Tunnel with FreeBSD**
 ==========================================
 
+In this section I will walk through setting up an IPv6 tunnel using a free
+account from Hurricane Electric's (HE) IPv6 Tunnel Broker and a FreeBSD host.  I will
+discuss configuring the FreeBSD host as a router, but the exercise can be
+completed even if the host is not.  This exercise can also be completed using a
+FreeBSD host behind a NAT'ing firewall.  In fact, a FreeBSD VM on VirtualBox or
+VMWare Workstation, even with 2 layers of NAT, will work.
 
+The steps involved will be:
 
-Placing the tunnel behind NAT(v4)
----------------------------------
+1. Acquire an HE Tunnel Broker Account.
+2. Allocate (create) a tunnel at HE.
+3. Configure the FreeBSD host.
+4. Configure basic filter (firewall) rules.
+
+HE Tunnel Broker Account
+------------------------
+
+Go to:  https://tunnelbroker.net and select the "Register" button on the upper
+left section of the page in the login box.  Complete the registration form which
+asks for:
+
+- An account (user) name
+- Email address
+- First and Last Name
+- optional Company Name
+- Address
+- Phone
+
+You will be emailed your registration and initial password.  The email will cite
+the IP(v4) address you registered from, but you do not need to register from the
+same location as you will set up the tunnel to.
+
+Save Account Name and Password to your keychain.  You are using some sort of
+keychain software, right?  <hint, nudge>
+
+With the registration email, go back to tunnelbroker.net and log in.  'Username'
+is the Account Name you registered with.  Once logged in you will be allowed to
+create up to 5 separate tunnels.  Initially tunnels are issued a single IPv6
+network, a /64 prefix.  There is an option to "assign a /48" to the tunnel which
+would allocate a prefix with 16 bits or 65536 subnets within it.  I have not
+tried this yet, but will update this article when I do.
+
+At this point you need to know the public IPv4 address that you will use as your
+endpoint.  This could be the public IPv4 address of the FreeBSD host, if it's
+publically attached.  If your FreeBSD host is behind NAT then the public IPv4
+address is the address you emerge from NAT with.  http://ipecho.net is an
+excellent service if you need to discover your public IP address; it can be used
+from a command line application like wget or curl, use http://ipecho.net/plain.
+
+Allocate a Tunnel
+-----------------
+
+Once logged in to HE's Tunnel Broker, on the left side below "Account Menu" is a
+box titled "User Functions".  Inside User Functions click on "Create Regular
+Tunnel".  You will be prompted for two pieces of information:
+
+- IPv4 Endpoint (Your side).
+- Available Tunnel Servers.
+
+Enter the **public IPv4 address** your FreeBSD host appears on the Internet as,
+as described above, for the "IPv4 Endpoint".  This is the address that HE's side
+of the tunnel will send (tunnel) IPv6 packets bound for you to.
+
+Select the nearest location for the "Available Tunnel Servers".  Note that
+"nearest" is in a network sense.  The estute person will perform ping checks and
+determine latency if there is any question as to which is closest.  I was pleasently
+surprised that the physically closest node was the lowest latency - this is
+often not the my case.  Regardless, any of the server endpoints will function
+properly.
+
+Note that the HE Tunnel Broker web site will let you create, edit, and delete
+tunnels.  It is not necessary to "get it perfect" the first time; it is possible
+to change the tunnel configuration as well as destroy and recreate.
+
+Click the "Create Tunnel" botton and you will be presented with the details of
+the newly created tunnel.  This information includes:
+
+- Server IPv4 Address -- the remote tunnel endpoint.
+- Client IPv4 Address -- your public IPv4 address.
+- Server IPv6 Address -- the IPv6 address *inside* the far end of the tunnel.
+- Client IPv6 Address -- the IPv6 address *inside* your end of the tunnel.
+- Routed /64 (IPv6 prefix) -- An IPv6 network prefix to use on your end of the
+  tunnel.
+
+The "Routed /64" will *not* overlap with the IPv6 addresses of your client or
+server; this is correct.  Keep in mind that the tunnel is a separate data link
+(L2 network) from your routed network, this is why the client/server addresses
+are, and should be, on a different network.
+
+Tunnel Details Page
+-------------------
+
+There are a few additional items worth noting on the Tunnel Details page.
+First, note the tabs across the top of the center section:  "IPv6 Tunnel",
+"Example Configurations", and "Advanced".  Also note, along the left side that
+the "Account Menu" and "User Functions" are still available.
+
+On the "IPv6 Tunnel" tab there are three noteworthy items.  First, the "Delete"
+button; use this to return a tunnel you are no longer using.  The second is less
+obvious, but very useful.  Clicking on the Client IPv4 address will allow you to
+edit the value.  If you would like to adjust the IPv4 address of your end of the
+tunnel it can be done with out deleting and recreating the tunnel.  Finally,
+there is a clickable link to "Assign /48" to the tunnel.  HE documentation makes
+reference to "get your own /48 prefice *once* your tunnel is up".  I have not
+attempted to assign a /48 yet, but as noted earlier, will update this article
+when I have.
+
+The "Example Configurations" tab is just that, a place to find examples for
+various operating systems.  Select the tab, and then choose an OS from the drop
+down.  Worth noting, the "FreeBSD >= 4.4" item has an error in it, which was the
+source of some confusion for me.  In the third line that ends with "prefixlen
+128", this final clause, the prefixlen, should removed; the remainder of the
+line remains the same.  I have not experiemented with any of the other examples,
+your milage may vary.
+
+The "Advanced" tab has a couple of settings.  The tunnel MTU can be tuned.
+An "update key" is provided for interacting with HE's Tunnel Broker via
+scripts.  Finally, there is a method to update DNS settings associated with your
+tunnel.
+
+With in the left hand side "Account Menu" the "Main Page" link will take you to
+the landing page you started at when you logged in.  Now that you have allocated
+a tunnel it will be listed at the bottom of the center panel.  Clicking on the
+link for the tunnel will take you back to the Tunnel Details page.
+
+Configure FreeBSD
+-----------------
+
+For purposes of this example, the following table represents the *example*
+details of our tunnel as configured from HE:
+
+===================  =====================
+Server IPv4 Address           198.51.100.1
+Server IPv6 Address  2001:DB8:39:222::1/64
+-------------------  ---------------------
+Client IPv4 Address           203.0.113.23
+Client IPv6 Address  2001:DB8:39:222::2/64
+-------------------  ---------------------
+Routed /64            2001:DB8:4b:222::/64
+===================  =====================
+
+Also, for purposes of this example, the host will have two interfaces named
+"em0" and "em1".  Interface "em0" is connected, behind NAT, to the Internet.
+Interface "em1" is the 'internal' network.  Note that basic connectivity of the
+FreeBSD host can be done with just interface "em0".  Only the later part of this
+example will show how to add a routed IPv6 network which will be attached to
+interface "em1".
+
+The configuration of both interfaces starts as follows::
+
+  gustafer@fw1> ifconfig -a
+  em0: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
+          options=9b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM>
+          ether 00:0c:29:4a:b5:20
+          inet 10.3.7.146 netmask 0xffffff00 broadcast 10.3.7.255
+          nd6 options=29<PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL>
+          media: Ethernet autoselect (1000baseT <full-duplex>)
+          status: active
+  em1: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
+          options=9b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM>
+          ether 00:0c:29:4a:b5:2a
+          inet 10.100.2.254 netmask 0xffffff00 broadcast 10.100.2.255
+          nd6 options=29<PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL>
+          media: Ethernet autoselect (1000baseT <full-duplex>)
+          status: active
+
+Note that neither interface has any IPv6 configuration associated with it at the
+start.  The outward facing, but still behind NAT, interface, "em0" has an IP
+address of 10.3.7.146.  The loopback details were removed for space as they have
+nothing to add.
+
+FreeBSD uses the `gif(4)`_ (generic tunnel interface) device to configure 6in4
+tunnels.  There are two things that have to be done to configure the tunnel: 1)
+configure the "gif0" interface, and 2) add a default, IPV6 route.
+
+.. _gif(4): https://www.freebsd.org/cgi/man.cgi?query=gif&sektion=4
+
+The commands below do the following:
+
+1. Create a pseudo-interface of type gif named 'gif0'.
+
+::
+
+   gustafer@fw1> sudo ifconfig gif0 create
+
+   gustafer@fw1> ifconfig gif0
+   gif0: flags=8010<POINTOPOINT,MULTICAST> metric 0 mtu 1280
+           nd6 options=29<PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL>
+           
+2. Configure gif0 as a tunnel, giving the IPv4 addresses of each endpoint; local
+   followed by remote.  Note that the actual, NAT'ed, IPv4 address of the 'em0'
+   interface is used here; this is necessary so the FreeBSD host knows what
+   interface to listen for protocol 41 (RFC-4213) packets on.  The NAT device
+   between the FreeBSD host and the public Internet will do just that, NAT.
+
+::
+
+   gustafer@fw1> sudo ifconfig gif0 tunnel 10.3.7.146 198.51.100.1
+
+   gustafer@fw1> ifconfig gif0
+   gif0: flags=8050<POINTOPOINT,RUNNING,MULTICAST> metric 0 mtu 1280
+           tunnel inet 10.3.7.146 --> 198.51.100.1
+           nd6 options=29<PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL>
+   
+3. Configure the gif0 interface, (inside the tunnel), with IPv6 details.  Note
+   that the link local IPv6 address (fe80::...) is automatically added as well.
+
+::
+
+   gustafer@fw1> sudo ifconfig gif0 inet6 2001:DB8:39:222::2
+
+   gustafer@fw1> ifconfig gif0
+   gif0: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> metric 0 mtu 1280
+           tunnel inet 10.3.7.146 --> 198.51.100.1
+           inet6 2001:db8:39:222::2 prefixlen 64
+           inet6 fe80::20c:29ff:fe4a:b520%gif0 prefixlen 64 scopeid 0x5
+           nd6 options=21<PERFORMNUD,AUTO_LINKLOCAL>
+   
+4. Add a default, IPv6 route that points at the far end of the inside of the
+   tunnel.  Note here that the link local address (fe80::...) routes to the
+   link, but the two site local addresses (ff01::... and ff02::...) route to the
+   default route; this is normal.  
+
+::
+
+   gustafer@fw1> sudo route -n add -inet6 default 2001:DB8:39:222::1
+   add net default: gateway 2001:DB8:39:222::1
+
+   gustafer@fw1> netstat -rnf inet6
+   Routing tables
+
+   Internet6:
+   Destination                       Gateway                       Flags      Netif Expire
+   default                           2001:db8:39:222::1            UGS        gif0
+   2001:db8:39:222::/64              link#5                        U          gif0
+   fe80::%gif0/64                    link#5                        U          gif0
+   ff01::%gif0/32                    2001:db8:39:222::2            U          gif0
+   ff02::%gif0/32                    2001:db8:39:222::2            U          gif0
+           
+To verify the tunnel is up, use ``ping6`` to ping an IPv6 address.  ``ping6``
+will automatically select AAAA DNS records so choosing any host that you know
+has AAAA records listed will work; 'google.com' works perfectly well::
+
+   gustafer@fw1> ping6 -c 1 google.com
+   PING6(56=40+8+8 bytes) 2001:db8:39:222::2 --> 2607:f8b0:400f:802::200e
+   16 bytes from 2607:f8b0:400f:802::200e, icmp_seq=0 hlim=53 time=48.120 ms
+
+   --- google.com ping6 statistics ---
+   1 packets transmitted, 1 packets received, 0.0% packet loss
+   round-trip min/avg/max/std-dev = 48.120/48.120/48.120/0.000 ms
+
+At this point you have a functioning IPv6 tunnel to the public, IPv6 Internet.
+The only, (optional), step that remains is to configure the internal network on
+interface 'em1' with the /64 network that HE allocated for your internal use.
+In this example, I will configure the interface with host address 1,
+(i.e. ...::1).  The choice of using ::1 is arbitrary, but common for routers.
+
+::
+
+   gustafer@fw1> sudo ifconfig em1 inet6 2001:db8:4b:222::1
+
+   gustafer@fw1> ifconfig em1
+   em1: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
+           options=9b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM>
+           ether 00:0c:29:4a:b5:2a
+           inet 10.100.2.254 netmask 0xffffff00 broadcast 10.100.2.255 
+           inet6 2001:db8:4b:222::1 prefixlen 64 
+           inet6 fe80::20c:29ff:fe4a:b52a%em1 prefixlen 64 scopeid 0x2 
+           nd6 options=21<PERFORMNUD,AUTO_LINKLOCAL>
+           media: Ethernet autoselect (1000baseT <full-duplex>)
+           status: active
+
+By default FreeBSD does not automatically enable forwarding, or routing, of
+packets.  IPv6 forwarding is enabled separately from IPv4 and you may need to
+enable it:  ``sysctl net.inet6.ip6.forwarding=1``
+  
+A final note:  the example above configured IPv6 tunneling manually using the
+command line.  Most installations will want to set such configuration to happen
+at boot.  The `rc.conf(5)`_ file supports configuration parameters for
+everything acomplished above, manually.
+
+.. _rc.conf(5): https://www.freebsd.org/cgi/man.cgi?query=rc.conf
 
 Firewall Rules
 --------------
+
+Alternative Firewall Technologies
+=================================
 
 PFSense
 -------
