@@ -2,7 +2,7 @@
 <html lang="en"
 >
 <head>
-    <title>IPv6 only Network using SLAAC and DHCPv6 - Stuff I've Figured Out</title>
+    <title>IPv6 Primers - Stuff I've Figured Out</title>
     <!-- Using the latest rendering mode for IE -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
@@ -10,11 +10,11 @@
 
 
 
-<link rel="canonical" href="https://egustafson.github.io/drafts/ipv6-only-lan.html">
+<link rel="canonical" href="https://egustafson.github.io/drafts/ipv6-primer.html">
 
         <meta name="author" content="Eric Gustafson" />
-        <meta name="keywords" content="IPv6,DHCPv6,SLAAC,dnsmasq,FreeBSD,Linux" />
-        <meta name="description" content="" />
+        <meta name="keywords" content="IPv6" />
+        <meta name="description" content="Some things that are helpful to know about IPv6 Prefix Length - Subnetting (take from tunneling article) Multiple Address on an Interface blah, blah, blah 6to4 Addresses The mapping of each IPv4 address into an IPv6 network (/48) 4to6 Addresses The mapping of each IPv4 address to a single IPv6 address ..." />
 
 
 
@@ -22,7 +22,7 @@
         <link rel="stylesheet" href="https://egustafson.github.io/theme/css/bootstrap.flatly.min.css" type="text/css"/>
     <link href="https://egustafson.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
 
-    <link href="https://egustafson.github.io/theme/css/pygments/native.css" rel="stylesheet">
+    <link href="https://egustafson.github.io/theme/css/pygments/manni.css" rel="stylesheet">
         <link href="https://egustafson.github.io/theme/css/typogrify.css" rel="stylesheet">
     <link rel="stylesheet" href="https://egustafson.github.io/theme/css/style.css" type="text/css"/>
 
@@ -72,10 +72,10 @@ Stuff I've Figured Out            </a>
         <article>
             <header class="page-header">
                 <h1>
-                    <a href="https://egustafson.github.io/drafts/ipv6-only-lan.html"
+                    <a href="https://egustafson.github.io/drafts/ipv6-primer.html"
                        rel="bookmark"
-                       title="Permalink to IPv6 only Network using SLAAC and DHCPv6">
-                        IPv6 only Network using <span class="caps">SLAAC</span> and&nbsp;DHCPv6
+                       title="Permalink to IPv6 Primers">
+                        IPv6&nbsp;Primers
                     </a>
                 </h1>
             </header>
@@ -85,30 +85,43 @@ Stuff I've Figured Out            </a>
 <footer class="post-info">
     <span class="label label-default">Date</span>
     <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2015-02-12T00:00:00"> Thu 12 February 2015</time>
+        <i class="fa fa-calendar"></i><time datetime="2015-02-26T00:00:00"> Thu 26 February 2015</time>
     </span>
 
 
 
 <span class="label label-default">Tags</span>
 	<a href="https://egustafson.github.io/tag/ipv6.html">IPv6</a>
-        /
-	<a href="https://egustafson.github.io/tag/dhcpv6.html">DHCPv6</a>
-        /
-	<a href="https://egustafson.github.io/tag/slaac.html">SLAAC</a>
-        /
-	<a href="https://egustafson.github.io/tag/dnsmasq.html">dnsmasq</a>
-        /
-	<a href="https://egustafson.github.io/tag/freebsd.html">FreeBSD</a>
-        /
-	<a href="https://egustafson.github.io/tag/linux.html">Linux</a>
     
 </footer><!-- /.post-info -->                    </div>
                 </div>
-                <!-- Insert text here -->
+                <div class="section" id="some-things-that-are-helpful-to-know-about-ipv6">
+<h2>Some things that are helpful to know about&nbsp;IPv6</h2>
+<!-- IPv6 Primer topics -->
+<div class="section" id="prefix-length-subnetting">
+<h3>Prefix Length -&nbsp;Subnetting</h3>
+<p>(take from tunneling&nbsp;article)</p>
+</div>
+<div class="section" id="multiple-address-on-an-interface">
+<h3>Multiple Address on an&nbsp;Interface</h3>
+<p>blah, blah,&nbsp;blah</p>
+</div>
+<div class="section" id="to4-addresses">
+<h3>6to4&nbsp;Addresses</h3>
+<p>The mapping of each IPv4 address into an IPv6 network&nbsp;(/48)</p>
+</div>
+<div class="section" id="to6-addresses">
+<h3>4to6&nbsp;Addresses</h3>
+<p>The mapping of each IPv4 address to a single IPv6&nbsp;address.</p>
+</div>
+<div class="section" id="firewall-filtering">
+<h3>Firewall&nbsp;Filtering</h3>
+<p>blah, blah,&nbsp;blah</p>
 <!-- Local Variables: -->
 <!-- fill-column: 80 -->
 <!-- End: -->
+</div>
+</div>
 
             </div>
             <!-- /.entry-content -->
@@ -121,8 +134,8 @@ Stuff I've Figured Out            </a>
             /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
             var disqus_shortname = 'egustafson'; // required: replace example with your forum shortname
 
-                    var disqus_identifier = 'ipv6-only-lan';
-                var disqus_url = 'https://egustafson.github.io/drafts/ipv6-only-lan.html';
+                    var disqus_identifier = 'ipv6-primer';
+                var disqus_url = 'https://egustafson.github.io/drafts/ipv6-primer.html';
 
             var disqus_config = function () {
                 this.language = "en";

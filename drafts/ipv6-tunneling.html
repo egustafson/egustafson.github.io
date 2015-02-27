@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en"
+>
+<head>
+    <title>IPv6 Tunneling over IPv4 Networks - Stuff I've Figured Out</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="https://egustafson.github.io/drafts/ipv6-tunneling.html">
+
+        <meta name="author" content="Eric Gustafson" />
+        <meta name="keywords" content="IPv6,Tunneling,NAT,RFC2893,FreeBSD,Linux" />
+        <meta name="description" content="Connecting to the v6 world from afar It turns out that proposing IPv6 as a &#34;solution&#34; for various networking problems in the Cloud and Container, read ‘Docker’, spaces opens a small Pandora’s Box of questions. This article is the first in a series discussing pragmatic IPv6 issues along side ..." />
+
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://egustafson.github.io/theme/css/bootstrap.flatly.min.css" type="text/css"/>
+    <link href="https://egustafson.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://egustafson.github.io/theme/css/pygments/manni.css" rel="stylesheet">
+        <link href="https://egustafson.github.io/theme/css/typogrify.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://egustafson.github.io/theme/css/style.css" type="text/css"/>
+
+        <link href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Stuff I've Figured Out ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="https://egustafson.github.io/" class="navbar-brand">
+Stuff I've Figured Out            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="https://egustafson.github.io/category/howto.html">Howto</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/random.html">Random</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/review.html">Review</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="https://egustafson.github.io/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="https://egustafson.github.io/drafts/ipv6-tunneling.html"
+                       rel="bookmark"
+                       title="Permalink to IPv6 Tunneling over IPv4 Networks">
+                        IPv6 Tunneling over IPv4&nbsp;Networks
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-02-25T00:00:00"> Wed 25 February 2015</time>
+    </span>
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://egustafson.github.io/tag/ipv6.html">IPv6</a>
+        /
+	<a href="https://egustafson.github.io/tag/tunneling.html">Tunneling</a>
+        /
+	<a href="https://egustafson.github.io/tag/nat.html">NAT</a>
+        /
+	<a href="https://egustafson.github.io/tag/rfc2893.html">RFC2893</a>
+        /
+	<a href="https://egustafson.github.io/tag/freebsd.html">FreeBSD</a>
+        /
+	<a href="https://egustafson.github.io/tag/linux.html">Linux</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <div class="section" id="connecting-to-the-v6-world-from-afar">
+<h2>Connecting to the v6 world from&nbsp;afar</h2>
+<p>It turns out that proposing IPv6 as a &quot;solution&quot; for various networking problems
+in the Cloud and Container, read &#8216;Docker&#8217;, spaces opens a small Pandora&#8217;s Box of
+questions.  This article is the first in a series discussing pragmatic IPv6
+issues along side multiple environments using it.  The goal of exploring IPv6 in
+these articles is to solve, or provide possible solutions, to&nbsp;problems.</p>
+<div class="section" id="motivations">
+<h3>Motivations</h3>
+<p>A while ago I took it upon myself to add my home &quot;lab&quot; environment to the public
+IPv6 network.  <a class="reference external" href="https://en.wikipedia.org/wiki/IPv6">IPv6</a> <strong>is</strong> coming, and it behooves any technologist to gain
+practical experience.  While IPv6 is just the next version after <a class="reference external" href="https://en.wikipedia.org/wiki/IPv4">IPv4</a>,
+there are sharp edges and I certainly found a few.  Unfortunately, I let the v6
+portion of my network acquire some bit-rot over time and then found myself
+needing to resurrect the project.  Additionally, there were some problems I had
+encountered and never fully tackled &#8212; time to reset and start fresh.  There are
+certainly a couple of learning curves to operating an IPv6 network, it is a bit
+more than <strong>just</strong> the next version of <a class="reference external" href="https://en.wikipedia.org/wiki/Internet_Protocol"><span class="caps">IP</span></a>.</p>
+<p>Lately I have been repeatedly working with different virtualized compute
+environments: OpenStack Nova, Amazon Web Services, and Docker are all in the
+list.  A recurring theme in interconnecting nodes is to apply a liberal use of
+<a class="reference external" href="https://en.wikipedia.org/wiki/Network_address_translation"><span class="caps">NAT</span></a>.  <span class="caps">NAT</span> is not a solution, <span class="caps">NAT</span> is, in my opinion, a plague.  <span class="caps">NAT</span> was created
+as a response to the depleting IPv4 address space and it seems to have devolved
+into a hammer and we now have a generation of software developers that only see&nbsp;nails.</p>
+<p>The solution, in the truly abstract sense, is IPv6, and <span class="caps">NAT</span> was the hack.  So,
+one day recently it dawns on me when looking at yet another Docker networking
+project, &quot;flatten the network, it should be flat, and adopt the protocol that
+was, and is the solution:&nbsp;IPv6&quot;.</p>
+<p>Following this reasoning, with the help of the team I work with, we set out to
+build a reusable environment with not only IPv6 support, but specifically the
+ability to run an IPv6 only environment.  Very quickly after defining this goal,
+it became obvious that connectivity between test environments, and for that
+matter, into the public IPv6 Internet would be highly desirable.  And there we
+are:  &quot;how do we connect private, and possibly isolated behind <span class="caps">NAT</span>, networks to
+the public IPv6&nbsp;Internet?&quot;</p>
+<p>There are many, many, articles written about the mechanics of connecting to the
+IPv6 Internet.  What I was unsuccessful in finding is a description of how such
+connections worked, if it was possible to transition <span class="caps">NAT</span>, and what the possible
+issues in <span class="caps">NAT</span> traversal might be.  The information is out there, but not in a
+distilled form; I will attempt to provide such a distillation&nbsp;here.</p>
+</div>
+<div class="section" id="ipv6-primers">
+<h3>IPv6&nbsp;Primers</h3>
+<p><em>(Note: this section really belongs in a separate article as a preface to my IPv6
+series; don&#8217;t be surprised if it&nbsp;moves.)</em></p>
+<p>All software, and almost all networking people I talk to are aware of IPv6 and
+have a mental model of what IPv6 is.  It generally goes something along the
+lines of, &quot;it&#8217;s IPv4 with longer addresses&quot;.  The slightly more astute will also
+add that this requires a new record type in <span class="caps">DNS</span>, the <span class="caps">AAAA</span> record.  This is all
+true, however &quot;the devil is in the details&quot;, and v6 is no exception.  The
+following sections elaborate a few of the subtle, but important &quot;details&quot; worth
+noting when beginning work with&nbsp;IPv6.</p>
+<div class="section" id="prefix-length-subnetting">
+<h4>Prefix Length -&nbsp;Subnetting</h4>
+<p>The concept of subnetting, or splitting an address into two sections, the
+&#8216;network&#8217; and &#8216;host&#8217; address, remains the same; the implementation differs.  In
+IPv4 addresses blocks were initially classified as Class &#8216;A&#8217;, &#8216;B&#8217;, and &#8216;C&#8217;<a class="footnote-reference" href="#id2" id="id1">[*]</a>
+and later we moved to <span class="caps">CIDR</span> (&quot;<a class="reference external" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Classless Inter-Domain Routing</a>&quot;) where the
+boundary between network and host was any bit boundary in the 32 bit space of the
+IPv4 address.  Often a &quot;larger&quot; block, <span class="caps">CIDR</span> boundary to the left, more
+significant bits, would be handed to an organization and they would define a new
+<span class="caps">CIDR</span> bit location within the host space and subdivide the network, aka&nbsp;&quot;subnetting&quot;.</p>
+<p>IPv6 uses the same concept, however the boundary between network and host
+sections of the address is fixed.  An IPv6 address is 128 bits and the lower 64
+are the host segment.  This leaves 64 bits of network address.  Unlike
+configuring IPv4 network interfaces where the &quot;netmask&quot; must be specified, an
+IPv6 configuration does not need to specify the netmask, it is always 64&nbsp;bits.</p>
+<p>Subdividing IPv6 address space does still happen, it happens above the first 64
+bits in the address.  For instance the IPv4 address to IPv6 network mapping
+specifies that each IPv4 address is associated with an IPv6 network that can be
+further subdivided.  The v4 to v6 mapping provides a &quot;/48&quot; network for each v4
+address meaning that each 6to4 network has 65536 subnets or 16 remaining bits to
+subnet in the 64 bit network portion of and IPv6 address, (48 + 16 =&nbsp;64).</p>
+<p>A quick note on terminology.  In IPv4 the term &#8216;subnet mask&#8217;, or &#8216;netmask&#8217; is
+used when describing the bit boundary between network and host address segments.
+In IPv6 a new term has evolved, &quot;prefix length&quot;, sometimes abbreviated,
+&quot;prefixlen&quot;.  The prefix length is meant to describe the number of bits that are
+fixed in an allocated block of IPv6 addresses.  This is similar, but subtly
+different than a netmask.  The netmask in IPv6 is always /64.  If I am given a
+network block with prefix length /48 (48 bits) then I have 16 bits, or 65536
+discrete networks I can allocate from.  If I am given a prefix length of /64
+then I have exactly <em>one</em> IPv6 network and can not subdivide&nbsp;it.</p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[*]</a></td><td>There were additional Classes, &#8216;D&#8217; and &#8216;E&#8217;.
+<a class="reference external" href="https://en.wikipedia.org/wiki/Classful_network#Introduction_of_address_classes">https://en.wikipedia.org/wiki/Classful_network#Introduction_of_address_classes</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="tunneling-rfc-4213">
+<h3>Tunneling - <span class="caps">RFC</span>-4213</h3>
+<p><a class="reference external" href="https://www.ietf.org/rfc/rfc4213.txt"><span class="caps">RFC</span> 4213</a> specifies, &quot;IPv4 compatibility mechanisms that can be implemented
+by IPv6 hosts and routers.&quot;  The document specifically details a method for
+transporting IPv6 packets across an IPv4 only network &#8212; tunneling.  The <span class="caps">RFC</span>
+does not exclude other methods, however the method in <span class="caps">RFC</span> 4213 is trivially
+simple and in wide use on the public (IPv4)&nbsp;Internet.</p>
+<p>To me, at least, the obvious way to tunnel v6 packets through a v4 network is to
+simply wrap the v6 packet in a v4 packet and send it to the other end of the
+tunnel.  This is exactly what <span class="caps">RFC</span> 4213&nbsp;details:</p>
+<pre class="literal-block">
+                         +-------------+
+                         |    IPv4     |
+                         |   Header    |
++-------------+          +-------------+
+|    IPv6     |          |    IPv6     |
+|   Header    |          |   Header    |
++-------------+          +-------------+
+|  Transport  |          |  Transport  |
+|   Layer     |   ===&gt;   |   Layer     |
+|   Header    |          |   Header    |
++-------------+          +-------------+
+|             |          |             |
+~    Data     ~          ~    Data     ~
+|             |          |             |
++-------------+          +-------------+
+
+       Encapsulating IPv6 in IPv4
+</pre>
+<p>The IPv6 packet is unmodified and an IPv4 header is prepended &#8212; simple.  The
+source and destination v4 addresses are the tunnel endpoints.  The <span class="caps">IP</span> protocol
+number is 41.  All remaining fields in the IPv4 header are calculated using the
+IPv6 packet as the v4&nbsp;payload.</p>
+<p>There is virtually no &#8216;protocol&#8217; between the two tunnel endpoints; no handshake
+is required with this method.  Each endpoint is configured to know the IPv4
+address of the other and encapsulates any IPv6 packet it is handed.  The tunnel
+endpoint is treated as a virtual interface and can be used in routing
+configurations like any other&nbsp;interface.</p>
+<div class="section" id="ipv4-nat-ramifications">
+<h4>IPv4 <span class="caps">NAT</span>&nbsp;Ramifications</h4>
+<p>Can an <span class="caps">RFC</span> 4213 tunnel be established with one endpoint behind IPv4 <span class="caps">NAT</span>?  Based
+on <span class="caps">RFC</span> 4213&#8217;s specification there are no barriers.  In practice:  yes, <span class="caps">RFC</span> 4213
+tunnel endpoints can live behind a <span class="caps">NAT</span>&#8217;ing&nbsp;device.</p>
+<p>How does <span class="caps">RFC</span> 4213 tunneling work when one endpoint is behind a tunnel?  First,
+the remote endpoint must be configured with the exposed, or post-<span class="caps">NAT</span>&#8217;ed, or
+public IPv4 address; this allows inbound packets to be properly delivered to the
+<span class="caps">NAT</span> device.  Second, the local, <span class="caps">NAT</span>&#8217;ed endpoint should be configured with the
+proper remote IPv4 address and the hidden, private, IPv4 address of the tunnel
+device.  As the packet transitions the <span class="caps">NAT</span> device the private IPv4 address will
+be rewritten to the public address and forwarded.  When the packet arrives at
+the remote endpoint it will present as if it had come from the <span class="caps">NAT</span>&nbsp;device.</p>
+<p>The <span class="caps">NAT</span> device must be configured such that it either remembers state, or has
+bi-directional <span class="caps">NAT</span>.  If the <span class="caps">NAT</span> device is keeping state then a packet from
+behind the <span class="caps">NAT</span> device must be sent before the <span class="caps">NAT</span> device will know where to
+deliver remote packets to behind the <span class="caps">NAT</span> device.  Also, if keeping state, it is
+possible for the <span class="caps">NAT</span> device to forget the private endpoint if the tunnel is idle
+for longer than the timeout on state.  Bi-directional <span class="caps">NAT</span> configurations will
+not suffer from these problems.  If no state is kept and bi-directional <span class="caps">NAT</span> is
+not utilized then remote packets will be dropped at the <span class="caps">NAT</span> device and the
+tunnel will not function&nbsp;properly.</p>
+<p>Additionally, the <span class="caps">NAT</span> device must support <span class="caps">NAT</span> translation of IPv4 protocol 41
+packets.  It has been reported that some consumer grade &quot;home firewalls&quot; are
+configured by default to drop such packets.  Numerous other articles advise
+checking such devices to ensure they are configured to pass this traffic.  I
+have not discovered any citations of devices that would not, and could not pass
+IPv4 protocol 41 traffic &#8212; they could&nbsp;exist.</p>
+</div>
+<div class="section" id="small-details-what-problems-can-occur">
+<h4>Small Details - What problems can&nbsp;occur</h4>
+<p>The ideal model of simply wrapping a v6 packet with a v4 header and sending it
+on its merry way is great, but the astute reader will begin to identify a few
+problems with this simplistic strategy.  In fact, there are a few details worth
+mentioning.  In general, however, if the transit network and tunnel endpoints
+are reasonably well behaved then the <span class="caps">RFC</span> 4213 tunnel performs&nbsp;well.</p>
+<p>The following sections provide a light covering of each topic.  Complete details
+can be found in <a class="reference external" href="https://www.ietf.org/rfc/rfc4213.txt"><span class="caps">RFC</span> 4213</a>.</p>
+<div class="section" id="mtu">
+<h5><span class="caps">MTU</span></h5>
+<p>In the perfectly behaved case, IPv6 will use path <span class="caps">MTU</span> discovery and properly
+determine the <span class="caps">MTU</span>.  The <span class="caps">RFC</span> 4213 endpoint will advertise an <span class="caps">MTU</span> that is the <span class="caps">MTU</span>
+of the IPv4 transit network minus the size of the IPv4 header.  Everything will
+just&nbsp;work.</p>
+<p><span class="caps">RFC</span> 4213 recommends a more conservative approach however.  The <span class="caps">RFC</span> recommends,
+but does not require, advertising a static <span class="caps">MTU</span> of 1280.  This is the minimum
+allowable size of an IPv6&nbsp;packet.</p>
+</div>
+<div class="section" id="icmp-and-tunnel-errors">
+<h5><span class="caps">ICMP</span> and Tunnel&nbsp;Errors</h5>
+<p>There are two categories of errors for which <span class="caps">ICMP</span> messages can exist.  ICMPv6
+errors can originate on the far side of the tunnel, and ICMPv4 errors can occur
+inside of the&nbsp;tunnel.</p>
+<p>ICMPv6 errors are trivial to handle.  The ICMPv6 packet should transition the
+tunnel, in reverse, just like any other IPv6 traffic.  End to end ICMPv6
+functions normally and simply sees the tunnel as a single data link in the IPv6&nbsp;network.</p>
+<p>ICMPv4 errors in the tunnel pose a more complicated issue.  <span class="caps">RFC</span> 4213 states, in
+short, that where meaningful ICMPv6 responses can be composed, they should, and
+be forwarded to the IPv6 sender.  If ICMPv4 errors occur where there is no
+meaningful way to alert the IPv6 sender then the packet and ICMPv4 response
+should simply be dropped; both IPv4 and IPv6 are connectionless with no
+guarantee of&nbsp;delivery.</p>
+</div>
+<div class="section" id="hop-limit">
+<h5>Hop&nbsp;Limit</h5>
+<p>As stated in <span class="caps">RFC</span> 4213, &quot;IPv6-over-IPv4 tunnels are modeled as a &#8216;single-hop&#8217;
+from the IPv6 perspective.&quot;  The encapsulated IPv6 packet does not have its hop
+limit decremented while transiting the IPv4 network and only the IPv4 <span class="caps">TTL</span> is
+manipulated in transit.  The IPv6 packet&#8217;s hop limit is decremented by the
+tunnel endpoint as if the IPv4 transit network is a single&nbsp;hop.</p>
+</div>
+</div>
+</div>
+<div class="section" id="using-rfc-2893">
+<h3>Using <span class="caps">RFC</span>-2893</h3>
+<div class="section" id="in4">
+<h4>6in4</h4>
+</div>
+<div class="section" id="to4">
+<h4>6to4</h4>
+</div>
+<div class="section" id="teredo-rfc-4380">
+<h4>Teredo - <span class="caps">RFC</span>-4380</h4>
+</div>
+</div>
+<div class="section" id="tunnel-brokers">
+<h3>Tunnel&nbsp;Brokers</h3>
+</div>
+<div class="section" id="implementing-an-he-tunnel-with-freebsd">
+<h3><em>Implementing an <span class="caps">HE</span> Tunnel with&nbsp;FreeBSD</em></h3>
+<div class="section" id="placing-the-tunnel-behind-nat-v4">
+<h4>Placing the tunnel behind <span class="caps">NAT</span>(v4)</h4>
+</div>
+<div class="section" id="firewall-rules">
+<h4>Firewall&nbsp;Rules</h4>
+</div>
+<div class="section" id="linux">
+<h4>Linux?</h4>
+<p>But what about Linux?  All of the above can be accomplished using Linux. <span class="caps">HE</span>&#8217;s
+TunnelBroker site provides specifics for Linux, along with a number of
+additional operating systems.  This article will not cover Linux &#8212;&nbsp;sorry.</p>
+</div>
+</div>
+<div class="section" id="references">
+<h3>References</h3>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">IPv6:</th><td class="field-body"><ul class="first simple">
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/IPv6">https://en.wikipedia.org/wiki/IPv6</a></li>
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/IPv6_transition_mechanisms">https://en.wikipedia.org/wiki/IPv6_transition_mechanisms</a></li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name"><span class="caps">RFC</span> 2893:</th><td class="field-body"><ul class="first simple">
+<li><em>Transition Mechanisms for IPv6 Hosts and Routers</em>, obsoleted by <span class="caps">RFC</span>&nbsp;4213</li>
+<li><a class="reference external" href="https://www.ietf.org/rfc/rfc2893.txt">https://www.ietf.org/rfc/rfc2893.txt</a></li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name"><span class="caps">RFC</span> 4213:</th><td class="field-body"><ul class="first simple">
+<li><em>Basic Transition Mechanisms for IPv6 Hosts and&nbsp;Routers</em></li>
+<li><a class="reference external" href="https://www.ietf.org/rfc/rfc4213.txt">https://www.ietf.org/rfc/rfc4213.txt</a></li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Teredo - <span class="caps">RFC</span> 4380:</th></tr>
+<tr class="field"><td>&nbsp;</td><td class="field-body"><ul class="first simple">
+<li><a class="reference external" href="http://www.ietf.org/rfc/rfc4380.txt">http://www.ietf.org/rfc/rfc4380.txt</a></li>
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/Teredo_tunneling">https://en.wikipedia.org/wiki/Teredo_tunneling</a></li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Tunnel Broker (IPv6):</th></tr>
+<tr class="field"><td>&nbsp;</td><td class="field-body"><ul class="first simple">
+<li><a class="reference external" href="https://tunnelbroker.net/">https://tunnelbroker.net/</a></li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">IPv6 Check:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="http://ipv6-address.eu/">http://ipv6-address.eu/</a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<p>Outline:</p>
+<ul class="simple">
+<li>Motivations</li>
+<li>IPv6 Primer Topics<ul>
+<li>Subnetting - works a little&nbsp;differently</li>
+<li>Firewall Filtering - all hosts are&nbsp;public.</li>
+<li>Multiple Addresses on an interface are the&nbsp;norm.</li>
+</ul>
+</li>
+<li><span class="caps">RFC2893</span> - How it works<ul>
+<li>Basics</li>
+<li>IPv4 <span class="caps">NAT</span>&nbsp;Ramifications</li>
+<li>Problems <span class="amp">&amp;</span> <span class="caps">ICMP</span> v4 +&nbsp;v6</li>
+</ul>
+</li>
+<li>Ways of using <span class="caps">RFC2893</span><ul>
+<li>6 in&nbsp;4</li>
+<li>6 to&nbsp;4</li>
+<li>??</li>
+</ul>
+</li>
+<li>Tunnel Brokers - Hurricane&nbsp;Electric</li>
+<li>Implementing <span class="caps">HE</span> w/ FreeBSD<ul>
+<li>Behind a NATv4&nbsp;Device</li>
+<li>Firewall&nbsp;Rules</li>
+</ul>
+</li>
+<li>? Linux&nbsp;Implementation</li>
+<li>? Alternative Technologies<ul>
+<li>Teredo / <span class="caps">RFC</span>-4380</li>
+</ul>
+</li>
+</ul>
+<!-- Local Variables: -->
+<!-- fill-column: 80 -->
+<!-- End: -->
+</div>
+</div>
+
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'egustafson'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'ipv6-tunneling';
+                var disqus_url = 'https://egustafson.github.io/drafts/ipv6-tunneling.html';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="http://twitter.com/elfwerks"><i class="fa fa-twitter-square fa-lg"></i> twitter</a></li>
+                <li class="list-group-item"><a href="http://delicious.com/elfwerks"><i class="fa fa-delicious-square fa-lg"></i> delicious</a></li>
+                <li class="list-group-item"><a href="http://www.linkedin.com/in/ericggustafson/"><i class="fa fa-linkedin-square fa-lg"></i> linkedin</a></li>
+                <li class="list-group-item"><a href="https://github.com/egustafson"><i class="fa fa-github-square fa-lg"></i> github</a></li>
+              </ul>
+            </li>
+
+
+
+            <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                <ul class="list-group list-inline tagcloud" id="tags">
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/blog.html">
+                            blog
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/cgp.html">
+                            CGP
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/collectd.html">
+                            collectd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/cygwin.html">
+                            cygwin
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/install.html">
+                            install
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="https://egustafson.github.io/tag/lighttpd.html">
+                            lighttpd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/mediawiki.html">
+                            mediawiki
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/monitoring.html">
+                            monitoring
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/oscon.html">
+                            OSCON
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/pelican.html">
+                            pelican
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/sqlite.html">
+                            sqlite
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/sync.html">
+                            sync
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/syncthing.html">
+                            syncthing
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/trip-report.html">
+                            trip report
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/ubuntu.html">
+                            ubuntu
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/virtualbox.html">
+                            VirtualBox
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/virtualization.html">
+                            virtualization
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/vmware.html">
+                            VMWare
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/wiki.html">
+                            wiki
+                        </a>
+                    </li>
+                </ul>
+            </li>
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://krow.net/" target="_blank">
+                Brian Aker
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://linuxjedi.co.uk/" target="_blank">
+                Andrew Hutchings
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://patg.net/" target="_blank">
+                Patrick Galbraith
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://askyazz.com/" target="_blank">
+                Yazz Atlas
+            </a>
+        </li>
+      </ul>
+    </li>
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2015 Eric Gustafson
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="https://egustafson.github.io/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://egustafson.github.io/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="https://egustafson.github.io/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'egustafson'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-59717139-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+    <!-- End Google Analytics Code -->
+</body>
+</html>
