@@ -10,7 +10,7 @@
 
 
 
-<link rel="canonical" href="https://egustafson.github.io/drafts/ipv6-tunneling.html">
+<link rel="canonical" href="https://egustafson.github.io/ipv6-tunneling.html">
 
         <meta name="author" content="Eric Gustafson" />
         <meta name="keywords" content="IPv6,Tunneling,NAT,RFC2893,FreeBSD,Linux" />
@@ -72,7 +72,7 @@ Stuff I've Figured Out            </a>
         <article>
             <header class="page-header">
                 <h1>
-                    <a href="https://egustafson.github.io/drafts/ipv6-tunneling.html"
+                    <a href="https://egustafson.github.io/ipv6-tunneling.html"
                        rel="bookmark"
                        title="Permalink to IPv6 Tunneling over IPv4 Networks">
                         IPv6 Tunneling over IPv4&nbsp;Networks
@@ -315,12 +315,12 @@ described as&nbsp;6in4.</p>
 <div class="section" id="to4">
 <h4>6to4</h4>
 <p>The &quot;<a class="reference internal" href="#to4">6to4</a>&quot; method builds on 6in4 by providing automated configuration.
-Tunneling is acomplished according to <span class="caps">RFC</span>-4213 and configuration details are
+Tunneling is accomplished according to <span class="caps">RFC</span>-4213 and configuration details are
 prescribed in <a class="reference external" href="https://www.ietf.org/rfc/rfc3056.txt"><span class="caps">RFC</span>-3056</a> and <a class="reference external" href="https://www.ietf.org/rfc/rfc3068.txt"><span class="caps">RFC</span>-3068</a>.  In short, <span class="caps">RFC</span>-3056 reserves 2002::/16
 for statically mapping IPv4 addresses to IPv6 networks and <span class="caps">RFC</span>-3068 specifies an
 IPv4 Anycast address to be used as a tunnel&nbsp;endpoint.</p>
 <p>The 2002::/16 IPv6 prefix is used to map public IPv4 addresses into an IPv6
-network address.  The mapping is acomplished by concatinating 2002: with the 32
+network address.  The mapping is accomplished by concatenating 2002: with the 32
 bit IPv4 address to form a /48 prefix length network for each IPv4 address.  The
 result is depicted as&nbsp;such:</p>
 <pre class="literal-block">
@@ -340,7 +340,7 @@ embedded IPv4 address.  No explicit configuration of the 6to4 tunnel is&nbsp;nee
 <p>Additional criticisms have been levied against the 6to4 scheme, including
 additional <span class="caps">RFC</span>&#8217;s (<span class="caps">RFC</span>-6343, <span class="caps">RFC</span>-3964).</p>
 <p>In general, and with the availability of <strong>free</strong> 6in4 tunnel brokers, discussed
-later, it is my recomendation to avoid the use of 6to4 with out specific reasons
+later, it is my recommendation to avoid the use of 6to4 with out specific reasons
 for choosing&nbsp;it.</p>
 </div>
 <div class="section" id="teredo-rfc-4380">
@@ -360,7 +360,7 @@ also a Linux/xxxBSD, open source client named <a class="reference external" href
 access to the IPv6 public Internet.  There are a number of brokers, and among
 them, a number that offer free access for tunneling IPv6.  The Wikipedia page,
 &quot;&quot;<a class="reference external" href="https://en.wikipedia.org/wiki/List_of_IPv6_tunnel_brokers">List of IPv6 tunnel brokers</a>&quot; contains a&nbsp;list.</p>
-<p>The two most popular, and well deployed brokers are <a class="reference external" href="https://www.he.net/">Huricane Electric</a>&#8216;s
+<p>The two most popular, and well deployed brokers are <a class="reference external" href="https://www.he.net/">Hurricane Electric</a>&#8216;s
 (<span class="caps">HE</span>) &quot;<a class="reference external" href="https://tunnelbroker.net/">IPv6 Tunnel Broker</a>&quot; service and <a class="reference external" href="https://www.sixxs.net/">SixXS</a> (Six Access).  I chose <span class="caps">HE</span>
 because they appeared to have more written about them and how to connect to
 their tunnel broker.  In hindsight I have concluded that SixXS and <span class="caps">HE</span> are on
@@ -369,14 +369,340 @@ both are very&nbsp;comparable.</p>
 </div>
 <div class="section" id="implementing-an-he-tunnel-with-freebsd">
 <h3><strong>Implementing an <span class="caps">HE</span> Tunnel with&nbsp;FreeBSD</strong></h3>
-<div class="section" id="placing-the-tunnel-behind-nat-v4">
-<h4>Placing the tunnel behind <span class="caps">NAT</span>(v4)</h4>
+<p>In this section I will walk through setting up an IPv6 tunnel using a free
+account from Hurricane Electric&#8217;s (<span class="caps">HE</span>) IPv6 Tunnel Broker and a FreeBSD host.  I will
+discuss configuring the FreeBSD host as a router, but the exercise can be
+completed even if the host is not.  This exercise can also be completed using a
+FreeBSD host behind a <span class="caps">NAT</span>&#8217;ing firewall.  In fact, a FreeBSD <span class="caps">VM</span> on VirtualBox or
+VMWare Workstation, even with 2 layers of <span class="caps">NAT</span>, will&nbsp;work.</p>
+<p>The steps involved will&nbsp;be:</p>
+<ol class="arabic simple">
+<li>Acquire an <span class="caps">HE</span> Tunnel Broker&nbsp;Account.</li>
+<li>Allocate (create) a tunnel at <span class="caps">HE</span>.</li>
+<li>Configure the FreeBSD&nbsp;host.</li>
+<li>Configure basic filter (firewall)&nbsp;rules.</li>
+</ol>
+<div class="section" id="he-tunnel-broker-account">
+<h4><span class="caps">HE</span> Tunnel Broker&nbsp;Account</h4>
+<p>Go to:  <a class="reference external" href="https://tunnelbroker.net">https://tunnelbroker.net</a> and select the &quot;Register&quot; button on the upper
+left section of the page in the login box.  Complete the registration form which
+asks&nbsp;for:</p>
+<ul class="simple">
+<li>An account (user)&nbsp;name</li>
+<li>Email&nbsp;address</li>
+<li>First and Last&nbsp;Name</li>
+<li>optional Company&nbsp;Name</li>
+<li>Address</li>
+<li>Phone</li>
+</ul>
+<p>You will be emailed your registration and initial password.  The email will cite
+the <span class="caps">IP</span>(v4) address you registered from, but you do not need to register from the
+same location as you will set up the tunnel&nbsp;to.</p>
+<p>Save Account Name and Password to your keychain.  You are using some sort of
+keychain software, right?  &lt;hint,&nbsp;nudge&gt;</p>
+<p>With the registration email, go back to tunnelbroker.net and log in.  &#8216;Username&#8217;
+is the Account Name you registered with.  Once logged in you will be allowed to
+create up to 5 separate tunnels.  Initially tunnels are issued a single IPv6
+network, a /64 prefix.  There is an option to &quot;assign a /48&quot; to the tunnel which
+would allocate a prefix with 16 bits or 65536 subnets within it.  I have not
+tried this yet, but will update this article when I&nbsp;do.</p>
+<p>At this point you need to know the public IPv4 address that you will use as your
+endpoint.  This could be the public IPv4 address of the FreeBSD host, if it&#8217;s
+publicly attached.  If your FreeBSD host is behind <span class="caps">NAT</span> then the public IPv4
+address is the address you emerge from <span class="caps">NAT</span> with.  <a class="reference external" href="http://ipecho.net">http://ipecho.net</a> is an
+excellent service if you need to discover your public <span class="caps">IP</span> address; it can be used
+from a command line application like <tt class="docutils literal">wget</tt> or <tt class="docutils literal">curl</tt>, use
+<a class="reference external" href="http://ipecho.net/plain">http://ipecho.net/plain</a>.</p>
+</div>
+<div class="section" id="allocate-a-tunnel">
+<h4>Allocate a&nbsp;Tunnel</h4>
+<p>Once logged in to <span class="caps">HE</span>&#8217;s Tunnel Broker, on the left side below &quot;Account Menu&quot; is a
+box titled &quot;User Functions&quot;.  Inside User Functions click on &quot;Create Regular
+Tunnel&quot;.  You will be prompted for two pieces of&nbsp;information:</p>
+<ul class="simple">
+<li>IPv4 Endpoint (Your&nbsp;side).</li>
+<li>Available Tunnel&nbsp;Servers.</li>
+</ul>
+<p>Enter the <strong>public IPv4 address</strong> your FreeBSD host appears on the Internet as,
+as described above, for the &quot;IPv4 Endpoint&quot;.  This is the address that <span class="caps">HE</span>&#8217;s side
+of the tunnel will send (tunnel) IPv6 packets bound for you&nbsp;to.</p>
+<p>Select the nearest location for the &quot;Available Tunnel Servers&quot;.  Note that
+&quot;nearest&quot; is in a network sense.  The astute person will perform ping checks and
+determine latency if there is any question as to which is closest.  I was pleasantly
+surprised that the physically closest node was the lowest latency - this is
+often not the my case.  Regardless, any of the server endpoints will function&nbsp;properly.</p>
+<p>Note that the <span class="caps">HE</span> Tunnel Broker web site will let you create, edit, and delete
+tunnels.  It is not necessary to &quot;get it perfect&quot; the first time; it is possible
+to change the tunnel configuration as well as destroy and&nbsp;recreate.</p>
+<p>Click the &quot;Create Tunnel&quot; button and you will be presented with the details of
+the newly created tunnel.  This information&nbsp;includes:</p>
+<ul class="simple">
+<li>Server IPv4 Address &#8212; the remote tunnel&nbsp;endpoint.</li>
+<li>Client IPv4 Address &#8212; your public IPv4&nbsp;address.</li>
+<li>Server IPv6 Address &#8212; the IPv6 address <em>inside</em> the far end of the&nbsp;tunnel.</li>
+<li>Client IPv6 Address &#8212; the IPv6 address <em>inside</em> your end of the&nbsp;tunnel.</li>
+<li>Routed /64 (IPv6 prefix) &#8212; An IPv6 network prefix to use on your end of the&nbsp;tunnel.</li>
+</ul>
+<p>The &quot;Routed /64&quot; will <em>not</em> overlap with the IPv6 addresses of your client or
+server; this is correct.  Keep in mind that the tunnel is a separate data link
+(L2 network) from your routed network, this is why the client/server addresses
+are, and should be, on a different&nbsp;network.</p>
+</div>
+<div class="section" id="tunnel-details-page">
+<h4>Tunnel Details&nbsp;Page</h4>
+<p>There are a few additional items worth noting on the Tunnel Details page.
+First, note the tabs across the top of the center section:  &quot;IPv6 Tunnel&quot;,
+&quot;Example Configurations&quot;, and &quot;Advanced&quot;.  Also note, along the left side that
+the &quot;Account Menu&quot; and &quot;User Functions&quot; are still&nbsp;available.</p>
+<p>On the &quot;IPv6 Tunnel&quot; tab there are three noteworthy items.  First, the &quot;Delete&quot;
+button; use this to return a tunnel you are no longer using.  The second is less
+obvious, but very useful.  Clicking on the Client IPv4 address will allow you to
+edit the value.  If you would like to adjust the IPv4 address of your end of the
+tunnel it can be done with out deleting and recreating the tunnel.  Finally,
+there is a clickable link to &quot;Assign /48&quot; to the tunnel.  <span class="caps">HE</span> documentation makes
+reference to &quot;get your own /48 prefix <em>once</em> your tunnel is up&quot;.  I have not
+attempted to assign a /48 yet, but as noted earlier, will update this article
+when I&nbsp;have.</p>
+<p>The &quot;Example Configurations&quot; tab is just that, a place to find examples for
+various operating systems.  Select the tab, and then choose an <span class="caps">OS</span> from the drop
+down.  Worth noting, the &quot;FreeBSD &gt;= 4.4&quot; item has an error in it, which was the
+source of some confusion for me.  In the third line that ends with &quot;prefixlen
+128&quot;, this final clause, the prefixlen, should removed; the remainder of the
+line remains the same.  I have not experimented with any of the other examples,
+your mileage may&nbsp;vary.</p>
+<p>The &quot;Advanced&quot; tab has a couple of settings.  The tunnel <span class="caps">MTU</span> can be tuned.
+An &quot;update key&quot; is provided for interacting with <span class="caps">HE</span>&#8217;s Tunnel Broker via
+scripts.  Finally, there is a method to update <span class="caps">DNS</span> settings associated with your&nbsp;tunnel.</p>
+<p>With in the left hand side &quot;Account Menu&quot; the &quot;Main Page&quot; link will take you to
+the landing page you started at when you logged in.  Now that you have allocated
+a tunnel it will be listed at the bottom of the center panel.  Clicking on the
+link for the tunnel will take you back to the Tunnel Details&nbsp;page.</p>
+</div>
+<div class="section" id="configure-freebsd">
+<h4>Configure&nbsp;FreeBSD</h4>
+<p>For purposes of this example, the following table represents the <em>example</em>
+details of our tunnel as configured from <span class="caps">HE</span>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="48%" />
+<col width="53%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Server IPv4 Address</td>
+<td>198.51.100.1</td>
+</tr>
+<tr><td>Server IPv6 Address</td>
+<td>2001:db8:39:222::1/64</td>
+</tr>
+<tr><td>Client IPv4 Address</td>
+<td>203.0.113.23</td>
+</tr>
+<tr><td>Client IPv6 Address</td>
+<td>2001:db8:39:222::2/64</td>
+</tr>
+<tr><td>Routed /64</td>
+<td>2001:db8:4b:222::/64</td>
+</tr>
+</tbody>
+</table>
+<p>Also, for purposes of this example, the host will have two interfaces named
+&quot;em0&quot; and &quot;em1&quot;.  Interface &quot;em0&quot; is connected, behind <span class="caps">NAT</span>, to the Internet.
+Interface &quot;em1&quot; is the &#8216;internal&#8217; network.  Note that basic connectivity of the
+FreeBSD host can be done with just interface &quot;em0&quot;.  Only the later part of this
+example will show how to add a routed IPv6 network which will be attached to
+interface&nbsp;&quot;em1&quot;.</p>
+<p>The configuration of both interfaces starts as&nbsp;follows:</p>
+<pre class="literal-block">
+gustafer&#64;fw1&gt; ifconfig -a
+em0: flags=8843&lt;UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST&gt; metric 0 mtu 1500
+        options=9b&lt;RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM&gt;
+        ether 00:0c:29:4a:b5:20
+        inet 10.3.7.146 netmask 0xffffff00 broadcast 10.3.7.255
+        nd6 options=29&lt;PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL&gt;
+        media: Ethernet autoselect (1000baseT &lt;full-duplex&gt;)
+        status: active
+em1: flags=8843&lt;UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST&gt; metric 0 mtu 1500
+        options=9b&lt;RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM&gt;
+        ether 00:0c:29:4a:b5:2a
+        inet 10.100.2.254 netmask 0xffffff00 broadcast 10.100.2.255
+        nd6 options=29&lt;PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL&gt;
+        media: Ethernet autoselect (1000baseT &lt;full-duplex&gt;)
+        status: active
+</pre>
+<p>Note that neither interface has any IPv6 configuration associated with it at the
+start.  The outward facing, but still behind <span class="caps">NAT</span>, interface, &quot;em0&quot; has an <span class="caps">IP</span>
+address of 10.3.7.146.  The loopback details were removed for space as they have
+nothing to&nbsp;add.</p>
+<p>FreeBSD uses the <a class="reference external" href="https://www.freebsd.org/cgi/man.cgi?query=gif&amp;sektion=4">gif(4)</a> (generic tunnel interface) device to configure 6in4
+tunnels.  There are two things that have to be done to configure the tunnel: 1)
+configure the &quot;gif0&quot; interface, and 2) add a default, <span class="caps">IPV6</span>&nbsp;route.</p>
+<p>The commands below do the&nbsp;following:</p>
+<ol class="arabic simple">
+<li>Create a pseudo-interface of type gif named&nbsp;&#8216;gif0&#8217;.</li>
+</ol>
+<pre class="literal-block">
+gustafer&#64;fw1&gt; sudo ifconfig gif0 create
+
+gustafer&#64;fw1&gt; ifconfig gif0
+gif0: flags=8010&lt;POINTOPOINT,MULTICAST&gt; metric 0 mtu 1280
+        nd6 options=29&lt;PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL&gt;
+</pre>
+<ol class="arabic simple" start="2">
+<li>Configure gif0 as a tunnel, giving the IPv4 addresses of each endpoint; local
+followed by remote.  Note that the actual, <span class="caps">NAT</span>&#8217;ed, IPv4 address of the &#8216;em0&#8217;
+interface is used here; this is necessary so the FreeBSD host knows what
+interface to listen for protocol 41 (<span class="caps">RFC</span>-4213) packets on.  The <span class="caps">NAT</span> device
+between the FreeBSD host and the public Internet will do just that, <span class="caps">NAT</span>.</li>
+</ol>
+<pre class="literal-block">
+gustafer&#64;fw1&gt; sudo ifconfig gif0 tunnel 10.3.7.146 198.51.100.1
+
+gustafer&#64;fw1&gt; ifconfig gif0
+gif0: flags=8050&lt;POINTOPOINT,RUNNING,MULTICAST&gt; metric 0 mtu 1280
+        tunnel inet 10.3.7.146 --&gt; 198.51.100.1
+        nd6 options=29&lt;PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL&gt;
+</pre>
+<ol class="arabic simple" start="3">
+<li>Configure the gif0 interface, (inside the tunnel), with IPv6 details.  Note
+that the link local IPv6 address (fe80::&#8230;) is automatically added as&nbsp;well.</li>
+</ol>
+<pre class="literal-block">
+gustafer&#64;fw1&gt; sudo ifconfig gif0 inet6 2001:db8:39:222::2
+
+gustafer&#64;fw1&gt; ifconfig gif0
+gif0: flags=8051&lt;UP,POINTOPOINT,RUNNING,MULTICAST&gt; metric 0 mtu 1280
+        tunnel inet 10.3.7.146 --&gt; 198.51.100.1
+        inet6 2001:db8:39:222::2 prefixlen 64
+        inet6 fe80::20c:29ff:fe4a:b520%gif0 prefixlen 64 scopeid 0x5
+        nd6 options=21&lt;PERFORMNUD,AUTO_LINKLOCAL&gt;
+</pre>
+<ol class="arabic simple" start="4">
+<li>Add a default, IPv6 route that points at the far end of the inside of the
+tunnel.  Note here that the link local address (fe80::&#8230;) routes to the
+link, but the two site local addresses (ff01::&#8230; and ff02::&#8230;) route to the
+default route; this is&nbsp;normal.</li>
+</ol>
+<pre class="literal-block">
+gustafer&#64;fw1&gt; sudo route -n add -inet6 default 2001:db8:39:222::1
+add net default: gateway 2001:db8:39:222::1
+
+gustafer&#64;fw1&gt; netstat -rnf inet6
+Routing tables
+
+Internet6:
+Destination                       Gateway                       Flags      Netif Expire
+default                           2001:db8:39:222::1            UGS        gif0
+2001:db8:39:222::/64              link#5                        U          gif0
+fe80::%gif0/64                    link#5                        U          gif0
+ff01::%gif0/32                    2001:db8:39:222::2            U          gif0
+ff02::%gif0/32                    2001:db8:39:222::2            U          gif0
+</pre>
+<p>To verify the tunnel is up, use <tt class="docutils literal">ping6</tt> to ping an IPv6 address.  <tt class="docutils literal">ping6</tt>
+will automatically select <span class="caps">AAAA</span> <span class="caps">DNS</span> records so choosing any host that you know
+has <span class="caps">AAAA</span> records listed will work; &#8216;google.com&#8217; works perfectly&nbsp;well:</p>
+<pre class="literal-block">
+gustafer&#64;fw1&gt; ping6 -c 1 google.com
+PING6(56=40+8+8 bytes) 2001:db8:39:222::2 --&gt; 2607:f8b0:400f:802::200e
+16 bytes from 2607:f8b0:400f:802::200e, icmp_seq=0 hlim=53 time=48.120 ms
+
+--- google.com ping6 statistics ---
+1 packets transmitted, 1 packets received, 0.0% packet loss
+round-trip min/avg/max/std-dev = 48.120/48.120/48.120/0.000 ms
+</pre>
+<p>An additional way to verify your connection is functioning is to use the &quot;IPv6
+Portscan&quot; function found in the User Functions section of the <span class="caps">HE</span> Tunnel Broker
+web page.  You must be logged in to use this service and it will only allow you
+to scan addresses that <span class="caps">HE</span> allocated to you.  If you have simply followed the
+instructions above the scan should return results, if you are connected.  If you
+have implemented packet filtering then the scan will fail if you are blocking
+the inbound&nbsp;traffic.</p>
+<p>If you are having problems, please look at any <span class="caps">NAT</span> devices between your FreeBSD
+host and the public internet, firewalls.  Ensure that IPv4 protocol <strong>41</strong> is
+not being blocked.  As a last resort, <tt class="docutils literal">tcpdump host 198.51.100.1</tt> will capture
+traffic to/from the remote tunnel.  Tcpdump does a nice job of decoding 6in4&nbsp;packets.</p>
+<p>At this point you have a functioning IPv6 tunnel to the public, IPv6 Internet.
+The only, (optional), step that remains is to configure the internal network on
+interface &#8216;em1&#8217; with the /64 network that <span class="caps">HE</span> allocated for your internal use.
+In this example, I will configure the interface with host address 1,
+(i.e. &#8230;::1).  The choice of using ::1 is arbitrary, but common for&nbsp;routers.</p>
+<pre class="literal-block">
+gustafer&#64;fw1&gt; sudo ifconfig em1 inet6 2001:db8:4b:222::1
+
+gustafer&#64;fw1&gt; ifconfig em1
+em1: flags=8843&lt;UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST&gt; metric 0 mtu 1500
+        options=9b&lt;RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM&gt;
+        ether 00:0c:29:4a:b5:2a
+        inet 10.100.2.254 netmask 0xffffff00 broadcast 10.100.2.255
+        inet6 2001:db8:4b:222::1 prefixlen 64
+        inet6 fe80::20c:29ff:fe4a:b52a%em1 prefixlen 64 scopeid 0x2
+        nd6 options=21&lt;PERFORMNUD,AUTO_LINKLOCAL&gt;
+        media: Ethernet autoselect (1000baseT &lt;full-duplex&gt;)
+        status: active
+</pre>
+<p>By default FreeBSD does not automatically enable forwarding, or routing, of
+packets.  IPv6 forwarding is enabled separately from IPv4 and you may need to
+enable it:  <tt class="docutils literal">sysctl net.inet6.ip6.forwarding=1</tt></p>
+<p>A final note:  the example above configured IPv6 tunneling manually using the
+command line.  Most installations will want to set such configuration to happen
+at boot.  The <a class="reference external" href="https://www.freebsd.org/cgi/man.cgi?query=rc.conf">rc.conf(5)</a> file supports configuration parameters for
+everything accomplished above,&nbsp;manually.</p>
 </div>
 <div class="section" id="firewall-rules">
 <h4>Firewall&nbsp;Rules</h4>
+<p>Connecting to the public IPv6 network is no different than connecting to the
+public IPv4 network &#8212; you need to protect your host(s) by blocking undesired,
+incoming traffic.  However, connecting via IPv6 does not require <span class="caps">NAT</span> &#8212; all of
+your hosts have <strong>public</strong> address.  The solution to this problem is also the
+same, regardless of IPv4 or IPv6:  block all traffic that does not initiate from
+within your network.  This is a simplified solution, but a good starting point.
+If you know enough to start thinking, &quot;but I need to allow X, Y, and Z&quot;, then
+you know enough to go beyond the simple explanation that&nbsp;follows.</p>
+<p>Filtering does not change from IPv4 to IPv6, but filtering rules do.  Most
+filter rules either explicitly, or implicitly declare the datagram protocol (v4
+vs. v6).  In FreeBSD&#8217;s <a class="reference external" href="https://www.freebsd.org/doc/en/books/handbook/firewalls-pf.html"><span class="caps">PF</span></a> the clause &#8216;inet&#8217; states IPv4; the clause &#8216;inet6&#8217;
+specifies&nbsp;IPv6.</p>
+<p>As a starting point, the following snippet from /etc/<a class="reference external" href="https://www.freebsd.org/cgi/man.cgi?query=pf.conf">pf.conf</a> will block all
+traffic not originating from behind your FreeBSD host while allowing traffic
+initiated from your network to work bidirectionally.  This is a very common
+starting point for firewall rules, specifically crafted for&nbsp;IPv6:</p>
+<pre class="literal-block">
+block in on gif0
+pass out on gif0 inet6 keep state
+</pre>
+<p>Additionally, if you already have filtering enabled, you may need to allow 6in4
+(protocol 41) traffic in.  This is accomplished with the <a class="reference external" href="https://www.freebsd.org/cgi/man.cgi?query=pf.conf">pf.conf</a>&nbsp;clause:</p>
+<pre class="literal-block">
+pass in on em0 inet proto 41 from 198.51.100.1 to 10.3.7.146
+pass out on em0 inet proto 41 from 10.3.7.146 to 198.51.100.1
+</pre>
 </div>
+</div>
+<div class="section" id="alternative-firewall-technologies">
+<h3>Alternative Firewall&nbsp;Technologies</h3>
+<p>There are a plethora of alternatives to FreeBSD that can be used to construct
+an IPv6 tunneling router.  In fact, I suspect FreeBSD may not be the number one
+ranked popular choice, likely loosing out to Linux.  FreeBSD is my preference,
+and I find the semantics of its networking tools to be more readable than most,
+which is why I chose it for this&nbsp;example.</p>
+<p>I will specifically address two alternative below.  In pursuing the <span class="caps">HE</span> example
+configurations I noted all of the popular operating systems, including all of
+the <span class="caps">BSD</span>&#8217;s, Linux, Windows, and Mac.  I also noted OpenWRT, a popular open source
+alternative firmware load for many consumer grade &quot;home firewall&quot;&nbsp;products.</p>
 <div class="section" id="pfsense">
 <h4>PFSense</h4>
+<p><a class="reference external" href="https://www.pfsense.org/">PFSense</a> is an open source project implementing a Firewall.  It is based on
+FreeBSD and comes with a web interface.  Its intention is to be an appliance,
+not an operating system.  It can be loaded on a very wide verity of hardware
+ranging from an old <span class="caps">PC</span> up to enterprise grade, custom(ish) hardware sold by&nbsp;PFSense.</p>
+<p>PFSense is built on top of FreeBSD and as such supports all of the networking
+abilities of FreeBSD.  Additionally, the web interface has explicit
+configuration for configuring 6in4 tunnels.  If an appliance like device is more
+to your liking, or better suites your requirements, I would encourage you to
+consider using PFSense as an alternative to &#8216;plain&#8217;&nbsp;FreeBSD.</p>
+<p>The <span class="caps">HE</span> Tunnel Broker example configurations include PFSense as a choice.  The
+example simply links to the PFSense web page describing the process for
+configuring <span class="caps">HE</span>&#8217;s tunnels.  The PFSense community provide good support for the <span class="caps">HE</span>
+Tunnel&nbsp;Broker.</p>
 </div>
 <div class="section" id="linux">
 <h4>Linux?</h4>
@@ -389,7 +715,7 @@ additional operating systems.  This article will not cover Linux &#8212;&nbsp;so
 <h3>Conclusion</h3>
 <p>6in4 Tunneling based on <span class="caps">RFC</span>-4213 is both a simple, and an effective method for
 connecting IPv6 networks across IPv4, including <span class="caps">NAT</span>.  There are multiple IPv6
-tunnel brokers offering free, and hastle free, tunnels using 6in4.  Modern, open
+tunnel brokers offering free, and hassle free, tunnels using 6in4.  Modern, open
 source operating systems have good support for 6in4.  There are open source
 &quot;firewall&quot; appliances using these operating systems and providing simple 6in4
 configuration.  Join the IPv6 network today, there&#8217;s no reason to wait.  Better
@@ -427,7 +753,7 @@ yet, start using IPv6 to solve network problems induced by using&nbsp;IPv4.</p>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name" colspan="2"><span class="caps">RFC</span> 3056 - Connection of IPv6 Domins via IPv4 Clouds:</th></tr>
+<tr class="field"><th class="field-name" colspan="2"><span class="caps">RFC</span> 3056 - Connection of IPv6 Domains via IPv4 Clouds:</th></tr>
 <tr class="field"><td>&nbsp;</td><td class="field-body"><ul class="first simple">
 <li><a class="reference external" href="https://www.ietf.org/rfc/rfc3056.txt">https://www.ietf.org/rfc/rfc3056.txt</a></li>
 </ul>
@@ -484,7 +810,7 @@ yet, start using IPv6 to solve network problems induced by using&nbsp;IPv4.</p>
             var disqus_shortname = 'egustafson'; // required: replace example with your forum shortname
 
                     var disqus_identifier = 'ipv6-tunneling';
-                var disqus_url = 'https://egustafson.github.io/drafts/ipv6-tunneling.html';
+                var disqus_url = 'https://egustafson.github.io/ipv6-tunneling.html';
 
             var disqus_config = function () {
                 this.language = "en";
@@ -547,13 +873,28 @@ yet, start using IPv6 to solve network problems induced by using&nbsp;IPv4.</p>
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/freebsd.html">
+                            FreeBSD
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
                         <a href="https://egustafson.github.io/tag/install.html">
                             install
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/ipv6.html">
+                            IPv6
                         </a>
                     </li>
                     <li class="list-group-item tag-1">
                         <a href="https://egustafson.github.io/tag/lighttpd.html">
                             lighttpd
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/linux.html">
+                            Linux
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
@@ -567,6 +908,11 @@ yet, start using IPv6 to solve network problems induced by using&nbsp;IPv4.</p>
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/nat.html">
+                            NAT
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
                         <a href="https://egustafson.github.io/tag/oscon.html">
                             OSCON
                         </a>
@@ -574,6 +920,11 @@ yet, start using IPv6 to solve network problems induced by using&nbsp;IPv4.</p>
                     <li class="list-group-item tag-4">
                         <a href="https://egustafson.github.io/tag/pelican.html">
                             pelican
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/rfc2893.html">
+                            RFC2893
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
@@ -594,6 +945,11 @@ yet, start using IPv6 to solve network problems induced by using&nbsp;IPv4.</p>
                     <li class="list-group-item tag-4">
                         <a href="https://egustafson.github.io/tag/trip-report.html">
                             trip report
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="https://egustafson.github.io/tag/tunneling.html">
+                            Tunneling
                         </a>
                     </li>
                     <li class="list-group-item tag-4">
