@@ -263,7 +263,7 @@ described as 6in4.
 ----
 
 The \"6to4_\" method builds on 6in4 by providing automated configuration.
-Tunneling is acomplished according to RFC-4213 and configuration details are
+Tunneling is accomplished according to RFC-4213 and configuration details are
 prescribed in RFC-3056_ and RFC-3068_.  In short, RFC-3056 reserves 2002::/16
 for statically mapping IPv4 addresses to IPv6 networks and RFC-3068 specifies an
 IPv4 Anycast address to be used as a tunnel endpoint.
@@ -272,7 +272,7 @@ IPv4 Anycast address to be used as a tunnel endpoint.
 .. _RFC-3068: https://www.ietf.org/rfc/rfc3068.txt
 
 The 2002::/16 IPv6 prefix is used to map public IPv4 addresses into an IPv6
-network address.  The mapping is acomplished by concatinating 2002: with the 32
+network address.  The mapping is accomplished by concatenating 2002: with the 32
 bit IPv4 address to form a /48 prefix length network for each IPv4 address.  The
 result is depicted as such::
 
@@ -296,7 +296,7 @@ Additional criticisms have been levied against the 6to4 scheme, including
 additional RFC's (RFC-6343, RFC-3964).
 
 In general, and with the availability of **free** 6in4 tunnel brokers, discussed
-later, it is my recomendation to avoid the use of 6to4 with out specific reasons
+later, it is my recommendation to avoid the use of 6to4 with out specific reasons
 for choosing it.
 
 Teredo - RFC-4380
@@ -381,10 +381,11 @@ tried this yet, but will update this article when I do.
 
 At this point you need to know the public IPv4 address that you will use as your
 endpoint.  This could be the public IPv4 address of the FreeBSD host, if it's
-publically attached.  If your FreeBSD host is behind NAT then the public IPv4
+publicly attached.  If your FreeBSD host is behind NAT then the public IPv4
 address is the address you emerge from NAT with.  http://ipecho.net is an
 excellent service if you need to discover your public IP address; it can be used
-from a command line application like wget or curl, use http://ipecho.net/plain.
+from a command line application like ``wget`` or ``curl``, use
+http://ipecho.net/plain.
 
 Allocate a Tunnel
 -----------------
@@ -401,8 +402,8 @@ as described above, for the "IPv4 Endpoint".  This is the address that HE's side
 of the tunnel will send (tunnel) IPv6 packets bound for you to.
 
 Select the nearest location for the "Available Tunnel Servers".  Note that
-"nearest" is in a network sense.  The estute person will perform ping checks and
-determine latency if there is any question as to which is closest.  I was pleasently
+"nearest" is in a network sense.  The astute person will perform ping checks and
+determine latency if there is any question as to which is closest.  I was pleasantly
 surprised that the physically closest node was the lowest latency - this is
 often not the my case.  Regardless, any of the server endpoints will function
 properly.
@@ -411,7 +412,7 @@ Note that the HE Tunnel Broker web site will let you create, edit, and delete
 tunnels.  It is not necessary to "get it perfect" the first time; it is possible
 to change the tunnel configuration as well as destroy and recreate.
 
-Click the "Create Tunnel" botton and you will be presented with the details of
+Click the "Create Tunnel" button and you will be presented with the details of
 the newly created tunnel.  This information includes:
 
 - Server IPv4 Address -- the remote tunnel endpoint.
@@ -440,7 +441,7 @@ obvious, but very useful.  Clicking on the Client IPv4 address will allow you to
 edit the value.  If you would like to adjust the IPv4 address of your end of the
 tunnel it can be done with out deleting and recreating the tunnel.  Finally,
 there is a clickable link to "Assign /48" to the tunnel.  HE documentation makes
-reference to "get your own /48 prefice *once* your tunnel is up".  I have not
+reference to "get your own /48 prefix *once* your tunnel is up".  I have not
 attempted to assign a /48 yet, but as noted earlier, will update this article
 when I have.
 
@@ -449,8 +450,8 @@ various operating systems.  Select the tab, and then choose an OS from the drop
 down.  Worth noting, the "FreeBSD >= 4.4" item has an error in it, which was the
 source of some confusion for me.  In the third line that ends with "prefixlen
 128", this final clause, the prefixlen, should removed; the remainder of the
-line remains the same.  I have not experiemented with any of the other examples,
-your milage may vary.
+line remains the same.  I have not experimented with any of the other examples,
+your mileage may vary.
 
 The "Advanced" tab has a couple of settings.  The tunnel MTU can be tuned.
 An "update key" is provided for interacting with HE's Tunnel Broker via
@@ -470,12 +471,12 @@ details of our tunnel as configured from HE:
 
 ===================  =====================
 Server IPv4 Address           198.51.100.1
-Server IPv6 Address  2001:DB8:39:222::1/64
+Server IPv6 Address  2001:db8:39:222::1/64
 -------------------  ---------------------
 Client IPv4 Address           203.0.113.23
-Client IPv6 Address  2001:DB8:39:222::2/64
+Client IPv6 Address  2001:db8:39:222::2/64
 -------------------  ---------------------
-Routed /64            2001:DB8:4b:222::/64
+Routed /64            2001:db8:4b:222::/64
 ===================  =====================
 
 Also, for purposes of this example, the host will have two interfaces named
@@ -546,7 +547,7 @@ The commands below do the following:
 
 ::
 
-   gustafer@fw1> sudo ifconfig gif0 inet6 2001:DB8:39:222::2
+   gustafer@fw1> sudo ifconfig gif0 inet6 2001:db8:39:222::2
 
    gustafer@fw1> ifconfig gif0
    gif0: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> metric 0 mtu 1280
@@ -562,8 +563,8 @@ The commands below do the following:
 
 ::
 
-   gustafer@fw1> sudo route -n add -inet6 default 2001:DB8:39:222::1
-   add net default: gateway 2001:DB8:39:222::1
+   gustafer@fw1> sudo route -n add -inet6 default 2001:db8:39:222::1
+   add net default: gateway 2001:db8:39:222::1
 
    gustafer@fw1> netstat -rnf inet6
    Routing tables
@@ -587,6 +588,20 @@ has AAAA records listed will work; 'google.com' works perfectly well::
    --- google.com ping6 statistics ---
    1 packets transmitted, 1 packets received, 0.0% packet loss
    round-trip min/avg/max/std-dev = 48.120/48.120/48.120/0.000 ms
+
+An additional way to verify your connection is functioning is to use the "IPv6
+Portscan" function found in the User Functions section of the HE Tunnel Broker
+web page.  You must be logged in to use this service and it will only allow you
+to scan addresses that HE allocated to you.  If you have simply followed the
+instructions above the scan should return results, if you are connected.  If you
+have implemented packet filtering then the scan will fail if you are blocking
+the inbound traffic.
+
+If you are having problems, please look at any NAT devices between your FreeBSD
+host and the public internet, firewalls.  Ensure that IPv4 protocol **41** is
+not being blocked.  As a last resort, ``tcpdump host 198.51.100.1`` will capture
+traffic to/from the remote tunnel.  Tcpdump does a nice job of decoding 6in4
+packets. 
 
 At this point you have a functioning IPv6 tunnel to the public, IPv6 Internet.
 The only, (optional), step that remains is to configure the internal network on
@@ -616,18 +631,79 @@ enable it:  ``sysctl net.inet6.ip6.forwarding=1``
 A final note:  the example above configured IPv6 tunneling manually using the
 command line.  Most installations will want to set such configuration to happen
 at boot.  The `rc.conf(5)`_ file supports configuration parameters for
-everything acomplished above, manually.
+everything accomplished above, manually.
 
 .. _rc.conf(5): https://www.freebsd.org/cgi/man.cgi?query=rc.conf
 
 Firewall Rules
 --------------
 
+Connecting to the public IPv6 network is no different than connecting to the
+public IPv4 network -- you need to protect your host(s) by blocking undesired,
+incoming traffic.  However, connecting via IPv6 does not require NAT -- all of
+your hosts have **public** address.  The solution to this problem is also the
+same, regardless of IPv4 or IPv6:  block all traffic that does not initiate from
+within your network.  This is a simplified solution, but a good starting point.
+If you know enough to start thinking, "but I need to allow X, Y, and Z", then
+you know enough to go beyond the simple explanation that follows.
+
+Filtering does not change from IPv4 to IPv6, but filtering rules do.  Most
+filter rules either explicitly, or implicitly declare the datagram protocol (v4
+vs. v6).  In FreeBSD's `PF`_ the clause 'inet' states IPv4; the clause 'inet6'
+specifies IPv6.
+
+.. _PF: https://www.freebsd.org/doc/en/books/handbook/firewalls-pf.html
+.. _pf.conf: https://www.freebsd.org/cgi/man.cgi?query=pf.conf
+
+As a starting point, the following snippet from /etc/`pf.conf`_ will block all
+traffic not originating from behind your FreeBSD host while allowing traffic
+initiated from your network to work bidirectionally.  This is a very common
+starting point for firewall rules, specifically crafted for IPv6::
+
+   block in on gif0
+   pass out on gif0 inet6 keep state
+
+Additionally, if you already have filtering enabled, you may need to allow 6in4
+(protocol 41) traffic in.  This is accomplished with the `pf.conf`_ clause::
+
+  pass in on em0 inet proto 41 from 198.51.100.1 to 10.3.7.146
+  pass out on em0 inet proto 41 from 10.3.7.146 to 198.51.100.1
+
 Alternative Firewall Technologies
 =================================
 
+There are a plethora of alternatives to FreeBSD that can be used to construct
+an IPv6 tunneling router.  In fact, I suspect FreeBSD may not be the number one
+ranked popular choice, likely loosing out to Linux.  FreeBSD is my preference,
+and I find the semantics of its networking tools to be more readable than most,
+which is why I chose it for this example.
+
+I will specifically address two alternative below.  In pursuing the HE example
+configurations I noted all of the popular operating systems, including all of
+the BSD's, Linux, Windows, and Mac.  I also noted OpenWRT, a popular open source
+alternative firmware load for many consumer grade "home firewall" products.
+
 PFSense
 -------
+
+PFSense_ is an open source project implementing a Firewall.  It is based on
+FreeBSD and comes with a web interface.  Its intention is to be an appliance,
+not an operating system.  It can be loaded on a very wide verity of hardware
+ranging from an old PC up to enterprise grade, custom(ish) hardware sold by
+PFSense.  
+
+.. _PFSense: https://www.pfsense.org/
+
+PFSense is built on top of FreeBSD and as such supports all of the networking
+abilities of FreeBSD.  Additionally, the web interface has explicit
+configuration for configuring 6in4 tunnels.  If an appliance like device is more
+to your liking, or better suites your requirements, I would encourage you to
+consider using PFSense as an alternative to 'plain' FreeBSD.
+
+The HE Tunnel Broker example configurations include PFSense as a choice.  The
+example simply links to the PFSense web page describing the process for
+configuring HE's tunnels.  The PFSense community provide good support for the HE
+Tunnel Broker.
 
 Linux?
 ------
@@ -641,7 +717,7 @@ Conclusion
 
 6in4 Tunneling based on RFC-4213 is both a simple, and an effective method for
 connecting IPv6 networks across IPv4, including NAT.  There are multiple IPv6
-tunnel brokers offering free, and hastle free, tunnels using 6in4.  Modern, open
+tunnel brokers offering free, and hassle free, tunnels using 6in4.  Modern, open
 source operating systems have good support for 6in4.  There are open source
 "firewall" appliances using these operating systems and providing simple 6in4
 configuration.  Join the IPv6 network today, there's no reason to wait.  Better
@@ -665,7 +741,7 @@ References
 :RFC 2893 - Transition Mechanisms for IPv6 Hosts and Routers:
    - obsoleted by RFC 4213
    - https://www.ietf.org/rfc/rfc2893.txt
-:RFC 3056 - Connection of IPv6 Domins via IPv4 Clouds:
+:RFC 3056 - Connection of IPv6 Domains via IPv4 Clouds:
    - https://www.ietf.org/rfc/rfc3056.txt
 :RFC 3068 - An Anycast Prefix for 6to4 Relay Routers:
    - https://www.ietf.org/rfc/rfc3068.txt
