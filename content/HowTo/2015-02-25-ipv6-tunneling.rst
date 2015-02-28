@@ -3,7 +3,6 @@
 :slug: ipv6-tunneling
 :author: Eric Gustafson
 :tags: IPv6, Tunneling, NAT, RFC2893, FreeBSD, Linux
-:status: draft
 
 ------------------------------------
 Connecting to the v6 world from afar
