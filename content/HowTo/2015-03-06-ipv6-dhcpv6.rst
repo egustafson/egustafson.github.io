@@ -1,0 +1,271 @@
+:title: IPv6 Network (Auto) Configuration
+:date: 2015-03-06
+:slug: ipv6-dhcpv6
+:author: Eric Gustafson
+:tags: IPv6, FreeBSD, Linux, DHCP, DNS, dnsmasq
+:status: draft
+
+In my previous article, `IPv6 Tunneling over IPv6 Networks`_, I discussed how to
+connect a LAN to the IPv6 public Internet.  This article continues the theme,
+discussing the issues surrounding the configuration of the LAN for IPv6.
+
+.. _`IPv6 Tunneling over IPv6 Networks`: {filename}2015-02-25-ipv6-tunneling.rst
+
+Looking at how IPv4 LAN's are configured proves to be instructive.  Many of the
+techniques, and all of the patterns turn out to have parallels in IPv6.  During
+the design of IPv6 there was opportunity for some refactoring from lessons
+learned in IPv4.  Initial host configuration was an area that received some
+attention, and so, we will explore the new methods provided by IPv6 as well as
+the traditional techniques carried forward from IPv4.
+
+Network Autoconfiguration
+=========================
+
+The goal here is to identify how hosts joining an IPv6 network can come to
+discover and then interoperate on that network.  The network *may* also have
+IPv4, but it should not be required.  Specifically, the goal is to show how
+hosts can, as automatically as possible, configure themselves on an **IPv6
+only** network.  The same (pre)configuration should also work if the network
+happens to support IPv4, and the hosts should then configure and join the IPv4
+network as well.
+
+There are two use cases that are used to vet the proposed methods.  The first is
+the "small lab" use case.  Think of a small, less than 100 hosts, lab
+environment, or SOHO office.  In this sort of environment some of the hosts are
+very dynamic, and some are more static with specific functions assigned to them;
+for instance, a mail, or IRC server.  The second use case is the prototype
+environment for a distributed application.  Often such environments are created
+with VM's using tools such as Vagrant_ inside a developer's laptop.  The
+"environment" can be paused and restarted, it can be relocated, and the hosts
+are often destroyed and recreated for a "fresh install".  In both cases, formal
+rigor in configuring and maintaining the network are not as important as a
+degree of automation combined with flexibility to manually adjust things when
+necessary.
+
+.. _Vagrant: https://www.vagrantup.com/
+
+In an IPv4 world, DHCP_ combined with DNS_ are the go-to tools for such
+configuration.  As luck has it, both are available in the IPv6 world as
+well. DNS remains unchanged, except for the addition of the AAAA_ record that
+holds IPv6 addresses; AAAA records are retrievable via IPv4 as well.  DHCP
+functions the same, but the specifics are adapted for IPv6 and to disambiguate,
+is known as DHCPv6_; there is a separate RFC, RFC-3315_.
+
+.. _DHCP: https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol
+.. _DNS: https://en.wikipedia.org/wiki/Domain_Name_System
+.. _AAAA: https://en.wikipedia.org/wiki/IPv6_address#IPv6_addresses_in_the_Domain_Name_System
+.. _DHCPv6: https://en.wikipedia.org/wiki/DHCPv6
+.. _RFC-3315: https://tools.ietf.org/html/rfc3315
+
+IPv6 Autoconfiguration
+----------------------
+
+During the design of IPv6, codenamed 'IPng' at the time, the design of
+"autoconfiguration" for IP was refactored to support a more automated method by
+which hosts could join an IPv6 network.  In the base IPv4 protocol there is no
+explicit support for autoconfiguration.  In IPv6 autoconfiguration support was
+initially integrated into ICMPv6_.  This comes in the form of `Neighbor Discovery
+Protocol`_ (NDP) and includes the ability for a host to automatically discover:
+
+- Neighbor Discovery and Advertisement, replacing IPv4's ARP_.
+- Network address prefix discovery.
+- Link (L2) parameter discovery, such as MTU.
+- Next-hop determination through Router Solicitation and Advertisement (RA) -
+  Routing.
+- Duplicate address detection, allowing hosts to generate a host address and
+  determine if it is a duplicate.  (If so, they will pick another).
+
+The above tools that made up the original NDP allow a host to perform what is
+formally called `Stateless address autoconfiguration`_ (SLAAC).  Additionally,
+NDP, through Router Solicitation and Router Advertisement (RA), allows a host
+to define itself a unique host address, determine its network address, and
+router(s).  This is all the necessary  details a host needs to start sending and
+receiving IP packets.  The IPng designers believed they had successfully
+refactored the base IP, including ICMP, protocol to handle autoconfiguration.
+
+.. _Neighbor Discovery Protocol: https://en.wikipedia.org/wiki/Neighbor_Discovery_Protocol
+.. _ICMPv6: https://en.wikipedia.org/wiki/ICMPv6
+.. _ARP: https://en.wikipedia.org/wiki/Address_Resolution_Protocol
+.. _Stateless address autoconfiguration: https://en.wikipedia.org/wiki/IPv6#Stateless_address_autoconfiguration_.28SLAAC.29  
+
+The refactoring was not agile enough.  While hosts can configure the IP layer
+with SLAAC, it turns out that DHCPv4 is used provide added functionality beyond
+simply configuring the IP layer of a host.  The almost universally used feature
+of DHCP beyond IP layer is communicating the DNS server's IP address.  SLAAC did
+not initially have support for this and thus DHCPv6 was born.  The ICMPv6 Router
+Advertisement was extended in RFC-6106_ to allow the inclusion of DNS
+configuration information in the RA message.  
+
+.. _RFC-6106: https://tools.ietf.org/html/rfc6106
+
+RFC-6106, which allows DNS details in router advertisements, is not the end of
+the story.  Firstly, its adoption has not been slow, and secondly, there remain
+additional configuration details not covered by the RFC that are desired when
+autoconfiguring hosts on an IP network.  In fact, IANA_ cites well over 150
+option parameters registered for DHCP [#]_.
+
+.. _IANA: https://en.wikipedia.org/wiki/Internet_Assigned_Numbers_Authority
+
+
+Stateful and Stateless DHCPv6
+-----------------------------
+
+The ability for a host to autoconfigure, through SLAAC, it's IPv6 details gives
+rise to a new mode of use for DHCP - "Stateless DHCPv6".  In this mode, the host
+first uses SLAAC to configure its IPv6 details and then uses DHCPv6 to request
+additional details like DNS, NTP, etc.  In this mode the host indicates it is
+operating "stateless" and the server does not perform address assignment.
+
+In addition to the stateless mode, DHCPv6 can also be used in a "stateful" mode
+where an IPv6 address is assigned from the server's pool of addresses.  IPv6
+allows and most often requires hosts to have multiple IPv6 addresses assigned to
+a single interface; the link-local address is an excellent example of this.
+Because hosts must support multiple addresses per interface it is possible to
+use both SLAAC and stateful DHCPv6 to configure a host.  If both methods are
+used then there will be multiple IPv6 addresses assigned to the interface.  The
+link-local address is also required, so using both methods will ensure the
+interface has at least three addresses.
+
+The late arrival of DNS configuration as part of SLAAC caused some vendors,
+Microsoft Windows most notably, to pursue client IPv6 autoconfiguration which
+required DHCPv6.  This makes the use of DHCPv6 a near requirement in any network
+that has liberal requirements for operating system support.
+
+Host Registration in DNS
+------------------------
+
+Providing DNS configuration to an autoconfiguring host does not imply
+registering that host in the local DNS tables.  In fact, neither DHCPv4, nor
+DHCPv6 address the issue of DNS registration of newly configured hosts.  In many
+environments, including the lab, and prototype use case environments,
+registering configured hosts ranges from very helpful to required.  Some clients
+will perform this task, but this behavior is not common enough to rely on it.
+
+There are a number of different tools to support registering hosts in DNS as
+they join a network, but one project is more appealing than the others for our
+given use cases:  Dnsmasq_.  The Dnsmasq project combines DHCP and DNS in a
+single daemon and supports both IPv4 and IPv6.  Dnsmasq also supports portions
+of IPv6 autoconfiguration, including router advertisement (RA).  The feature
+that places Dnsmasq in the most appealing position is that its DHCP and DNS
+integration includes automatically registering DHCP leases in the DNS tables
+when a hostname is provided in the DHCP request; solving exactly the problem not
+explicitly addressed in DHCP or DNS specifications.
+
+.. _Dnsmasq: http://www.thekelleys.org.uk/dnsmasq/doc.html
+
+Through experimentation it was determined that Windows and Mac OSX based systems
+consistently provide the hostname as part of their DHCP request.  Unfortunately,
+the most popular, and widely used, DHCP client, from ISC, either does not, or is
+rarely configured to send the hostname.  Fortunately, an alternative DHCP client
+does: the dhcpcd_ client.  Investigating the dhcpcd client also revealed that
+it is trivial to swap the ISC client for dhcpcd on most Linux hosts.
+
+.. _ISC: https://www.isc.org/
+.. _dhcpcd: http://roy.marples.name/projects/dhcpcd/index
+
+Router and Client Configuration
+===============================
+
+The following is the Dnsmasq_ configuration applied on the router that allows
+for the most effective autoconfiguration of IPv6::
+
+  # dnsmasq configuration for router "appliance"
+  no-resolv
+  server=10.3.7.1
+
+  local=/cloud1/
+
+  domain=cloud1
+  dhcp-fqdn
+
+  enable-ra
+  dhcp-option=option6:dns-server,[2001:db8:4b:222::1]
+  dhcp-option=option6:dns-name,cloud1
+
+  dhcp-range=::100,::1ff,constructor:em1
+
+The configuration is broken down as follows:
+
+:no-resolve: Disable using /etc/resolv.conf as a basis for configuring the
+             dnsmasq server.  This was done to make this example clearly
+             explicit.
+
+:server=10.3.7.1: Configure the server that dnsmasq forwards all DNS requests it
+                  can not handle locally to.  Note that the forwarder does *not*
+                  need to be a IPv6 address, although it could be.  Multiple
+                  forwarders are configurable if desired.
+
+:local=/cloud1/: Declare the domain "cloud1" as the domain being served locally.
+
+:domain=cloud1: Declare the domain "cloud1" as the domain for all DHCP requests
+
+:dhcp-fqdn: Force all DHCP clients to be placed in the "cloud1" domain,
+            regardless of what domain they specify in the DHCP request.
+
+:enable-ra: Perform IPv6 Router Advertisement as part of Dnsmasq's operation.
+            Other router advertisement daemons should not be run.  If the host
+            Dnsmasq is running on is not the router then disable this.
+
+:dhcp-option...dns-server: Explicitly configure and ensure the ``dns-server``
+                           option is sent in the DHCP reply.  The address listed
+                           is an address assigned to the 'em1' interface on this
+                           host.
+
+:dhcp-option...dns-name: Send 'cloud1' as the assigned domain to all clients
+                         performing DHCP requests.
+
+:dhcp-range...: Issue IPv6 addresses between ::100 and ::1ff in response to DHCP
+                requests.  The "constructor:em1" directs the configuration to
+                use the network prefix of the 'em1' interface as the network
+                prefix for the leased addresses.  The actual address returned
+                will be [em1 prefix]::[100-1ff].
+
+Enabling the `log-dhcp` or `log-queries` parameters in Dnsmasq will enable
+verbose reporting of either DHCP or DNS is debugging is required.
+
+Client DHCP Configuration
+-------------------------
+
+No explicit configuration is required on the client side except replacing the
+ISC DHCP client with the dhcpcd client.  For Debian derived Linux
+installations::
+
+  sudo apt-get remove isc-dhcp-client isc-dhcp-common
+  sudo apt-get install dhcpcd5
+
+No configuration files need to be modified.
+
+
+Conclusion
+==========
+
+By utilizing the Dnsmasq_ and dhcpcd_ projects a very simple configuration can
+be constructed that supports autoconfiguration of an IPv6 network.  This pattern
+can be utilized in both heterogeneous lab like environments as well as prototype
+environments, including Vagrant based setups on developer laptops.
+
+
+References
+==========
+
+.. [#] DHCP and BOOTP Parameters: https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
+
+----
+
+:DHCPv6:
+   - https://en.wikipedia.org/wiki/DHCPv6
+   - https://tools.ietf.org/html/rfc3315
+:ICMPv6:
+   - https://en.wikipedia.org/wiki/ICMPv6
+   - https://tools.ietf.org/html/rfc4443
+   - https://tools.ietf.org/html/rfc6106
+:NDP - Neighbor Discovery Protocol:
+   - https://en.wikipedia.org/wiki/Neighbor_Discovery_Protocol
+:Dnsmasq - DHCP + DNS daemon:
+   - http://www.thekelleys.org.uk/dnsmasq/doc.html
+:dhcpcd - alternative DHCP client:
+   - http://roy.marples.name/projects/dhcpcd/index
+
+.. Local Variables:
+.. fill-column: 80
+.. End:
