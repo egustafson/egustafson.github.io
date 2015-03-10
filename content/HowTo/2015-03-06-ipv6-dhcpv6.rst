@@ -3,7 +3,6 @@
 :slug: ipv6-dhcpv6
 :author: Eric Gustafson
 :tags: IPv6, FreeBSD, Linux, DHCP, DNS, dnsmasq
-:status: draft
 
 In my previous article, `IPv6 Tunneling over IPv4 Networks`_, I discussed how to
 connect a LAN to the IPv6 public Internet.  This article continues the theme,
