@@ -5,18 +5,18 @@
 :tags: IPv6, FreeBSD, Linux, DHCP, DNS, dnsmasq
 :status: draft
 
-In my previous article, `IPv6 Tunneling over IPv6 Networks`_, I discussed how to
+In my previous article, `IPv6 Tunneling over IPv4 Networks`_, I discussed how to
 connect a LAN to the IPv6 public Internet.  This article continues the theme,
-discussing the issues surrounding the configuration of the LAN for IPv6.
+discussing the issues surrounding the LAN's configuration for IPv6.
 
-.. _`IPv6 Tunneling over IPv6 Networks`: {filename}2015-02-25-ipv6-tunneling.rst
+.. _`IPv6 Tunneling over IPv4 Networks`: {filename}2015-02-25-ipv6-tunneling.rst
 
-Looking at how IPv4 LAN's are configured proves to be instructive.  Many of the
-techniques, and all of the patterns turn out to have parallels in IPv6.  During
-the design of IPv6 there was opportunity for some refactoring from lessons
-learned in IPv4.  Initial host configuration was an area that received some
-attention, and so, we will explore the new methods provided by IPv6 as well as
-the traditional techniques carried forward from IPv4.
+Looking at how LAN's are configured for IPv4 proves to be instructive.  Many of
+the techniques, and all of the patterns turn out to have parallels in IPv6.
+During the design of IPv6 engineers took the opportunity for refactoring using
+lessons learned from IPv4.  Initial host configuration was an area that received
+some attention, and so, we will explore the new methods provided by IPv6 as well
+as the traditional techniques carried forward from IPv4.
 
 Network Autoconfiguration
 =========================
@@ -24,7 +24,7 @@ Network Autoconfiguration
 The goal here is to identify how hosts joining an IPv6 network can come to
 discover and then interoperate on that network.  The network *may* also have
 IPv4, but it should not be required.  Specifically, the goal is to show how
-hosts can, as automatically as possible, configure themselves on an **IPv6
+hosts can, with emphasis towards automation, configure themselves on an **IPv6
 only** network.  The same (pre)configuration should also work if the network
 happens to support IPv4, and the hosts should then configure and join the IPv4
 network as well.
@@ -35,12 +35,12 @@ environment, or SOHO office.  In this sort of environment some of the hosts are
 very dynamic, and some are more static with specific functions assigned to them;
 for instance, a mail, or IRC server.  The second use case is the prototype
 environment for a distributed application.  Often such environments are created
-with VM's using tools such as Vagrant_ inside a developer's laptop.  The
-"environment" can be paused and restarted, it can be relocated, and the hosts
-are often destroyed and recreated for a "fresh install".  In both cases, formal
-rigor in configuring and maintaining the network are not as important as a
-degree of automation combined with flexibility to manually adjust things when
-necessary.
+with VM's using tools such as Vagrant_ inside a developer's laptop.  Such
+environments can be paused and restarted, relocated, and the hosts are often
+destroyed and recreated for a "fresh install".  In both cases, formal rigor in
+configuring and maintaining the network are not as important as a degree of
+automation combined with flexibility to manually adjust things as needed for the
+task at hand.
 
 .. _Vagrant: https://www.vagrantup.com/
 
@@ -49,7 +49,7 @@ configuration.  As luck has it, both are available in the IPv6 world as
 well. DNS remains unchanged, except for the addition of the AAAA_ record that
 holds IPv6 addresses; AAAA records are retrievable via IPv4 as well.  DHCP
 functions the same, but the specifics are adapted for IPv6 and to disambiguate,
-is known as DHCPv6_; there is a separate RFC, RFC-3315_.
+it is known as DHCPv6_; there is a separate RFC: RFC-3315_.
 
 .. _DHCP: https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol
 .. _DNS: https://en.wikipedia.org/wiki/Domain_Name_System
@@ -60,46 +60,50 @@ is known as DHCPv6_; there is a separate RFC, RFC-3315_.
 IPv6 Autoconfiguration
 ----------------------
 
-During the design of IPv6, codenamed 'IPng' at the time, the design of
+During the design of IPv6, then codenamed 'IPng', the design of
 "autoconfiguration" for IP was refactored to support a more automated method by
 which hosts could join an IPv6 network.  In the base IPv4 protocol there is no
 explicit support for autoconfiguration.  In IPv6 autoconfiguration support was
-initially integrated into ICMPv6_.  This comes in the form of `Neighbor Discovery
-Protocol`_ (NDP) and includes the ability for a host to automatically discover:
+initially integrated into ICMPv6_.  This comes in the form of `Neighbor
+Discovery Protocol`_ (NDP) and includes the ability for a host to automatically
+discover:
 
 - Neighbor Discovery and Advertisement, replacing IPv4's ARP_.
-- Network address prefix discovery.
+- Network address prefix value.
+
+  - Note: network address *prefix length* is fixed in IPv6 to /64.
+
 - Link (L2) parameter discovery, such as MTU.
-- Next-hop determination through Router Solicitation and Advertisement (RA) -
-  Routing.
-- Duplicate address detection, allowing hosts to generate a host address and
-  determine if it is a duplicate.  (If so, they will pick another).
+- Next-hop routing determination through Router Solicitation and Advertisement
+  (RA).
+- Duplicate address detection, thus allowing hosts to generate a host address
+  and determine if it is a duplicate.  (If so, they will pick another).
 
 The above tools that made up the original NDP allow a host to perform what is
 formally called `Stateless address autoconfiguration`_ (SLAAC).  Additionally,
-NDP, through Router Solicitation and Router Advertisement (RA), allows a host
-to define itself a unique host address, determine its network address, and
-router(s).  This is all the necessary  details a host needs to start sending and
-receiving IP packets.  The IPng designers believed they had successfully
-refactored the base IP, including ICMP, protocol to handle autoconfiguration.
+NDP, through Router Solicitation and Router Advertisement (RA), allows a host to
+define itself a unique host address, determine its network address, and
+router(s).  These are all the necessary details a host needs to start sending
+and receiving IP packets.  The IPng designers believed they had successfully
+refactored the base IP protocol, including ICMP, to handle autoconfiguration.
 
 .. _Neighbor Discovery Protocol: https://en.wikipedia.org/wiki/Neighbor_Discovery_Protocol
 .. _ICMPv6: https://en.wikipedia.org/wiki/ICMPv6
 .. _ARP: https://en.wikipedia.org/wiki/Address_Resolution_Protocol
 .. _Stateless address autoconfiguration: https://en.wikipedia.org/wiki/IPv6#Stateless_address_autoconfiguration_.28SLAAC.29  
 
-The refactoring was not agile enough.  While hosts can configure the IP layer
-with SLAAC, it turns out that DHCPv4 is used provide added functionality beyond
-simply configuring the IP layer of a host.  The almost universally used feature
-of DHCP beyond IP layer is communicating the DNS server's IP address.  SLAAC did
-not initially have support for this and thus DHCPv6 was born.  The ICMPv6 Router
-Advertisement was extended in RFC-6106_ to allow the inclusion of DNS
-configuration information in the RA message.  
+In hindsight, the refactoring was not agile enough.  While hosts can configure
+the IP layer with SLAAC, it turns out that DHCPv4 is used provide added
+functionality beyond simply configuring the IP layer of a host.  The almost
+universally used feature of DHCP, beyond the IP layer, is communicating the DNS
+server's IP address.  SLAAC did not initially have support for this and thus
+DHCPv6 was born.  The ICMPv6 Router Advertisement was extended in RFC-6106_ to
+allow the inclusion of DNS configuration information in the RA message.
 
 .. _RFC-6106: https://tools.ietf.org/html/rfc6106
 
 RFC-6106, which allows DNS details in router advertisements, is not the end of
-the story.  Firstly, its adoption has not been slow, and secondly, there remain
+the story.  Firstly, its adoption has been slow, and secondly, there remain
 additional configuration details not covered by the RFC that are desired when
 autoconfiguring hosts on an IP network.  In fact, IANA_ cites well over 150
 option parameters registered for DHCP [#]_.
@@ -136,8 +140,8 @@ Host Registration in DNS
 
 Providing DNS configuration to an autoconfiguring host does not imply
 registering that host in the local DNS tables.  In fact, neither DHCPv4, nor
-DHCPv6 address the issue of DNS registration of newly configured hosts.  In many
-environments, including the lab, and prototype use case environments,
+DHCPv6 address the issue of DNS registration for newly configured hosts.  In
+many environments, including lab and prototype use case environments,
 registering configured hosts ranges from very helpful to required.  Some clients
 will perform this task, but this behavior is not common enough to rely on it.
 
@@ -215,10 +219,10 @@ The configuration is broken down as follows:
                          performing DHCP requests.
 
 :dhcp-range...: Issue IPv6 addresses between ::100 and ::1ff in response to DHCP
-                requests.  The "constructor:em1" directs the configuration to
-                use the network prefix of the 'em1' interface as the network
-                prefix for the leased addresses.  The actual address returned
-                will be [em1 prefix]::[100-1ff].
+                requests.  The clause, "``constructor:em1``" directs the
+                configuration to use the network prefix of the 'em1' interface
+                as the network prefix for the leased addresses.  The actual
+                address returned will be [em1 prefix]::[100-1ff].
 
 Enabling the `log-dhcp` or `log-queries` parameters in Dnsmasq will enable
 verbose reporting of either DHCP or DNS is debugging is required.
@@ -241,8 +245,8 @@ Conclusion
 
 By utilizing the Dnsmasq_ and dhcpcd_ projects a very simple configuration can
 be constructed that supports autoconfiguration of an IPv6 network.  This pattern
-can be utilized in both heterogeneous lab like environments as well as prototype
-environments, including Vagrant based setups on developer laptops.
+can be utilized in both a heterogeneous lab and prototype environments,
+including Vagrant based setups on developer laptops.
 
 
 References
