@@ -2,7 +2,7 @@
 <html lang="en"
 >
 <head>
-    <title>Tunneling - Stuff I've Figured Out</title>
+    <title>Vagrant FreeBSD Appliance Box - Part 1 - Stuff I've Figured Out</title>
     <!-- Using the latest rendering mode for IE -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
@@ -10,16 +10,12 @@
 
 
 
+<link rel="canonical" href="https://egustafson.github.io/vagrant-freebsd-p1.html">
 
-    <meta name="author" content="Eric Gustafson" />
-    <meta name="keywords" content="Tunneling" />
+        <meta name="author" content="Eric Gustafson" />
+        <meta name="keywords" content="Vagrant,FreeBSD" />
+        <meta name="description" content="A Vagrant ‘network appliance’ based on FreeBSD. Author’s note: This posting was rushed in an attempt to capture the knowledge gathered thus far in my learning process. The posting is a bit of a work in progress - expect updates over the next few weeks as the process is refined ..." />
 
-    <!-- Open Graph tags -->
-        <meta property="og:site_name" content="Stuff I've Figured Out" />
-        <meta property="og:type" content="website"/>
-        <meta property="og:title" content="Stuff I've Figured Out"/>
-        <meta property="og:url" content="https://egustafson.github.io"/>
-        <meta property="og:description" content="Stuff I've Figured Out"/>
 
 
     <!-- Bootstrap -->
@@ -50,7 +46,7 @@ Stuff I've Figured Out            </a>
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav">
-                        <li >
+                        <li class="active">
                             <a href="https://egustafson.github.io/category/howto.html">Howto</a>
                         </li>
                         <li >
@@ -72,18 +68,240 @@ Stuff I've Figured Out            </a>
     <div class="row">
         <div class="col-sm-9">
 
-            <article>
-                <h2><a href="https://egustafson.github.io/ipv6-tunneling.html">IPv6 Tunneling over IPv4&nbsp;Networks</a></h2>
-                <div class="summary"><div class="section" id="connecting-to-the-v6-world-from-afar">
-<h2>Connecting to the v6 world from&nbsp;afar</h2>
-<p>It turns out that proposing IPv6 as a &quot;solution&quot; for various networking problems
-in the Cloud and Container, read &#8216;Docker&#8217;, spaces opens a small Pandora&#8217;s Box of
-questions.  This article is the first in a series discussing pragmatic IPv6
-issues along side ...</p></div>
-                    <a class="btn btn-default btn-xs" href="https://egustafson.github.io/ipv6-tunneling.html">more ...</a>
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="https://egustafson.github.io/vagrant-freebsd-p1.html"
+                       rel="bookmark"
+                       title="Permalink to Vagrant FreeBSD Appliance Box - Part 1">
+                        Vagrant FreeBSD Appliance Box - Part&nbsp;1
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-03-25T00:00:00"> Wed 25 March 2015</time>
+    </span>
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://egustafson.github.io/tag/vagrant.html">Vagrant</a>
+        /
+	<a href="https://egustafson.github.io/tag/freebsd.html">FreeBSD</a>
+    
+</footer><!-- /.post-info -->                    </div>
                 </div>
-            </article>
-            <hr/>
+                <p>A Vagrant &#8216;network appliance&#8217; based on&nbsp;FreeBSD.</p>
+<blockquote>
+Author&#8217;s note: This posting was rushed in an attempt to capture the knowledge
+gathered thus far in my learning process.  The posting is a bit of a work in
+progress - expect updates over the next few weeks as the process is refined.</blockquote>
+<p>This is part 1, (and take 1 I suspect), describing the creation of a Vagrant Box
+intended to be used as a firewall / router appliance with Vagrant.  I have
+reached the limits of VirtualBox with respect to networking and the solution is
+to stop using VirtualBox&#8217;s built in networking and build an appliance that
+provides the needed functionality.  This &quot;appliance&quot; will sit between a
+host-only network, where the rest of any development project will sit, and &quot;the
+outside&quot;.  The outside can be accessed through either <span class="caps">NAT</span> or Bridged networking
+with the pseudo-default <span class="caps">NAT</span> adapter configured as the first adapter in&nbsp;Vagrant.</p>
+<p>This appliance &quot;box&quot; should be an evolving project.  The first step is to create
+a VirtualBox image, along with Vagrant control files, package it as a &quot;Vagrant
+Box&quot;, and publish it on HashiCorp&#8217;s Atlas repository &#8212; possibly other
+locations as well.  Subsequent steps will elaborate configuration of the network
+functions through a Vagrantfile, or ancillary configuration&nbsp;file.</p>
+<p>The initial network functionality that this project will be seeking to provide&nbsp;is:</p>
+<ul class="simple">
+<li>IPv6 Support &#8212; not easily controlled through&nbsp;VirtualBox/Vagrant.</li>
+<li><span class="caps">DHCP</span> Configuration, both v4 and&nbsp;DHCPv6.</li>
+<li><span class="caps">DNS</span> Service, again with IPv6 and v4&nbsp;support.</li>
+<li>Configurable IPv6 Tunneling for public v6&nbsp;connectivity.</li>
+<li>Configurable IPv4 <span class="caps">NAT</span> for public v4&nbsp;connectivity.</li>
+</ul>
+<div class="section" id="creating-a-freebsd-vagrant-box">
+<h2>Creating a FreeBSD Vagrant&nbsp;Box</h2>
+<p>The process I followed started like many of the other articles written about how
+to create <a class="reference external" href="https://docs.vagrantup.com/v2/boxes/base.html">Vagrant Base Boxes</a>.  See the <a class="reference internal" href="#references">References</a> section at the end of
+this article for links to other postings I pulled inspiration&nbsp;from.</p>
+<p>The primary difference, in my mind, between building a generic Vagrant Base Box
+and an &quot;appliance&quot; box is that resources and host configuration should be
+specialized for the purpose and not generalized for flexibility.  To that end,
+my choices of configuration are aimed at minimum resource utilization and
+specific configuration for the purpose.  It should be noted that, just like
+other Vagrant box definitions, this one can be modified to suit individual
+purposes as&nbsp;well.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Box Name:</th><td class="field-body"><p class="first">freebsd-10.1-amd64-gateway</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Type:</th><td class="field-body"><p class="first"><span class="caps">BSD</span> /&nbsp;FreeBSD</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Memory:</th><td class="field-body"><p class="first">384 <span class="caps">MB</span></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name"><span class="caps">CPU</span>:</th><td class="field-body"><p class="first">1</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Disk:</th><td class="field-body"><p class="first">4G (dynamic <span class="caps">VMDK</span>)</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Network 1:</th><td class="field-body"><p class="first"><span class="caps">NAT</span> (para-virtualized&nbsp;controller)</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Port Forward:</th><td class="field-body"><ul class="first last simple">
+<li>Name:         <span class="caps">SSH</span></li>
+<li>Protocol:     <span class="caps">TCP</span></li>
+<li>Host Port:&nbsp;2222</li>
+<li>Guest Port:&nbsp;22</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="install-freebsd-onto-a-virtualbox-host">
+<h3>Install FreeBSD onto a VirtualBox&nbsp;host:</h3>
+<p>The image was created by installing FreeBSD 10.1 from the <span class="caps">ISO</span> image taking the
+following&nbsp;steps:</p>
+<ul class="simple">
+<li>Hostname:&nbsp;gw</li>
+<li>No optional components&nbsp;installed</li>
+<li>Partitions: (no swap)<ul>
+<li>freebsd-boot:&nbsp;512k</li>
+<li>freebsd-root(<span class="caps">UFS</span>):&nbsp;remainder</li>
+</ul>
+</li>
+<li>Root password:&nbsp;&#8216;vagrant&#8217;</li>
+<li>Timezone: <span class="caps">UTC</span></li>
+<li>Services started at boot:  sshd,&nbsp;ntpd</li>
+<li>User: &#8216;vagrant&#8217; w/ password &#8216;vagrant&#8217;, shell: csh, group &#8216;vagrant&#8217; +&nbsp;&#8216;wheel&#8217;</li>
+</ul>
+</div>
+<div class="section" id="reboot-and-configure-the-vm">
+<h3>Reboot and Configure the <span class="caps">VM</span></h3>
+<p>Log in as root and update the&nbsp;system:</p>
+<div class="highlight"><pre><span class="nv">$ </span>freebsd-update fetch
+<span class="nv">$ </span>freebsd-update install
+<span class="nv">$ </span>pkg update
+<span class="nv">$ </span>pkg upgrade
+</pre></div>
+<p>Install <cite>sudo</cite> and <cite>bash</cite>; configure the <cite>vagrant</cite> user to have sudo access with out
+entering a&nbsp;password:</p>
+<div class="highlight"><pre><span class="nv">$ </span>pkg install bash
+<span class="c"># follow the instructions regarding `fdesc`</span>
+<span class="nv">$ </span>mount -t fdescfs fdesc /dev/fd
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;fdesc  /dev/fd  fdescfs   rw  0  0&quot;</span> &gt;&gt; /etc/fstab
+<span class="c">#</span>
+<span class="nv">$ </span>pkg install sudo
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;vagrant ALL=(ALL) NOPASSWD:ALL&quot;</span> &gt; /usr/local/etc/sudoers.d/vagrant
+</pre></div>
+<p>Log out and log back in as user <cite>vagrant</cite>.  Configure <span class="caps">SSH</span> access for user
+<cite>vagrant</cite> using the Vagrant public&nbsp;keys:</p>
+<div class="highlight"><pre><span class="nv">$ </span>sudo pkg install wget
+<span class="nv">$ </span>mkdir -p ~/.ssh
+<span class="nv">$ </span>wget --no-check-certificate <span class="se">\</span>
+       https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub <span class="se">\</span>
+       -O ~/.ssh/authorized_keys
+<span class="nv">$ </span>chmod 0700 ~/.ssh
+<span class="nv">$ </span>chmod 0400 ~/.ssh/authorized_keys
+</pre></div>
+<p>Ensure the the following are set in the <cite>/etc/ssh/sshd_config</cite> file:</p>
+<div class="highlight"><pre>Port  22
+PubkeyAuthentication  yes
+AuthorizedKeysFile  %h/.ssh/authorized_keys
+PermitEmptyPasswords  no
+</pre></div>
+<p>Add additional packages.  These packages are required to make the host into an
+appliance, or are utilitarian in&nbsp;nature:</p>
+<div class="highlight"><pre><span class="c"># Required</span>
+<span class="nv">$ </span>sudo pkg install dnsmasq
+<span class="nv">$ </span>sudo pkg install python
+<span class="c"># Utilities</span>
+<span class="nv">$ </span>sudo pkg install <span class="nb">bind</span>-tools
+<span class="nv">$ </span>sudo pkg install curl
+</pre></div>
+<p>Shutdown the <span class="caps">VM</span> in preparation for&nbsp;packaging:</p>
+<div class="highlight"><pre><span class="nv">$ </span>sudo shutdown -p now
+</pre></div>
+</div>
+<div class="section" id="package-the-box">
+<h3>Package the&nbsp;Box</h3>
+<p>From the VirtualBox host&nbsp;machine:</p>
+<div class="highlight"><pre><span class="nv">$ </span>vagrant package --base freebsd-10.1-amd64-gateway
+</pre></div>
+<p>Note that the VirtualBox <span class="caps">VM</span> name is <cite>freebsd-10.1-amd64-gateway</cite>.</p>
+</div>
+</div>
+<div class="section" id="references">
+<h2>References</h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name" colspan="2">Building Vagrant Boxen:</th></tr>
+<tr class="field"><td>&nbsp;</td><td class="field-body"><ul class="first simple">
+<li><a class="reference external" href="http://williamwalker.me/blog/creating-a-custom-vagrant-box.html">http://williamwalker.me/blog/creating-a-custom-vagrant-box.html</a></li>
+<li><a class="reference external" href="https://blog.engineyard.com/2014/building-a-vagrant-box">https://blog.engineyard.com/2014/building-a-vagrant-box</a></li>
+<li><a class="reference external" href="http://www.skoblenick.com/vagrant/creating-a-custom-box-from-scratch/">http://www.skoblenick.com/vagrant/creating-a-custom-box-from-scratch/</a></li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Previous Articles on IPv6:</th></tr>
+<tr class="field"><td>&nbsp;</td><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="https://egustafson.github.io/ipv6-tunneling.html">IPv6 Tunneling over IPv4&nbsp;Networks</a></li>
+<li><a class="reference external" href="https://egustafson.github.io/ipv6-dhcpv6.html">IPv6 Network (Auto)&nbsp;Configuration</a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Local Variables: -->
+<!-- fill-column: 80 -->
+<!-- End: -->
+</div>
+
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'egustafson'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'vagrant-freebsd-p1';
+                var disqus_url = 'https://egustafson.github.io/vagrant-freebsd-p1.html';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
 
         </div>
         <div class="col-sm-3" id="sidebar">

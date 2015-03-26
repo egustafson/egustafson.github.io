@@ -1,5 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="https://egustafson.github.io/" rel="alternate"></link><link href="https://egustafson.github.io/feeds/howto.atom.xml" rel="self"></link><id>https://egustafson.github.io/</id><updated>2015-03-06T00:00:00-07:00</updated><entry><title>IPv6 Network (Auto) Configuration</title><link href="https://egustafson.github.io/ipv6-dhcpv6.html" rel="alternate"></link><updated>2015-03-06T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2015-03-06:ipv6-dhcpv6.html</id><summary type="html">&lt;p&gt;In my previous article, &lt;a class="reference external" href="https://egustafson.github.io/ipv6-tunneling.html"&gt;IPv6 Tunneling over IPv4 Networks&lt;/a&gt;, I discussed how to
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="https://egustafson.github.io/" rel="alternate"></link><link href="https://egustafson.github.io/feeds/howto.atom.xml" rel="self"></link><id>https://egustafson.github.io/</id><updated>2015-03-25T00:00:00-06:00</updated><entry><title>Vagrant FreeBSD Appliance Box - Part 1</title><link href="https://egustafson.github.io/vagrant-freebsd-p1.html" rel="alternate"></link><updated>2015-03-25T00:00:00-06:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2015-03-25:vagrant-freebsd-p1.html</id><summary type="html">&lt;p&gt;A Vagrant &amp;#8216;network appliance&amp;#8217; based on&amp;nbsp;FreeBSD.&lt;/p&gt;
+&lt;blockquote&gt;
+Author&amp;#8217;s note: This posting was rushed in an attempt to capture the knowledge
+gathered thus far in my learning process.  The posting is a bit of a work in
+progress - expect updates over the next few weeks as the process is refined.&lt;/blockquote&gt;
+&lt;p&gt;This is part 1, (and take 1 I suspect), describing the creation of a Vagrant Box
+intended to be used as a firewall / router appliance with Vagrant.  I have
+reached the limits of VirtualBox with respect to networking and the solution is
+to stop using VirtualBox&amp;#8217;s built in networking and build an appliance that
+provides the needed functionality.  This &amp;quot;appliance&amp;quot; will sit between a
+host-only network, where the rest of any development project will sit, and &amp;quot;the
+outside&amp;quot;.  The outside can be accessed through either &lt;span class="caps"&gt;NAT&lt;/span&gt; or Bridged networking
+with the pseudo-default &lt;span class="caps"&gt;NAT&lt;/span&gt; adapter configured as the first adapter in&amp;nbsp;Vagrant.&lt;/p&gt;
+&lt;p&gt;This appliance &amp;quot;box&amp;quot; should be an evolving project.  The first step is to create
+a VirtualBox image, along with Vagrant control files, package it as a &amp;quot;Vagrant
+Box&amp;quot;, and publish it on HashiCorp&amp;#8217;s Atlas repository &amp;#8212; possibly other
+locations as well.  Subsequent steps will elaborate configuration of the network
+functions through a Vagrantfile, or ancillary configuration&amp;nbsp;file.&lt;/p&gt;
+&lt;p&gt;The initial network functionality that this project will be seeking to provide&amp;nbsp;is:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;IPv6 Support &amp;#8212; not easily controlled through&amp;nbsp;VirtualBox/Vagrant.&lt;/li&gt;
+&lt;li&gt;&lt;span class="caps"&gt;DHCP&lt;/span&gt; Configuration, both v4 and&amp;nbsp;DHCPv6.&lt;/li&gt;
+&lt;li&gt;&lt;span class="caps"&gt;DNS&lt;/span&gt; Service, again with IPv6 and v4&amp;nbsp;support.&lt;/li&gt;
+&lt;li&gt;Configurable IPv6 Tunneling for public v6&amp;nbsp;connectivity.&lt;/li&gt;
+&lt;li&gt;Configurable IPv4 &lt;span class="caps"&gt;NAT&lt;/span&gt; for public v4&amp;nbsp;connectivity.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="section" id="creating-a-freebsd-vagrant-box"&gt;
+&lt;h2&gt;Creating a FreeBSD Vagrant&amp;nbsp;Box&lt;/h2&gt;
+&lt;p&gt;The process I followed started like many of the other articles written about how
+to create &lt;a class="reference external" href="https://docs.vagrantup.com/v2/boxes/base.html"&gt;Vagrant Base Boxes&lt;/a&gt;.  See the &lt;a class="reference internal" href="#references"&gt;References&lt;/a&gt; section at the end of
+this article for links to other postings I pulled inspiration&amp;nbsp;from.&lt;/p&gt;
+&lt;p&gt;The primary difference, in my mind, between building a generic Vagrant Base Box
+and an &amp;quot;appliance&amp;quot; box is that resources and host configuration should be
+specialized for the purpose and not generalized for flexibility.  To that end,
+my choices of configuration are aimed at minimum resource utilization and
+specific configuration for the purpose.  It should be noted that, just like
+other Vagrant box definitions, this one can be modified to suit individual
+purposes as&amp;nbsp;well.&lt;/p&gt;
+&lt;table class="docutils field-list" frame="void" rules="none"&gt;
+&lt;col class="field-name" /&gt;
+&lt;col class="field-body" /&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;Box Name:&lt;/th&gt;&lt;td class="field-body"&gt;&lt;p class="first"&gt;freebsd-10.1-amd64-gateway&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;Type:&lt;/th&gt;&lt;td class="field-body"&gt;&lt;p class="first"&gt;&lt;span class="caps"&gt;BSD&lt;/span&gt; /&amp;nbsp;FreeBSD&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;Memory:&lt;/th&gt;&lt;td class="field-body"&gt;&lt;p class="first"&gt;384 &lt;span class="caps"&gt;MB&lt;/span&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;&lt;span class="caps"&gt;CPU&lt;/span&gt;:&lt;/th&gt;&lt;td class="field-body"&gt;&lt;p class="first"&gt;1&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;Disk:&lt;/th&gt;&lt;td class="field-body"&gt;&lt;p class="first"&gt;4G (dynamic &lt;span class="caps"&gt;VMDK&lt;/span&gt;)&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;Network 1:&lt;/th&gt;&lt;td class="field-body"&gt;&lt;p class="first"&gt;&lt;span class="caps"&gt;NAT&lt;/span&gt; (para-virtualized&amp;nbsp;controller)&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;Port Forward:&lt;/th&gt;&lt;td class="field-body"&gt;&lt;ul class="first last simple"&gt;
+&lt;li&gt;Name:         &lt;span class="caps"&gt;SSH&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Protocol:     &lt;span class="caps"&gt;TCP&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Host Port:&amp;nbsp;2222&lt;/li&gt;
+&lt;li&gt;Guest Port:&amp;nbsp;22&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="section" id="install-freebsd-onto-a-virtualbox-host"&gt;
+&lt;h3&gt;Install FreeBSD onto a VirtualBox&amp;nbsp;host:&lt;/h3&gt;
+&lt;p&gt;The image was created by installing FreeBSD 10.1 from the &lt;span class="caps"&gt;ISO&lt;/span&gt; image taking the
+following&amp;nbsp;steps:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Hostname:&amp;nbsp;gw&lt;/li&gt;
+&lt;li&gt;No optional components&amp;nbsp;installed&lt;/li&gt;
+&lt;li&gt;Partitions: (no swap)&lt;ul&gt;
+&lt;li&gt;freebsd-boot:&amp;nbsp;512k&lt;/li&gt;
+&lt;li&gt;freebsd-root(&lt;span class="caps"&gt;UFS&lt;/span&gt;):&amp;nbsp;remainder&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Root password:&amp;nbsp;&amp;#8216;vagrant&amp;#8217;&lt;/li&gt;
+&lt;li&gt;Timezone: &lt;span class="caps"&gt;UTC&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Services started at boot:  sshd,&amp;nbsp;ntpd&lt;/li&gt;
+&lt;li&gt;User: &amp;#8216;vagrant&amp;#8217; w/ password &amp;#8216;vagrant&amp;#8217;, shell: csh, group &amp;#8216;vagrant&amp;#8217; +&amp;nbsp;&amp;#8216;wheel&amp;#8217;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="reboot-and-configure-the-vm"&gt;
+&lt;h3&gt;Reboot and Configure the &lt;span class="caps"&gt;VM&lt;/span&gt;&lt;/h3&gt;
+&lt;p&gt;Log in as root and update the&amp;nbsp;system:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;freebsd-update fetch
+&lt;span class="nv"&gt;$ &lt;/span&gt;freebsd-update install
+&lt;span class="nv"&gt;$ &lt;/span&gt;pkg update
+&lt;span class="nv"&gt;$ &lt;/span&gt;pkg upgrade
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Install &lt;cite&gt;sudo&lt;/cite&gt; and &lt;cite&gt;bash&lt;/cite&gt;; configure the &lt;cite&gt;vagrant&lt;/cite&gt; user to have sudo access with out
+entering a&amp;nbsp;password:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;pkg install bash
+&lt;span class="c"&gt;# follow the instructions regarding `fdesc`&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;mount -t fdescfs fdesc /dev/fd
+&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;fdesc  /dev/fd  fdescfs   rw  0  0&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/fstab
+&lt;span class="c"&gt;#&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;pkg install sudo
+&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;vagrant ALL=(ALL) NOPASSWD:ALL&amp;quot;&lt;/span&gt; &amp;gt; /usr/local/etc/sudoers.d/vagrant
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Log out and log back in as user &lt;cite&gt;vagrant&lt;/cite&gt;.  Configure &lt;span class="caps"&gt;SSH&lt;/span&gt; access for user
+&lt;cite&gt;vagrant&lt;/cite&gt; using the Vagrant public&amp;nbsp;keys:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo pkg install wget
+&lt;span class="nv"&gt;$ &lt;/span&gt;mkdir -p ~/.ssh
+&lt;span class="nv"&gt;$ &lt;/span&gt;wget --no-check-certificate &lt;span class="se"&gt;\&lt;/span&gt;
+       https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub &lt;span class="se"&gt;\&lt;/span&gt;
+       -O ~/.ssh/authorized_keys
+&lt;span class="nv"&gt;$ &lt;/span&gt;chmod 0700 ~/.ssh
+&lt;span class="nv"&gt;$ &lt;/span&gt;chmod 0400 ~/.ssh/authorized_keys
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ensure the the following are set in the &lt;cite&gt;/etc/ssh/sshd_config&lt;/cite&gt; file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;Port  22
+PubkeyAuthentication  yes
+AuthorizedKeysFile  %h/.ssh/authorized_keys
+PermitEmptyPasswords  no
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Add additional packages.  These packages are required to make the host into an
+appliance, or are utilitarian in&amp;nbsp;nature:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Required&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo pkg install dnsmasq
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo pkg install python
+&lt;span class="c"&gt;# Utilities&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo pkg install &lt;span class="nb"&gt;bind&lt;/span&gt;-tools
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo pkg install curl
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Shutdown the &lt;span class="caps"&gt;VM&lt;/span&gt; in preparation for&amp;nbsp;packaging:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo shutdown -p now
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="package-the-box"&gt;
+&lt;h3&gt;Package the&amp;nbsp;Box&lt;/h3&gt;
+&lt;p&gt;From the VirtualBox host&amp;nbsp;machine:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;vagrant package --base freebsd-10.1-amd64-gateway
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Note that the VirtualBox &lt;span class="caps"&gt;VM&lt;/span&gt; name is &lt;cite&gt;freebsd-10.1-amd64-gateway&lt;/cite&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="references"&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;table class="docutils field-list" frame="void" rules="none"&gt;
+&lt;col class="field-name" /&gt;
+&lt;col class="field-body" /&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name" colspan="2"&gt;Building Vagrant Boxen:&lt;/th&gt;&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td class="field-body"&gt;&lt;ul class="first simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="http://williamwalker.me/blog/creating-a-custom-vagrant-box.html"&gt;http://williamwalker.me/blog/creating-a-custom-vagrant-box.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://blog.engineyard.com/2014/building-a-vagrant-box"&gt;https://blog.engineyard.com/2014/building-a-vagrant-box&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="http://www.skoblenick.com/vagrant/creating-a-custom-box-from-scratch/"&gt;http://www.skoblenick.com/vagrant/creating-a-custom-box-from-scratch/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name" colspan="2"&gt;Previous Articles on IPv6:&lt;/th&gt;&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;td class="field-body"&gt;&lt;ul class="first last simple"&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://egustafson.github.io/ipv6-tunneling.html"&gt;IPv6 Tunneling over IPv4&amp;nbsp;Networks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://egustafson.github.io/ipv6-dhcpv6.html"&gt;IPv6 Network (Auto)&amp;nbsp;Configuration&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;!-- Local Variables: --&gt;
+&lt;!-- fill-column: 80 --&gt;
+&lt;!-- End: --&gt;
+&lt;/div&gt;
+</summary><category term="Vagrant"></category><category term="FreeBSD"></category></entry><entry><title>IPv6 Network (Auto) Configuration</title><link href="https://egustafson.github.io/ipv6-dhcpv6.html" rel="alternate"></link><updated>2015-03-06T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2015-03-06:ipv6-dhcpv6.html</id><summary type="html">&lt;p&gt;In my previous article, &lt;a class="reference external" href="https://egustafson.github.io/ipv6-tunneling.html"&gt;IPv6 Tunneling over IPv4 Networks&lt;/a&gt;, I discussed how to
 connect a &lt;span class="caps"&gt;LAN&lt;/span&gt; to the IPv6 public Internet.  This article continues the theme,
 discussing the issues surrounding the &lt;span class="caps"&gt;LAN&lt;/span&gt;&amp;#8217;s configuration for&amp;nbsp;IPv6.&lt;/p&gt;
 &lt;p&gt;Looking at how &lt;span class="caps"&gt;LAN&lt;/span&gt;&amp;#8217;s are configured for IPv4 proves to be instructive.  Many of
