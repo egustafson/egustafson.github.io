@@ -32,9 +32,10 @@ DISPLAY_TAGS_INLINE = True
 
 # Blogroll
 LINKS = (('Brian Aker', 'http://krow.net/'),
-         ('Andrew Hutchings', 'http://linuxjedi.co.uk/'),
+         ('Matt Farina', 'http://engineeredweb.com/'),
          ('Patrick Galbraith', 'http://patg.net/'),
-         ('Yazz Atlas', 'http://askyazz.com/'),)
+         ('Yazz Atlas', 'http://askyazz.com/'),
+         ('Andrew Hutchings', 'http://linuxjedi.co.uk/'),)
 
 DEFAULT_PAGINATION = 5
 
