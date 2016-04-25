@@ -35,7 +35,8 @@ LINKS = (('Brian Aker', 'http://krow.net/'),
          ('Matt Farina', 'http://engineeredweb.com/'),
          ('Patrick Galbraith', 'http://patg.net/'),
          ('Yazz Atlas', 'http://askyazz.com/'),
-         ('Andrew Hutchings', 'http://linuxjedi.co.uk/'),)
+         ('Andrew Hutchings', 'http://linuxjedi.co.uk/'),
+         ('Tim Potter (tpot)', 'http://frungy.org'),)
 
 DEFAULT_PAGINATION = 5
 
