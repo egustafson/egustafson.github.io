@@ -14,7 +14,7 @@
 
         <meta name="author" content="Eric Gustafson" />
         <meta name="keywords" content="IPv6,FreeBSD,Linux,DHCP,DNS,dnsmasq" />
-        <meta name="description" content="In my previous article, IPv6 Tunneling over IPv4 Networks, I discussed how to connect a LAN to the IPv6 public Internet. This article continues the theme, discussing the issues surrounding the LAN’s configuration for IPv6. Looking at how LAN’s are configured for IPv4 proves to be instructive. Many ..." />
+        <meta name="description" content="In my previous article, IPv6 Tunneling over IPv4 Networks, I discussed how to connect a LAN to the IPv6 public Internet. This article continues the theme, discussing the issues surrounding the LAN’s configuration for IPv6. Looking at how LAN’s are configured for IPv4 proves to be instructive. Many …" />
 
 
 
@@ -124,14 +124,14 @@ only</strong> network.  The same (pre)configuration should also work if the netw
 happens to support IPv4, and the hosts should then configure and join the IPv4
 network as&nbsp;well.</p>
 <p>There are two use cases that are used to vet the proposed methods.  The first is
-the &quot;small lab&quot; use case.  Think of a small, less than 100 hosts, lab
+the &#8220;small lab&#8221; use case.  Think of a small, less than 100 hosts, lab
 environment, or <span class="caps">SOHO</span> office.  In this sort of environment some of the hosts are
 very dynamic, and some are more static with specific functions assigned to them;
 for instance, a mail, or <span class="caps">IRC</span> server.  The second use case is the prototype
 environment for a distributed application.  Often such environments are created
 with <span class="caps">VM</span>&#8217;s using tools such as <a class="reference external" href="https://www.vagrantup.com/">Vagrant</a> inside a developer&#8217;s laptop.  Such
 environments can be paused and restarted, relocated, and the hosts are often
-destroyed and recreated for a &quot;fresh install&quot;.  In both cases, formal rigor in
+destroyed and recreated for a &#8220;fresh install&#8221;.  In both cases, formal rigor in
 configuring and maintaining the network are not as important as a degree of
 automation combined with flexibility to manually adjust things as needed for the
 task at&nbsp;hand.</p>
@@ -144,7 +144,7 @@ it is known as <a class="reference external" href="https://en.wikipedia.org/wiki
 <div class="section" id="ipv6-autoconfiguration">
 <h3>IPv6&nbsp;Autoconfiguration</h3>
 <p>During the design of IPv6, then codenamed &#8216;IPng&#8217;, the design of
-&quot;autoconfiguration&quot; for <span class="caps">IP</span> was refactored to support a more automated method by
+&#8220;autoconfiguration&#8221; for <span class="caps">IP</span> was refactored to support a more automated method by
 which hosts could join an IPv6 network.  In the base IPv4 protocol there is no
 explicit support for autoconfiguration.  In IPv6 autoconfiguration support was
 initially integrated into <a class="reference external" href="https://en.wikipedia.org/wiki/ICMPv6">ICMPv6</a>.  This comes in the form of <a class="reference external" href="https://en.wikipedia.org/wiki/Neighbor_Discovery_Protocol">Neighbor
@@ -184,11 +184,11 @@ option parameters registered for <span class="caps">DHCP</span> <a class="footno
 <div class="section" id="stateful-and-stateless-dhcpv6">
 <h3>Stateful and Stateless&nbsp;DHCPv6</h3>
 <p>The ability for a host to autoconfigure, through <span class="caps">SLAAC</span>, it&#8217;s IPv6 details gives
-rise to a new mode of use for <span class="caps">DHCP</span> - &quot;Stateless DHCPv6&quot;.  In this mode, the host
+rise to a new mode of use for <span class="caps">DHCP</span> - &#8220;Stateless DHCPv6&#8221;.  In this mode, the host
 first uses <span class="caps">SLAAC</span> to configure its IPv6 details and then uses DHCPv6 to request
 additional details like <span class="caps">DNS</span>, <span class="caps">NTP</span>, etc.  In this mode the host indicates it is
-operating &quot;stateless&quot; and the server does not perform address&nbsp;assignment.</p>
-<p>In addition to the stateless mode, DHCPv6 can also be used in a &quot;stateful&quot; mode
+operating &#8220;stateless&#8221; and the server does not perform address&nbsp;assignment.</p>
+<p>In addition to the stateless mode, DHCPv6 can also be used in a &#8220;stateful&#8221; mode
 where an IPv6 address is assigned from the server&#8217;s pool of addresses.  IPv6
 allows and most often requires hosts to have multiple IPv6 addresses assigned to
 a single interface; the link-local address is an excellent example of this.
@@ -262,11 +262,11 @@ can not handle locally to.  Note that the forwarder does <em>not</em>
 need to be a IPv6 address, although it could be.  Multiple
 forwarders are configurable if desired.</td>
 </tr>
-<tr class="field"><th class="field-name">local=/cloud1/:</th><td class="field-body">Declare the domain &quot;cloud1&quot; as the domain being served locally.</td>
+<tr class="field"><th class="field-name">local=/cloud1/:</th><td class="field-body">Declare the domain &#8220;cloud1&#8221; as the domain being served locally.</td>
 </tr>
-<tr class="field"><th class="field-name">domain=cloud1:</th><td class="field-body">Declare the domain &quot;cloud1&quot; as the domain for all <span class="caps">DHCP</span> requests</td>
+<tr class="field"><th class="field-name">domain=cloud1:</th><td class="field-body">Declare the domain &#8220;cloud1&#8221; as the domain for all <span class="caps">DHCP</span> requests</td>
 </tr>
-<tr class="field"><th class="field-name">dhcp-fqdn:</th><td class="field-body">Force all <span class="caps">DHCP</span> clients to be placed in the &quot;cloud1&quot; domain,
+<tr class="field"><th class="field-name">dhcp-fqdn:</th><td class="field-body">Force all <span class="caps">DHCP</span> clients to be placed in the &#8220;cloud1&#8221; domain,
 regardless of what domain they specify in the <span class="caps">DHCP</span> request.</td>
 </tr>
 <tr class="field"><th class="field-name">enable-ra:</th><td class="field-body">Perform IPv6 Router Advertisement as part of Dnsmasq&#8217;s operation.
@@ -284,7 +284,7 @@ host.</td>
 performing <span class="caps">DHCP</span> requests.</td>
 </tr>
 <tr class="field"><th class="field-name">dhcp-range&#8230;:</th><td class="field-body">Issue IPv6 addresses between ::100 and ::1ff in response to <span class="caps">DHCP</span>
-requests.  The clause, &quot;<tt class="docutils literal">constructor:em1</tt>&quot; directs the
+requests.  The clause, &#8220;<tt class="docutils literal">constructor:em1</tt>&#8221; directs the
 configuration to use the network prefix of the &#8216;em1&#8217; interface
 as the network prefix for the leased addresses.  The actual
 address returned will be [em1 prefix]::[100-1ff].</td>
@@ -416,156 +416,6 @@ including Vagrant based setups on developer&nbsp;laptops.</p>
 
             <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
                 <ul class="list-group list-inline tagcloud" id="tags">
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/blog.html">
-                            blog
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cgp.html">
-                            CGP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/collectd.html">
-                            collectd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cygwin.html">
-                            cygwin
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dhcp.html">
-                            DHCP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dns.html">
-                            DNS
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dnsmasq.html">
-                            dnsmasq
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-1">
-                        <a href="https://egustafson.github.io/tag/freebsd.html">
-                            FreeBSD
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/install.html">
-                            install
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/ipv6.html">
-                            IPv6
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/lighttpd.html">
-                            lighttpd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/linux.html">
-                            Linux
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/mediawiki.html">
-                            mediawiki
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/monitorama.html">
-                            Monitorama
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/monitoring.html">
-                            monitoring
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/nat.html">
-                            NAT
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/oscon.html">
-                            OSCON
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/pelican.html">
-                            pelican
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/rfc2893.html">
-                            RFC2893
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sqlite.html">
-                            sqlite
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sync.html">
-                            sync
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/syncthing.html">
-                            syncthing
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/trip-report.html">
-                            trip report
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/tunneling.html">
-                            Tunneling
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/ubuntu.html">
-                            ubuntu
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vagrant.html">
-                            Vagrant
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualbox.html">
-                            VirtualBox
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualization.html">
-                            virtualization
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vmware.html">
-                            VMWare
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/wiki.html">
-                            wiki
-                        </a>
-                    </li>
                 </ul>
             </li>
     <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
@@ -576,8 +426,8 @@ including Vagrant based setups on developer&nbsp;laptops.</p>
             </a>
         </li>
         <li class="list-group-item">
-            <a href="http://linuxjedi.co.uk/" target="_blank">
-                Andrew Hutchings
+            <a href="http://engineeredweb.com/" target="_blank">
+                Matt Farina
             </a>
         </li>
         <li class="list-group-item">
@@ -588,6 +438,16 @@ including Vagrant based setups on developer&nbsp;laptops.</p>
         <li class="list-group-item">
             <a href="http://askyazz.com/" target="_blank">
                 Yazz Atlas
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://linuxjedi.co.uk/" target="_blank">
+                Andrew Hutchings
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://frungy.org" target="_blank">
+                Tim Potter (tpot)
             </a>
         </li>
       </ul>
@@ -602,7 +462,7 @@ including Vagrant based setups on developer&nbsp;laptops.</p>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2015 Eric Gustafson
+         <div class="col-xs-10">&copy; 2016 Eric Gustafson
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

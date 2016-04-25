@@ -14,7 +14,7 @@
 
         <meta name="author" content="Eric Gustafson" />
         <meta name="keywords" content="IPv6,Tunneling,NAT,RFC2893,FreeBSD,Linux" />
-        <meta name="description" content="Connecting to the v6 world from afar It turns out that proposing IPv6 as a &#34;solution&#34; for various networking problems in the Cloud and Container, read ‘Docker’, spaces opens a small Pandora’s Box of questions. This article is the first in a series discussing pragmatic IPv6 issues along side ..." />
+        <meta name="description" content="Connecting to the v6 world from afar It turns out that proposing IPv6 as a “solution” for various networking problems in the Cloud and Container, read ‘Docker’, spaces opens a small Pandora’s Box of questions. This article is the first in a series discussing pragmatic IPv6 issues along side …" />
 
 
 
@@ -107,14 +107,14 @@ Stuff I've Figured Out            </a>
                 </div>
                 <div class="section" id="connecting-to-the-v6-world-from-afar">
 <h2>Connecting to the v6 world from&nbsp;afar</h2>
-<p>It turns out that proposing IPv6 as a &quot;solution&quot; for various networking problems
+<p>It turns out that proposing IPv6 as a &#8220;solution&#8221; for various networking problems
 in the Cloud and Container, read &#8216;Docker&#8217;, spaces opens a small Pandora&#8217;s Box of
 questions.  This article is the first in a series discussing pragmatic IPv6
 issues along side multiple environments using it.  The goal of exploring IPv6 in
 these articles is to solve, or provide possible solutions, to&nbsp;problems.</p>
 <div class="section" id="motivations">
 <h3>Motivations</h3>
-<p>A while ago I took it upon myself to add my home &quot;lab&quot; environment to the public
+<p>A while ago I took it upon myself to add my home &#8220;lab&#8221; environment to the public
 IPv6 network.  <a class="reference external" href="https://en.wikipedia.org/wiki/IPv6">IPv6</a> <strong>is</strong> coming, and it behooves any technologist to gain
 practical experience.  While IPv6 is just the next version after <a class="reference external" href="https://en.wikipedia.org/wiki/IPv4">IPv4</a>,
 there are sharp edges and I certainly found a few.  Unfortunately, I let the v6
@@ -131,15 +131,15 @@ as a response to the depleting IPv4 address space and it seems to have devolved
 into a hammer and we now have a generation of software developers that only see&nbsp;nails.</p>
 <p>The solution, in the truly abstract sense, is IPv6, and <span class="caps">NAT</span> was the hack.  So,
 one day recently it dawns on me when looking at yet another Docker networking
-project, &quot;flatten the network, it should be flat, and adopt the protocol that
-was, and is the solution:&nbsp;IPv6&quot;.</p>
+project, &#8220;flatten the network, it should be flat, and adopt the protocol that
+was, and is the solution:&nbsp;IPv6&#8221;.</p>
 <p>Following this reasoning, with the help of the team I work with, we set out to
 build a reusable environment with not only IPv6 support, but specifically the
 ability to run an IPv6 only environment.  Very quickly after defining this goal,
 it became obvious that connectivity between test environments, and for that
 matter, into the public IPv6 Internet would be highly desirable.  And there we
-are:  &quot;how do we connect private, and possibly isolated behind <span class="caps">NAT</span>, networks to
-the public IPv6&nbsp;Internet?&quot;</p>
+are:  &#8220;how do we connect private, and possibly isolated behind <span class="caps">NAT</span>, networks to
+the public IPv6&nbsp;Internet?&#8221;</p>
 <p>There are many, many, articles written about the mechanics of connecting to the
 IPv6 Internet.  What I was unsuccessful in finding is a description of how such
 connections worked, if it was possible to transition <span class="caps">NAT</span>, and what the possible
@@ -152,36 +152,36 @@ distilled form; I will attempt to provide such a distillation&nbsp;here.</p>
 series; don&#8217;t be surprised if it&nbsp;moves.)</em></p>
 <p>All software, and almost all networking people I talk to are aware of IPv6 and
 have a mental model of what IPv6 is.  It generally goes something along the
-lines of, &quot;it&#8217;s IPv4 with longer addresses&quot;.  The slightly more astute will also
+lines of, &#8220;it&#8217;s IPv4 with longer addresses&#8221;.  The slightly more astute will also
 add that this requires a new record type in <span class="caps">DNS</span>, the <span class="caps">AAAA</span> record.  This is all
-true, however &quot;the devil is in the details&quot;, and v6 is no exception.  The
-following sections elaborate a few of the subtle, but important &quot;details&quot; worth
+true, however &#8220;the devil is in the details&#8221;, and v6 is no exception.  The
+following sections elaborate a few of the subtle, but important &#8220;details&#8221; worth
 noting when beginning work with&nbsp;IPv6.</p>
 <div class="section" id="prefix-length-subnetting">
 <h4>Prefix Length -&nbsp;Subnetting</h4>
 <p>The concept of subnetting, or splitting an address into two sections, the
 &#8216;network&#8217; and &#8216;host&#8217; address, remains the same; the implementation differs.  In
 IPv4 addresses blocks were initially classified as Class &#8216;A&#8217;, &#8216;B&#8217;, and &#8216;C&#8217;<a class="footnote-reference" href="#id2" id="id1">[*]</a>
-and later we moved to <span class="caps">CIDR</span> (&quot;<a class="reference external" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Classless Inter-Domain Routing</a>&quot;) where the
+and later we moved to <span class="caps">CIDR</span> (&#8220;<a class="reference external" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">Classless Inter-Domain Routing</a>&#8220;) where the
 boundary between network and host was any bit boundary in the 32 bit space of the
-IPv4 address.  Often a &quot;larger&quot; block, <span class="caps">CIDR</span> boundary to the left, more
+IPv4 address.  Often a &#8220;larger&#8221; block, <span class="caps">CIDR</span> boundary to the left, more
 significant bits, would be handed to an organization and they would define a new
-<span class="caps">CIDR</span> bit location within the host space and subdivide the network, aka&nbsp;&quot;subnetting&quot;.</p>
+<span class="caps">CIDR</span> bit location within the host space and subdivide the network, aka&nbsp;&#8220;subnetting&#8221;.</p>
 <p>IPv6 uses the same concept, however the boundary between network and host
 sections of the address is fixed.  An IPv6 address is 128 bits and the lower 64
 are the host segment.  This leaves 64 bits of network address.  Unlike
-configuring IPv4 network interfaces where the &quot;netmask&quot; must be specified, an
+configuring IPv4 network interfaces where the &#8220;netmask&#8221; must be specified, an
 IPv6 configuration does not need to specify the netmask, it is always 64&nbsp;bits.</p>
 <p>Subdividing IPv6 address space does still happen, it happens above the first 64
 bits in the address.  For instance the IPv4 address to IPv6 network mapping
 specifies that each IPv4 address is associated with an IPv6 network that can be
-further subdivided.  The v4 to v6 mapping provides a &quot;/48&quot; network for each v4
+further subdivided.  The v4 to v6 mapping provides a &#8220;/48&#8221; network for each v4
 address meaning that each 6to4 network has 65536 subnets or 16 remaining bits to
 subnet in the 64 bit network portion of and IPv6 address, (48 + 16 =&nbsp;64).</p>
 <p>A quick note on terminology.  In IPv4 the term &#8216;subnet mask&#8217;, or &#8216;netmask&#8217; is
 used when describing the bit boundary between network and host address segments.
-In IPv6 a new term has evolved, &quot;prefix length&quot;, sometimes abbreviated,
-&quot;prefixlen&quot;.  The prefix length is meant to describe the number of bits that are
+In IPv6 a new term has evolved, &#8220;prefix length&#8221;, sometimes abbreviated,
+&#8220;prefixlen&#8221;.  The prefix length is meant to describe the number of bits that are
 fixed in an allocated block of IPv6 addresses.  This is similar, but subtly
 different than a netmask.  The netmask in IPv6 is always /64.  If I am given a
 network block with prefix length /48 (48 bits) then I have 16 bits, or 65536
@@ -198,8 +198,8 @@ then I have exactly <em>one</em> IPv6 network and can not subdivide&nbsp;it.</p>
 </div>
 <div class="section" id="tunneling-rfc-4213">
 <h3>Tunneling - <span class="caps">RFC</span>-4213</h3>
-<p><a class="reference external" href="https://www.ietf.org/rfc/rfc4213.txt"><span class="caps">RFC</span> 4213</a> specifies, &quot;IPv4 compatibility mechanisms that can be implemented
-by IPv6 hosts and routers.&quot;  The document specifically details a method for
+<p><a class="reference external" href="https://www.ietf.org/rfc/rfc4213.txt"><span class="caps">RFC</span> 4213</a> specifies, &#8220;IPv4 compatibility mechanisms that can be implemented
+by IPv6 hosts and routers.&#8221;  The document specifically details a method for
 transporting IPv6 packets across an IPv4 only network &#8212; tunneling.  The <span class="caps">RFC</span>
 does not exclude other methods, however the method in <span class="caps">RFC</span> 4213 is trivially
 simple and in wide use on the public (IPv4)&nbsp;Internet.</p>
@@ -257,7 +257,7 @@ not suffer from these problems.  If no state is kept and bi-directional <span cl
 not utilized then remote packets will be dropped at the <span class="caps">NAT</span> device and the
 tunnel will not function&nbsp;properly.</p>
 <p>Additionally, the <span class="caps">NAT</span> device must support <span class="caps">NAT</span> translation of IPv4 protocol 41
-packets.  It has been reported that some consumer grade &quot;home firewalls&quot; are
+packets.  It has been reported that some consumer grade &#8220;home firewalls&#8221; are
 configured by default to drop such packets.  Numerous other articles advise
 checking such devices to ensure they are configured to pass this traffic.  I
 have not discovered any citations of devices that would not, and could not pass
@@ -299,8 +299,8 @@ guarantee of&nbsp;delivery.</p>
 </div>
 <div class="section" id="hop-limit">
 <h5>Hop&nbsp;Limit</h5>
-<p>As stated in <span class="caps">RFC</span> 4213, &quot;IPv6-over-IPv4 tunnels are modeled as a &#8216;single-hop&#8217;
-from the IPv6 perspective.&quot;  The encapsulated IPv6 packet does not have its hop
+<p>As stated in <span class="caps">RFC</span> 4213, &#8220;IPv6-over-IPv4 tunnels are modeled as a &#8216;single-hop&#8217;
+from the IPv6 perspective.&#8221;  The encapsulated IPv6 packet does not have its hop
 limit decremented while transiting the IPv4 network and only the IPv4 <span class="caps">TTL</span> is
 manipulated in transit.  The IPv6 packet&#8217;s hop limit is decremented by the
 tunnel endpoint as if the IPv4 transit network is a single&nbsp;hop.</p>
@@ -309,12 +309,12 @@ tunnel endpoint as if the IPv4 transit network is a single&nbsp;hop.</p>
 </div>
 <div class="section" id="rfc-4213-methods">
 <h3><span class="caps">RFC</span>-4213&nbsp;Methods</h3>
-<p>The common name for <em>basic</em> <span class="caps">RFC</span>-4213 tunneling is &quot;<a class="reference external" href="https://en.wikipedia.org/wiki/6in4">6in4</a>&quot;.  Utilizing the
+<p>The common name for <em>basic</em> <span class="caps">RFC</span>-4213 tunneling is &#8220;<a class="reference external" href="https://en.wikipedia.org/wiki/6in4">6in4</a>&#8220;.  Utilizing the
 techniques described above, manually configuring tunnel endpoints would be
 described as&nbsp;6in4.</p>
 <div class="section" id="to4">
 <h4>6to4</h4>
-<p>The &quot;<a class="reference internal" href="#to4">6to4</a>&quot; method builds on 6in4 by providing automated configuration.
+<p>The &#8220;<a class="reference internal" href="#to4">6to4</a>&#8221; method builds on 6in4 by providing automated configuration.
 Tunneling is accomplished according to <span class="caps">RFC</span>-4213 and configuration details are
 prescribed in <a class="reference external" href="https://www.ietf.org/rfc/rfc3056.txt"><span class="caps">RFC</span>-3056</a> and <a class="reference external" href="https://www.ietf.org/rfc/rfc3068.txt"><span class="caps">RFC</span>-3068</a>.  In short, <span class="caps">RFC</span>-3056 reserves 2002::/16
 for statically mapping IPv4 addresses to IPv6 networks and <span class="caps">RFC</span>-3068 specifies an
@@ -356,12 +356,12 @@ also a Linux/xxxBSD, open source client named <a class="reference external" href
 </div>
 <div class="section" id="tunnel-brokers">
 <h3>Tunnel&nbsp;Brokers</h3>
-<p>&quot;Tunnel Broker&quot; is the term being used to describe <span class="caps">ISP</span>&#8217;s who will provide tunnel
+<p><span class="dquo">&#8220;</span>Tunnel Broker&#8221; is the term being used to describe <span class="caps">ISP</span>&#8217;s who will provide tunnel
 access to the IPv6 public Internet.  There are a number of brokers, and among
 them, a number that offer free access for tunneling IPv6.  The Wikipedia page,
-&quot;&quot;<a class="reference external" href="https://en.wikipedia.org/wiki/List_of_IPv6_tunnel_brokers">List of IPv6 tunnel brokers</a>&quot; contains a&nbsp;list.</p>
+&#8220;&#8221;<a class="reference external" href="https://en.wikipedia.org/wiki/List_of_IPv6_tunnel_brokers">List of IPv6 tunnel brokers</a>&#8221; contains a&nbsp;list.</p>
 <p>The two most popular, and well deployed brokers are <a class="reference external" href="https://www.he.net/">Hurricane Electric</a>&#8216;s
-(<span class="caps">HE</span>) &quot;<a class="reference external" href="https://tunnelbroker.net/">IPv6 Tunnel Broker</a>&quot; service and <a class="reference external" href="https://www.sixxs.net/">SixXS</a> (Six Access).  I chose <span class="caps">HE</span>
+(<span class="caps">HE</span>) &#8220;<a class="reference external" href="https://tunnelbroker.net/">IPv6 Tunnel Broker</a>&#8221; service and <a class="reference external" href="https://www.sixxs.net/">SixXS</a> (Six Access).  I chose <span class="caps">HE</span>
 because they appeared to have more written about them and how to connect to
 their tunnel broker.  In hindsight I have concluded that SixXS and <span class="caps">HE</span> are on
 comparable footing.  I would recommend starting with one of the two, but believe
@@ -384,7 +384,7 @@ VMWare Workstation, even with 2 layers of <span class="caps">NAT</span>, will&nb
 </ol>
 <div class="section" id="he-tunnel-broker-account">
 <h4><span class="caps">HE</span> Tunnel Broker&nbsp;Account</h4>
-<p>Go to:  <a class="reference external" href="https://tunnelbroker.net">https://tunnelbroker.net</a> and select the &quot;Register&quot; button on the upper
+<p>Go to:  <a class="reference external" href="https://tunnelbroker.net">https://tunnelbroker.net</a> and select the &#8220;Register&#8221; button on the upper
 left section of the page in the login box.  Complete the registration form which
 asks&nbsp;for:</p>
 <ul class="simple">
@@ -403,7 +403,7 @@ keychain software, right?  &lt;hint,&nbsp;nudge&gt;</p>
 <p>With the registration email, go back to tunnelbroker.net and log in.  &#8216;Username&#8217;
 is the Account Name you registered with.  Once logged in you will be allowed to
 create up to 5 separate tunnels.  Initially tunnels are issued a single IPv6
-network, a /64 prefix.  There is an option to &quot;assign a /48&quot; to the tunnel which
+network, a /64 prefix.  There is an option to &#8220;assign a /48&#8221; to the tunnel which
 would allocate a prefix with 16 bits or 65536 subnets within it.  I have not
 tried this yet, but will update this article when I&nbsp;do.</p>
 <p>At this point you need to know the public IPv4 address that you will use as your
@@ -416,25 +416,25 @@ from a command line application like <tt class="docutils literal">wget</tt> or <
 </div>
 <div class="section" id="allocate-a-tunnel">
 <h4>Allocate a&nbsp;Tunnel</h4>
-<p>Once logged in to <span class="caps">HE</span>&#8217;s Tunnel Broker, on the left side below &quot;Account Menu&quot; is a
-box titled &quot;User Functions&quot;.  Inside User Functions click on &quot;Create Regular
-Tunnel&quot;.  You will be prompted for two pieces of&nbsp;information:</p>
+<p>Once logged in to <span class="caps">HE</span>&#8217;s Tunnel Broker, on the left side below &#8220;Account Menu&#8221; is a
+box titled &#8220;User Functions&#8221;.  Inside User Functions click on &#8220;Create Regular
+Tunnel&#8221;.  You will be prompted for two pieces of&nbsp;information:</p>
 <ul class="simple">
 <li>IPv4 Endpoint (Your&nbsp;side).</li>
 <li>Available Tunnel&nbsp;Servers.</li>
 </ul>
 <p>Enter the <strong>public IPv4 address</strong> your FreeBSD host appears on the Internet as,
-as described above, for the &quot;IPv4 Endpoint&quot;.  This is the address that <span class="caps">HE</span>&#8217;s side
+as described above, for the &#8220;IPv4 Endpoint&#8221;.  This is the address that <span class="caps">HE</span>&#8217;s side
 of the tunnel will send (tunnel) IPv6 packets bound for you&nbsp;to.</p>
-<p>Select the nearest location for the &quot;Available Tunnel Servers&quot;.  Note that
-&quot;nearest&quot; is in a network sense.  The astute person will perform ping checks and
+<p>Select the nearest location for the &#8220;Available Tunnel Servers&#8221;.  Note that
+&#8220;nearest&#8221; is in a network sense.  The astute person will perform ping checks and
 determine latency if there is any question as to which is closest.  I was pleasantly
 surprised that the physically closest node was the lowest latency - this is
 often not the my case.  Regardless, any of the server endpoints will function&nbsp;properly.</p>
 <p>Note that the <span class="caps">HE</span> Tunnel Broker web site will let you create, edit, and delete
-tunnels.  It is not necessary to &quot;get it perfect&quot; the first time; it is possible
+tunnels.  It is not necessary to &#8220;get it perfect&#8221; the first time; it is possible
 to change the tunnel configuration as well as destroy and&nbsp;recreate.</p>
-<p>Click the &quot;Create Tunnel&quot; button and you will be presented with the details of
+<p>Click the &#8220;Create Tunnel&#8221; button and you will be presented with the details of
 the newly created tunnel.  This information&nbsp;includes:</p>
 <ul class="simple">
 <li>Server IPv4 Address &#8212; the remote tunnel&nbsp;endpoint.</li>
@@ -443,7 +443,7 @@ the newly created tunnel.  This information&nbsp;includes:</p>
 <li>Client IPv6 Address &#8212; the IPv6 address <em>inside</em> your end of the&nbsp;tunnel.</li>
 <li>Routed /64 (IPv6 prefix) &#8212; An IPv6 network prefix to use on your end of the&nbsp;tunnel.</li>
 </ul>
-<p>The &quot;Routed /64&quot; will <em>not</em> overlap with the IPv6 addresses of your client or
+<p>The &#8220;Routed /64&#8221; will <em>not</em> overlap with the IPv6 addresses of your client or
 server; this is correct.  Keep in mind that the tunnel is a separate data link
 (L2 network) from your routed network, this is why the client/server addresses
 are, and should be, on a different&nbsp;network.</p>
@@ -451,29 +451,29 @@ are, and should be, on a different&nbsp;network.</p>
 <div class="section" id="tunnel-details-page">
 <h4>Tunnel Details&nbsp;Page</h4>
 <p>There are a few additional items worth noting on the Tunnel Details page.
-First, note the tabs across the top of the center section:  &quot;IPv6 Tunnel&quot;,
-&quot;Example Configurations&quot;, and &quot;Advanced&quot;.  Also note, along the left side that
-the &quot;Account Menu&quot; and &quot;User Functions&quot; are still&nbsp;available.</p>
-<p>On the &quot;IPv6 Tunnel&quot; tab there are three noteworthy items.  First, the &quot;Delete&quot;
+First, note the tabs across the top of the center section:  &#8220;IPv6 Tunnel&#8221;,
+&#8220;Example Configurations&#8221;, and &#8220;Advanced&#8221;.  Also note, along the left side that
+the &#8220;Account Menu&#8221; and &#8220;User Functions&#8221; are still&nbsp;available.</p>
+<p>On the &#8220;IPv6 Tunnel&#8221; tab there are three noteworthy items.  First, the &#8220;Delete&#8221;
 button; use this to return a tunnel you are no longer using.  The second is less
 obvious, but very useful.  Clicking on the Client IPv4 address will allow you to
 edit the value.  If you would like to adjust the IPv4 address of your end of the
 tunnel it can be done with out deleting and recreating the tunnel.  Finally,
-there is a clickable link to &quot;Assign /48&quot; to the tunnel.  <span class="caps">HE</span> documentation makes
-reference to &quot;get your own /48 prefix <em>once</em> your tunnel is up&quot;.  I have not
+there is a clickable link to &#8220;Assign /48&#8221; to the tunnel.  <span class="caps">HE</span> documentation makes
+reference to &#8220;get your own /48 prefix <em>once</em> your tunnel is up&#8221;.  I have not
 attempted to assign a /48 yet, but as noted earlier, will update this article
 when I&nbsp;have.</p>
-<p>The &quot;Example Configurations&quot; tab is just that, a place to find examples for
+<p>The &#8220;Example Configurations&#8221; tab is just that, a place to find examples for
 various operating systems.  Select the tab, and then choose an <span class="caps">OS</span> from the drop
-down.  Worth noting, the &quot;FreeBSD &gt;= 4.4&quot; item has an error in it, which was the
-source of some confusion for me.  In the third line that ends with &quot;prefixlen
-128&quot;, this final clause, the prefixlen, should removed; the remainder of the
+down.  Worth noting, the &#8220;FreeBSD &gt;= 4.4&#8221; item has an error in it, which was the
+source of some confusion for me.  In the third line that ends with &#8220;prefixlen
+128&#8221;, this final clause, the prefixlen, should removed; the remainder of the
 line remains the same.  I have not experimented with any of the other examples,
 your mileage may&nbsp;vary.</p>
-<p>The &quot;Advanced&quot; tab has a couple of settings.  The tunnel <span class="caps">MTU</span> can be tuned.
-An &quot;update key&quot; is provided for interacting with <span class="caps">HE</span>&#8217;s Tunnel Broker via
+<p>The &#8220;Advanced&#8221; tab has a couple of settings.  The tunnel <span class="caps">MTU</span> can be tuned.
+An &#8220;update key&#8221; is provided for interacting with <span class="caps">HE</span>&#8217;s Tunnel Broker via
 scripts.  Finally, there is a method to update <span class="caps">DNS</span> settings associated with your&nbsp;tunnel.</p>
-<p>With in the left hand side &quot;Account Menu&quot; the &quot;Main Page&quot; link will take you to
+<p>With in the left hand side &#8220;Account Menu&#8221; the &#8220;Main Page&#8221; link will take you to
 the landing page you started at when you logged in.  Now that you have allocated
 a tunnel it will be listed at the bottom of the center panel.  Clicking on the
 link for the tunnel will take you back to the Tunnel Details&nbsp;page.</p>
@@ -506,11 +506,11 @@ details of our tunnel as configured from <span class="caps">HE</span>:</p>
 </tbody>
 </table>
 <p>Also, for purposes of this example, the host will have two interfaces named
-&quot;em0&quot; and &quot;em1&quot;.  Interface &quot;em0&quot; is connected, behind <span class="caps">NAT</span>, to the Internet.
-Interface &quot;em1&quot; is the &#8216;internal&#8217; network.  Note that basic connectivity of the
-FreeBSD host can be done with just interface &quot;em0&quot;.  Only the later part of this
+&#8220;em0&#8221; and &#8220;em1&#8221;.  Interface &#8220;em0&#8221; is connected, behind <span class="caps">NAT</span>, to the Internet.
+Interface &#8220;em1&#8221; is the &#8216;internal&#8217; network.  Note that basic connectivity of the
+FreeBSD host can be done with just interface &#8220;em0&#8221;.  Only the later part of this
 example will show how to add a routed IPv6 network which will be attached to
-interface&nbsp;&quot;em1&quot;.</p>
+interface&nbsp;&#8220;em1&#8221;.</p>
 <p>The configuration of both interfaces starts as&nbsp;follows:</p>
 <pre class="literal-block">
 gustafer&#64;fw1&gt; ifconfig -a
@@ -530,12 +530,12 @@ em1: flags=8843&lt;UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST&gt; metric 0 mtu 1500
         status: active
 </pre>
 <p>Note that neither interface has any IPv6 configuration associated with it at the
-start.  The outward facing, but still behind <span class="caps">NAT</span>, interface, &quot;em0&quot; has an <span class="caps">IP</span>
+start.  The outward facing, but still behind <span class="caps">NAT</span>, interface, &#8220;em0&#8221; has an <span class="caps">IP</span>
 address of 10.3.7.146.  The loopback details were removed for space as they have
 nothing to&nbsp;add.</p>
 <p>FreeBSD uses the <a class="reference external" href="https://www.freebsd.org/cgi/man.cgi?query=gif&amp;sektion=4">gif(4)</a> (generic tunnel interface) device to configure 6in4
 tunnels.  There are two things that have to be done to configure the tunnel: 1)
-configure the &quot;gif0&quot; interface, and 2) add a default, <span class="caps">IPV6</span>&nbsp;route.</p>
+configure the &#8220;gif0&#8221; interface, and 2) add a default, <span class="caps">IPV6</span>&nbsp;route.</p>
 <p>The commands below do the&nbsp;following:</p>
 <ol class="arabic simple">
 <li>Create a pseudo-interface of type gif named&nbsp;&#8216;gif0&#8217;.</li>
@@ -609,8 +609,8 @@ PING6(56=40+8+8 bytes) 2001:db8:39:222::2 --&gt; 2607:f8b0:400f:802::200e
 1 packets transmitted, 1 packets received, 0.0% packet loss
 round-trip min/avg/max/std-dev = 48.120/48.120/48.120/0.000 ms
 </pre>
-<p>An additional way to verify your connection is functioning is to use the &quot;IPv6
-Portscan&quot; function found in the User Functions section of the <span class="caps">HE</span> Tunnel Broker
+<p>An additional way to verify your connection is functioning is to use the &#8220;IPv6
+Portscan&#8221; function found in the User Functions section of the <span class="caps">HE</span> Tunnel Broker
 web page.  You must be logged in to use this service and it will only allow you
 to scan addresses that <span class="caps">HE</span> allocated to you.  If you have simply followed the
 instructions above the scan should return results, if you are connected.  If you
@@ -655,7 +655,7 @@ incoming traffic.  However, connecting via IPv6 does not require <span class="ca
 your hosts have <strong>public</strong> address.  The solution to this problem is also the
 same, regardless of IPv4 or IPv6:  block all traffic that does not initiate from
 within your network.  This is a simplified solution, but a good starting point.
-If you know enough to start thinking, &quot;but I need to allow X, Y, and Z&quot;, then
+If you know enough to start thinking, &#8220;but I need to allow X, Y, and Z&#8221;, then
 you know enough to go beyond the simple explanation that&nbsp;follows.</p>
 <p>Filtering does not change from IPv4 to IPv6, but filtering rules do.  Most
 filter rules either explicitly, or implicitly declare the datagram protocol (v4
@@ -687,7 +687,7 @@ which is why I chose it for this&nbsp;example.</p>
 <p>I will specifically address two alternative below.  In pursuing the <span class="caps">HE</span> example
 configurations I noted all of the popular operating systems, including all of
 the <span class="caps">BSD</span>&#8217;s, Linux, Windows, and Mac.  I also noted OpenWRT, a popular open source
-alternative firmware load for many consumer grade &quot;home firewall&quot;&nbsp;products.</p>
+alternative firmware load for many consumer grade &#8220;home firewall&#8221;&nbsp;products.</p>
 <div class="section" id="pfsense">
 <h4>PFSense</h4>
 <p><a class="reference external" href="https://www.pfsense.org/">PFSense</a> is an open source project implementing a Firewall.  It is based on
@@ -717,7 +717,7 @@ additional operating systems.  This article will not cover Linux &#8212;&nbsp;so
 connecting IPv6 networks across IPv4, including <span class="caps">NAT</span>.  There are multiple IPv6
 tunnel brokers offering free, and hassle free, tunnels using 6in4.  Modern, open
 source operating systems have good support for 6in4.  There are open source
-&quot;firewall&quot; appliances using these operating systems and providing simple 6in4
+&#8220;firewall&#8221; appliances using these operating systems and providing simple 6in4
 configuration.  Join the IPv6 network today, there&#8217;s no reason to wait.  Better
 yet, start using IPv6 to solve network problems induced by using&nbsp;IPv4.</p>
 </div>
@@ -852,156 +852,6 @@ yet, start using IPv6 to solve network problems induced by using&nbsp;IPv4.</p>
 
             <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
                 <ul class="list-group list-inline tagcloud" id="tags">
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/blog.html">
-                            blog
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cgp.html">
-                            CGP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/collectd.html">
-                            collectd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cygwin.html">
-                            cygwin
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dhcp.html">
-                            DHCP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dns.html">
-                            DNS
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dnsmasq.html">
-                            dnsmasq
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-1">
-                        <a href="https://egustafson.github.io/tag/freebsd.html">
-                            FreeBSD
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/install.html">
-                            install
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/ipv6.html">
-                            IPv6
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/lighttpd.html">
-                            lighttpd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/linux.html">
-                            Linux
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/mediawiki.html">
-                            mediawiki
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/monitorama.html">
-                            Monitorama
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/monitoring.html">
-                            monitoring
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/nat.html">
-                            NAT
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/oscon.html">
-                            OSCON
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/pelican.html">
-                            pelican
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/rfc2893.html">
-                            RFC2893
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sqlite.html">
-                            sqlite
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sync.html">
-                            sync
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/syncthing.html">
-                            syncthing
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/trip-report.html">
-                            trip report
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/tunneling.html">
-                            Tunneling
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/ubuntu.html">
-                            ubuntu
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vagrant.html">
-                            Vagrant
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualbox.html">
-                            VirtualBox
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualization.html">
-                            virtualization
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vmware.html">
-                            VMWare
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/wiki.html">
-                            wiki
-                        </a>
-                    </li>
                 </ul>
             </li>
     <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
@@ -1012,8 +862,8 @@ yet, start using IPv6 to solve network problems induced by using&nbsp;IPv4.</p>
             </a>
         </li>
         <li class="list-group-item">
-            <a href="http://linuxjedi.co.uk/" target="_blank">
-                Andrew Hutchings
+            <a href="http://engineeredweb.com/" target="_blank">
+                Matt Farina
             </a>
         </li>
         <li class="list-group-item">
@@ -1024,6 +874,16 @@ yet, start using IPv6 to solve network problems induced by using&nbsp;IPv4.</p>
         <li class="list-group-item">
             <a href="http://askyazz.com/" target="_blank">
                 Yazz Atlas
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://linuxjedi.co.uk/" target="_blank">
+                Andrew Hutchings
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://frungy.org" target="_blank">
+                Tim Potter (tpot)
             </a>
         </li>
       </ul>
@@ -1038,7 +898,7 @@ yet, start using IPv6 to solve network problems induced by using&nbsp;IPv4.</p>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2015 Eric Gustafson
+         <div class="col-xs-10">&copy; 2016 Eric Gustafson
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

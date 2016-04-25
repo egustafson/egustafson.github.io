@@ -14,7 +14,7 @@
 
         <meta name="author" content="Eric Gustafson" />
         <meta name="keywords" content="monitoring,lighttpd,collectd,CGP" />
-        <meta name="description" content="I want to collect machine metrics and I want to display them as a pretty set of graphs through a web browser. Here’s how I do it: Install collectd — this gathers the metrics. Install lighttpd — my web server preference, also install php. Download and install collectd graph panel (CGP ..." />
+        <meta name="description" content="I want to collect machine metrics and I want to display them as a pretty set of graphs through a web browser. Here’s how I do it: Install collectd — this gathers the metrics. Install lighttpd — my web server preference, also install php. Download and install collectd graph panel (CGP …" />
 
 
 
@@ -114,21 +114,21 @@ pretty set of graphs through a web browser.  Here&#8217;s how I do&nbsp;it:</p>
 <p>The following walk through will demonstrate the installation using
 Ubuntu Oneiric (11.10). Note, the <tt class="docutils literal">sudo</tt> is generally required, but
 dropped from the commands listed&nbsp;below:</p>
-<div class="highlight"><pre>apt-get install collectd lighttpd php5-cgi php5
+<div class="highlight"><pre><span></span>apt-get install collectd lighttpd php5-cgi php5
 </pre></div>
 <p>next, edit <tt class="docutils literal">/etc/php5/cgi/php.ini</tt> to enable php5 in lighttpd.
-Uncomment the line &quot;<tt class="docutils literal">cgi.fix_pathinfo=1</tt>&quot;.</p>
+Uncomment the line &#8220;<tt class="docutils literal">cgi.fix_pathinfo=1</tt>&#8220;.</p>
 <p>Restart lighttpd and you have a working&nbsp;lighttpd+php5.</p>
-<div class="highlight"><pre>lighttpd-enable-mod fastcgi
+<div class="highlight"><pre><span></span>lighttpd-enable-mod fastcgi
 lighttpd-enable-mod fastcgi-php
 service lighttpd force-reload
 </pre></div>
-<p>Next, download and &quot;<cite>install</cite>&quot; collectd graph panel (<span class="caps">CGP</span>).  <span class="caps">CGP</span> is
+<p>Next, download and &#8220;<cite>install</cite>&#8221; collectd graph panel (<span class="caps">CGP</span>).  <span class="caps">CGP</span> is
 downloaded with <tt class="docutils literal">git</tt>, if you do not have git installed&nbsp;then:</p>
-<div class="highlight"><pre>apt-get install git
+<div class="highlight"><pre><span></span>apt-get install git
 </pre></div>
 <p>Download <span class="caps">CGP</span> into the lighttpd root&nbsp;directory:</p>
-<div class="highlight"><pre><span class="nb">cd</span> /var/www
+<div class="highlight"><pre><span></span><span class="nb">cd</span> /var/www
 git clone http://git.nethuis.nl/pub/cgp.git
 chown -R www-data.www-data cgp   <span class="c">## optional</span>
 </pre></div>
@@ -146,7 +146,7 @@ additional configuration &#8212; simply uncommenting them is a good
 starting&nbsp;point.</p>
 <p>After editing the collectd configuration, the service must be
 restarted with the typical service restart&nbsp;command:</p>
-<div class="highlight"><pre>service collectd restart
+<div class="highlight"><pre><span></span>service collectd restart
 </pre></div>
 <p>Many of the plugins default to collecting all possible metrics covered
 by the plugin.  It is possible, via the plugin&#8217;s specific
@@ -226,156 +226,6 @@ the network&nbsp;plugin.</p>
 
             <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
                 <ul class="list-group list-inline tagcloud" id="tags">
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/blog.html">
-                            blog
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cgp.html">
-                            CGP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/collectd.html">
-                            collectd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cygwin.html">
-                            cygwin
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dhcp.html">
-                            DHCP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dns.html">
-                            DNS
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dnsmasq.html">
-                            dnsmasq
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-1">
-                        <a href="https://egustafson.github.io/tag/freebsd.html">
-                            FreeBSD
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/install.html">
-                            install
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/ipv6.html">
-                            IPv6
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/lighttpd.html">
-                            lighttpd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/linux.html">
-                            Linux
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/mediawiki.html">
-                            mediawiki
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/monitorama.html">
-                            Monitorama
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/monitoring.html">
-                            monitoring
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/nat.html">
-                            NAT
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/oscon.html">
-                            OSCON
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/pelican.html">
-                            pelican
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/rfc2893.html">
-                            RFC2893
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sqlite.html">
-                            sqlite
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sync.html">
-                            sync
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/syncthing.html">
-                            syncthing
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/trip-report.html">
-                            trip report
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/tunneling.html">
-                            Tunneling
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/ubuntu.html">
-                            ubuntu
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vagrant.html">
-                            Vagrant
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualbox.html">
-                            VirtualBox
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualization.html">
-                            virtualization
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vmware.html">
-                            VMWare
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/wiki.html">
-                            wiki
-                        </a>
-                    </li>
                 </ul>
             </li>
     <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
@@ -386,8 +236,8 @@ the network&nbsp;plugin.</p>
             </a>
         </li>
         <li class="list-group-item">
-            <a href="http://linuxjedi.co.uk/" target="_blank">
-                Andrew Hutchings
+            <a href="http://engineeredweb.com/" target="_blank">
+                Matt Farina
             </a>
         </li>
         <li class="list-group-item">
@@ -398,6 +248,16 @@ the network&nbsp;plugin.</p>
         <li class="list-group-item">
             <a href="http://askyazz.com/" target="_blank">
                 Yazz Atlas
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://linuxjedi.co.uk/" target="_blank">
+                Andrew Hutchings
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://frungy.org" target="_blank">
+                Tim Potter (tpot)
             </a>
         </li>
       </ul>
@@ -412,7 +272,7 @@ the network&nbsp;plugin.</p>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2015 Eric Gustafson
+         <div class="col-xs-10">&copy; 2016 Eric Gustafson
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

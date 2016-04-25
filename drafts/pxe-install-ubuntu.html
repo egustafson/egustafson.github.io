@@ -14,7 +14,7 @@
 
         <meta name="author" content="Eric Gustafson" />
         <meta name="keywords" content="PXE,install,debian,ubuntu,preseed,dnsmasq,virtualbox" />
-        <meta name="description" content="The other day I received a &#34;server&#34; (HP Z620) as part of work. I set out to integrate it into a new subnet to be used like a mini-cloud LAN. Since my &#34;lab&#34; is a floor down from my office my first goal was to make this &#34;server&#34; remote everything ..." />
+        <meta name="description" content="The other day I received a “server” (HP Z620) as part of work. I set out to integrate it into a new subnet to be used like a mini-cloud LAN. Since my “lab” is a floor down from my office my first goal was to make this “server” remote everything …" />
 
 
 
@@ -107,9 +107,9 @@ Stuff I've Figured Out            </a>
     
 </footer><!-- /.post-info -->                    </div>
                 </div>
-                <p>The other day I received a &quot;server&quot; (<span class="caps">HP</span> Z620) as part of work.  I set out to
-integrate it into a new subnet to be used like a mini-cloud <span class="caps">LAN</span>.  Since my &quot;lab&quot;
-is a floor down from my office my first goal was to make this &quot;server&quot; remote
+                <p>The other day I received a &#8220;server&#8221; (<span class="caps">HP</span> Z620) as part of work.  I set out to
+integrate it into a new subnet to be used like a mini-cloud <span class="caps">LAN</span>.  Since my &#8220;lab&#8221;
+is a floor down from my office my first goal was to make this &#8220;server&#8221; remote
 everything, right down to the <span class="caps">BIOS</span>.  This way I could reboot and even <em>reload</em>
 the bare metal <span class="caps">OS</span> remotely.  The Z620 has <a class="reference external" href="https://en.wikipedia.org/wiki/Intel_Active_Management_Technology">Intel <span class="caps">AMT</span></a> and I&#8217;ve progressed that
 to the point where I can remotely power on/off the machine &#8212; more on that in
@@ -144,28 +144,28 @@ hardware should just&nbsp;work.</li>
 should work; infact any <span class="caps">OS</span> with Dnsmasq should work the&nbsp;same.</li>
 <li>A client host &#8212; the disk on this machine will be <strong>erased</strong>.  The example
 will use a newly created VirtualBox&nbsp;host.</li>
-<li>A &quot;dhcp free&quot; <span class="caps">LAN</span>.  In this example, a VirtualBox &quot;Internal Network&quot; will
+<li>A &#8220;dhcp free&#8221; <span class="caps">LAN</span>.  In this example, a VirtualBox &#8220;Internal Network&#8221; will
 serve as the <span class="caps">LAN</span>.</li>
 </ol>
 </div>
 <div class="section" id="pxe-dhcp-and-a-clean-lan">
-<h3><span class="caps">PXE</span>, <span class="caps">DHCP</span>, and a &quot;clean&quot; <span class="caps">LAN</span></h3>
+<h3><span class="caps">PXE</span>, <span class="caps">DHCP</span>, and a &#8220;clean&#8221; <span class="caps">LAN</span></h3>
 <p>For those familiar with <span class="caps">DHCP</span>&#8217;s broadcast use of the <span class="caps">LAN</span>, this section may be
 safely&nbsp;skipped.</p>
-<p>The first step in a &quot;<span class="caps">PXE</span> Boot&quot; is for the client host to perform a <a class="reference external" href="https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol"><span class="caps">DHCP</span></a>
+<p>The first step in a &#8220;<span class="caps">PXE</span> Boot&#8221; is for the client host to perform a <a class="reference external" href="https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol"><span class="caps">DHCP</span></a>
 request, or more precisely a <span class="caps">DHCP</span> discovery.  This amounts to the client sending
 a broadcast <span class="caps">IP</span> message on the connected <span class="caps">LAN</span>.  Because the client knows nothing
 of itself at this point, it can only broadcast a message requesting it&#8217;s
-configuration, the &quot;C&quot; in <span class="caps">DHCP</span>.  Many <span class="caps">LAN</span>&#8217;s support <span class="caps">DHCP</span>, including the default
-VirtualBox &quot;<span class="caps">NAT</span>&quot; <span class="caps">LAN</span>.  In order to <span class="caps">PXE</span> boot a specific response to the <span class="caps">DHCP</span>
+configuration, the &#8220;C&#8221; in <span class="caps">DHCP</span>.  Many <span class="caps">LAN</span>&#8217;s support <span class="caps">DHCP</span>, including the default
+VirtualBox &#8220;<span class="caps">NAT</span>&#8221; <span class="caps">LAN</span>.  In order to <span class="caps">PXE</span> boot a specific response to the <span class="caps">DHCP</span>
 request must be given; the culmunation of this article in fact.  If the <span class="caps">PXE</span>
-booting client is &quot;placed&quot; on a <span class="caps">LAN</span> that already has a <span class="caps">DHCP</span> service present then
+booting client is &#8220;placed&#8221; on a <span class="caps">LAN</span> that already has a <span class="caps">DHCP</span> service present then
 it is possible that the existing service will respond, and respond with a
 generic response, not the <span class="caps">PXE</span> specific response this article details&nbsp;crafting.</p>
-<p>For this reason, the &quot;dhcp free&quot; <span class="caps">LAN</span> is stated above as a prerequisite.  If you
-know you have a <span class="caps">DHCP</span> free physical <span class="caps">LAN</span> then you&#8217;re good; many home &quot;routers&quot;
+<p>For this reason, the &#8220;dhcp free&#8221; <span class="caps">LAN</span> is stated above as a prerequisite.  If you
+know you have a <span class="caps">DHCP</span> free physical <span class="caps">LAN</span> then you&#8217;re good; many home &#8220;routers&#8221;
 provide <span class="caps">DHCP</span> as part of their functionality &#8212; you&#8217;ve been&nbsp;warned.</p>
-<p>VirtualBox&#8217;s default network is the &quot;<span class="caps">NAT</span>&quot; network and it has a <span class="caps">DHCP</span> service
+<p>VirtualBox&#8217;s default network is the &#8220;<span class="caps">NAT</span>&#8221; network and it has a <span class="caps">DHCP</span> service
 embedded in the VirtualBox &#8216;controller&#8217;.  This <span class="caps">LAN</span> network can not be used.
 Details for configuring multiple VirtualBox networks will be given below for
 this very&nbsp;reason.</p>
@@ -188,9 +188,9 @@ this very&nbsp;reason.</p>
 <h2>To be continued?&nbsp;&#8230;</h2>
 <p>Ideas for follow on articles around this&nbsp;topic:</p>
 <ul class="simple">
-<li><span class="caps">PXE</span> Boot a &quot;cloud&quot; image, (think Amazon <span class="caps">AMI</span>/<span class="caps">LXC</span> ubuntu-cloud like), on bare
+<li><span class="caps">PXE</span> Boot a &#8220;cloud&#8221; image, (think Amazon <span class="caps">AMI</span>/<span class="caps">LXC</span> ubuntu-cloud like), on bare
 metal &#8212; there are some gotcha&#8217;s in&nbsp;this.</li>
-<li><span class="caps">PXE</span> Boot every time.  A &quot;production&quot; environment where the bootloader is <span class="caps">PXE</span>,
+<li><span class="caps">PXE</span> Boot every time.  A &#8220;production&#8221; environment where the bootloader is <span class="caps">PXE</span>,
 the kernel comes across the network, and the filesystem already exists on one
 of {local disk, <a class="reference external" href="https://en.wikipedia.org/wiki/Storage_area_network"><span class="caps">SAN</span></a>, <a class="reference external" href="https://en.wikipedia.org/wiki/Network-attached_storage"><span class="caps">NAS</span></a>}.</li>
 <li><span class="target" id="pxe-acrobatics"><span class="caps">PXE</span> Acrobatics</span>: An advanced, intellegent system for <span class="caps">PXE</span> booting where
@@ -256,156 +256,6 @@ reprovisioned, i.e.&nbsp;re-installed.</li>
 
             <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
                 <ul class="list-group list-inline tagcloud" id="tags">
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/blog.html">
-                            blog
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cgp.html">
-                            CGP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/collectd.html">
-                            collectd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cygwin.html">
-                            cygwin
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dhcp.html">
-                            DHCP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dns.html">
-                            DNS
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dnsmasq.html">
-                            dnsmasq
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-1">
-                        <a href="https://egustafson.github.io/tag/freebsd.html">
-                            FreeBSD
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/install.html">
-                            install
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/ipv6.html">
-                            IPv6
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/lighttpd.html">
-                            lighttpd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/linux.html">
-                            Linux
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/mediawiki.html">
-                            mediawiki
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/monitorama.html">
-                            Monitorama
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/monitoring.html">
-                            monitoring
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/nat.html">
-                            NAT
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/oscon.html">
-                            OSCON
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/pelican.html">
-                            pelican
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/rfc2893.html">
-                            RFC2893
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sqlite.html">
-                            sqlite
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sync.html">
-                            sync
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/syncthing.html">
-                            syncthing
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/trip-report.html">
-                            trip report
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/tunneling.html">
-                            Tunneling
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/ubuntu.html">
-                            ubuntu
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vagrant.html">
-                            Vagrant
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualbox.html">
-                            VirtualBox
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualization.html">
-                            virtualization
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vmware.html">
-                            VMWare
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/wiki.html">
-                            wiki
-                        </a>
-                    </li>
                 </ul>
             </li>
     <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
@@ -416,8 +266,8 @@ reprovisioned, i.e.&nbsp;re-installed.</li>
             </a>
         </li>
         <li class="list-group-item">
-            <a href="http://linuxjedi.co.uk/" target="_blank">
-                Andrew Hutchings
+            <a href="http://engineeredweb.com/" target="_blank">
+                Matt Farina
             </a>
         </li>
         <li class="list-group-item">
@@ -428,6 +278,16 @@ reprovisioned, i.e.&nbsp;re-installed.</li>
         <li class="list-group-item">
             <a href="http://askyazz.com/" target="_blank">
                 Yazz Atlas
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://linuxjedi.co.uk/" target="_blank">
+                Andrew Hutchings
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://frungy.org" target="_blank">
+                Tim Potter (tpot)
             </a>
         </li>
       </ul>
@@ -442,7 +302,7 @@ reprovisioned, i.e.&nbsp;re-installed.</li>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2015 Eric Gustafson
+         <div class="col-xs-10">&copy; 2016 Eric Gustafson
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

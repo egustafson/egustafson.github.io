@@ -2,7 +2,7 @@
 <html lang="en"
 >
 <head>
-    <title>Pelican Site Generator - HowTo’s - Stuff I've Figured Out</title>
+    <title>persistence - Stuff I've Figured Out</title>
     <!-- Using the latest rendering mode for IE -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
@@ -10,12 +10,16 @@
 
 
 
-<link rel="canonical" href="https://egustafson.github.io/drafts/pelican-examples.html">
 
-        <meta name="author" content="Eric Gustafson" />
-        <meta name="keywords" content="Pelican,Python,RestructuredText" />
-        <meta name="description" content="This (draft) article is simple a place to capture examples of common, or not so, tasks and markup in Pelican. A link to another blog posting: IPv6 Tunneling over IPv6 Networks, And, a figure, which is clickable and opens an SVG: The Voyeur Image - Caption Note that I the SVG …" />
+    <meta name="author" content="Eric Gustafson" />
+    <meta name="keywords" content="persistence" />
 
+    <!-- Open Graph tags -->
+        <meta property="og:site_name" content="Stuff I've Figured Out" />
+        <meta property="og:type" content="website"/>
+        <meta property="og:title" content="Stuff I've Figured Out"/>
+        <meta property="og:url" content="https://egustafson.github.io"/>
+        <meta property="og:description" content="Stuff I've Figured Out"/>
 
 
     <!-- Bootstrap -->
@@ -46,7 +50,7 @@ Stuff I've Figured Out            </a>
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav">
-                        <li class="active">
+                        <li >
                             <a href="https://egustafson.github.io/category/howto.html">Howto</a>
                         </li>
                         <li >
@@ -68,88 +72,16 @@ Stuff I've Figured Out            </a>
     <div class="row">
         <div class="col-sm-9">
 
-    <section id="content">
-        <article>
-            <header class="page-header">
-                <h1>
-                    <a href="https://egustafson.github.io/drafts/pelican-examples.html"
-                       rel="bookmark"
-                       title="Permalink to Pelican Site Generator - HowTo’s">
-                        Pelican Site Generator -&nbsp;HowTo&#8217;s
-                    </a>
-                </h1>
-            </header>
-            <div class="entry-content">
-                <div class="panel">
-                    <div class="panel-body">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2015-03-06T00:00:00-07:00"> Fri 06 March 2015</time>
-    </span>
-
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://egustafson.github.io/tag/pelican.html">Pelican</a>
-        /
-	<a href="https://egustafson.github.io/tag/python.html">Python</a>
-        /
-	<a href="https://egustafson.github.io/tag/restructuredtext.html">RestructuredText</a>
-    
-</footer><!-- /.post-info -->                    </div>
+            <article>
+                <h2><a href="https://egustafson.github.io/quintessential-ceph.html">Quintessential&nbsp;Ceph</a></h2>
+                <div class="summary"><p>The following is my distillation of how to install <a class="reference external" href="http://docs.ceph.com">Ceph</a> in the most minimal
+way.  This method of installation is <em><span class="caps">NOT</span></em> the {right, correct, best, &#8230;} way
+to install Ceph.  It is what I could discern as the most minimal way to install
+the smallest set of Ceph components to have …</p>
+                    <a class="btn btn-default btn-xs" href="https://egustafson.github.io/quintessential-ceph.html">more ...</a>
                 </div>
-                <p>This (draft) article is simple a place to capture examples of common, or not so,
-tasks and markup in <a class="reference external" href="http://docs.getpelican.com/">Pelican</a>.</p>
-<p>A link to another blog posting: <a class="reference external" href="https://egustafson.github.io/ipv6-tunneling.html">IPv6 Tunneling over IPv6 Networks</a>,</p>
-<p>And, a figure, which is clickable and opens an <span class="caps">SVG</span>:</p>
-<div class="figure align-right">
-<a class="reference external image-reference" href="https://egustafson.github.io/images/voyeur.svg"><img alt="voyeur svg" src="https://egustafson.github.io/images/voyeur.png" style="width: 100px;" /></a>
-<p class="caption">The Voyeur Image -&nbsp;Caption</p>
-</div>
-<p>Note that I the <span class="caps">SVG</span> does not open properly.  I believe because the <span class="caps">HTML</span> markup
-is not set properly to indicate to the browser how to handle the item.  I
-haven&#8217;t tried this from my github page, but in the python SimpleHTTPServer it
-does not come through properly, even though it&#8217;s mime type appears to be sent as
-<span class="caps">SVG</span>.  &#8230; currently a&nbsp;mystery.</p>
-<!-- Local Variables: -->
-<!-- fill-column: 80 -->
-<!-- End: -->
-
-            </div>
-            <!-- /.entry-content -->
-    <hr/>
-    <section class="comments" id="comments">
-        <h2>Comments</h2>
-
-        <div id="disqus_thread"></div>
-        <script type="text/javascript">
-            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-            var disqus_shortname = 'egustafson'; // required: replace example with your forum shortname
-
-                    var disqus_identifier = 'pelican-examples';
-                var disqus_url = 'https://egustafson.github.io/drafts/pelican-examples.html';
-
-            var disqus_config = function () {
-                this.language = "en";
-            };
-
-            /* * * DON'T EDIT BELOW THIS LINE * * */
-            (function () {
-                var dsq = document.createElement('script');
-                dsq.type = 'text/javascript';
-                dsq.async = true;
-                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
-            Disqus.</a></noscript>
-        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-    </section>
-        </article>
-    </section>
+            </article>
+            <hr/>
 
         </div>
         <div class="col-sm-3" id="sidebar">

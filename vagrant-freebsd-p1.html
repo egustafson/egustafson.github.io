@@ -14,7 +14,7 @@
 
         <meta name="author" content="Eric Gustafson" />
         <meta name="keywords" content="Vagrant,FreeBSD" />
-        <meta name="description" content="A Vagrant ‘network appliance’ based on FreeBSD. Author’s note: This posting was rushed in an attempt to capture the knowledge gathered thus far in my learning process. The posting is a bit of a work in progress - expect updates over the next few weeks as the process is refined ..." />
+        <meta name="description" content="A Vagrant ‘network appliance’ based on FreeBSD. Author’s note: This posting was rushed in an attempt to capture the knowledge gathered thus far in my learning process. The posting is a bit of a work in progress - expect updates over the next few weeks as the process is refined …" />
 
 
 
@@ -106,13 +106,13 @@ progress - expect updates over the next few weeks as the process is refined.</bl
 intended to be used as a firewall / router appliance with Vagrant.  I have
 reached the limits of VirtualBox with respect to networking and the solution is
 to stop using VirtualBox&#8217;s built in networking and build an appliance that
-provides the needed functionality.  This &quot;appliance&quot; will sit between a
-host-only network, where the rest of any development project will sit, and &quot;the
-outside&quot;.  The outside can be accessed through either <span class="caps">NAT</span> or Bridged networking
+provides the needed functionality.  This &#8220;appliance&#8221; will sit between a
+host-only network, where the rest of any development project will sit, and &#8220;the
+outside&#8221;.  The outside can be accessed through either <span class="caps">NAT</span> or Bridged networking
 with the pseudo-default <span class="caps">NAT</span> adapter configured as the first adapter in&nbsp;Vagrant.</p>
-<p>This appliance &quot;box&quot; should be an evolving project.  The first step is to create
-a VirtualBox image, along with Vagrant control files, package it as a &quot;Vagrant
-Box&quot;, and publish it on HashiCorp&#8217;s Atlas repository &#8212; possibly other
+<p>This appliance &#8220;box&#8221; should be an evolving project.  The first step is to create
+a VirtualBox image, along with Vagrant control files, package it as a &#8220;Vagrant
+Box&#8221;, and publish it on HashiCorp&#8217;s Atlas repository &#8212; possibly other
 locations as well.  Subsequent steps will elaborate configuration of the network
 functions through a Vagrantfile, or ancillary configuration&nbsp;file.</p>
 <p>The initial network functionality that this project will be seeking to provide&nbsp;is:</p>
@@ -129,7 +129,7 @@ functions through a Vagrantfile, or ancillary configuration&nbsp;file.</p>
 to create <a class="reference external" href="https://docs.vagrantup.com/v2/boxes/base.html">Vagrant Base Boxes</a>.  See the <a class="reference internal" href="#references">References</a> section at the end of
 this article for links to other postings I pulled inspiration&nbsp;from.</p>
 <p>The primary difference, in my mind, between building a generic Vagrant Base Box
-and an &quot;appliance&quot; box is that resources and host configuration should be
+and an &#8220;appliance&#8221; box is that resources and host configuration should be
 specialized for the purpose and not generalized for flexibility.  To that end,
 my choices of configuration are aimed at minimum resource utilization and
 specific configuration for the purpose.  It should be noted that, just like
@@ -188,54 +188,54 @@ following&nbsp;steps:</p>
 <div class="section" id="reboot-and-configure-the-vm">
 <h3>Reboot and Configure the <span class="caps">VM</span></h3>
 <p>Log in as root and update the&nbsp;system:</p>
-<div class="highlight"><pre><span class="nv">$ </span>freebsd-update fetch
-<span class="nv">$ </span>freebsd-update install
-<span class="nv">$ </span>pkg update
-<span class="nv">$ </span>pkg upgrade
+<div class="highlight"><pre><span></span>$ freebsd-update fetch
+$ freebsd-update install
+$ pkg update
+$ pkg upgrade
 </pre></div>
 <p>Install <cite>sudo</cite> and <cite>bash</cite>; configure the <cite>vagrant</cite> user to have sudo access with out
 entering a&nbsp;password:</p>
-<div class="highlight"><pre><span class="nv">$ </span>pkg install bash
-<span class="c"># follow the instructions regarding `fdesc`</span>
-<span class="nv">$ </span>mount -t fdescfs fdesc /dev/fd
-<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;fdesc  /dev/fd  fdescfs   rw  0  0&quot;</span> &gt;&gt; /etc/fstab
-<span class="c">#</span>
-<span class="nv">$ </span>pkg install sudo
-<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">&quot;vagrant ALL=(ALL) NOPASSWD:ALL&quot;</span> &gt; /usr/local/etc/sudoers.d/vagrant
+<div class="highlight"><pre><span></span>$ pkg install bash
+<span class="c1"># follow the instructions regarding `fdesc`</span>
+$ mount -t fdescfs fdesc /dev/fd
+$ <span class="nb">echo</span> <span class="s2">&quot;fdesc  /dev/fd  fdescfs   rw  0  0&quot;</span> &gt;&gt; /etc/fstab
+<span class="c1">#</span>
+$ pkg install sudo
+$ <span class="nb">echo</span> <span class="s2">&quot;vagrant ALL=(ALL) NOPASSWD:ALL&quot;</span> &gt; /usr/local/etc/sudoers.d/vagrant
 </pre></div>
 <p>Log out and log back in as user <cite>vagrant</cite>.  Configure <span class="caps">SSH</span> access for user
 <cite>vagrant</cite> using the Vagrant public&nbsp;keys:</p>
-<div class="highlight"><pre><span class="nv">$ </span>sudo pkg install wget
-<span class="nv">$ </span>mkdir -p ~/.ssh
-<span class="nv">$ </span>wget --no-check-certificate <span class="se">\</span>
+<div class="highlight"><pre><span></span>$ sudo pkg install wget
+$ mkdir -p ~/.ssh
+$ wget --no-check-certificate <span class="se">\</span>
        https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub <span class="se">\</span>
        -O ~/.ssh/authorized_keys
-<span class="nv">$ </span>chmod 0700 ~/.ssh
-<span class="nv">$ </span>chmod 0400 ~/.ssh/authorized_keys
+$ chmod <span class="m">0700</span> ~/.ssh
+$ chmod <span class="m">0400</span> ~/.ssh/authorized_keys
 </pre></div>
 <p>Ensure the the following are set in the <cite>/etc/ssh/sshd_config</cite> file:</p>
-<div class="highlight"><pre>Port  22
+<div class="highlight"><pre><span></span>Port  22
 PubkeyAuthentication  yes
 AuthorizedKeysFile  %h/.ssh/authorized_keys
 PermitEmptyPasswords  no
 </pre></div>
 <p>Add additional packages.  These packages are required to make the host into an
 appliance, or are utilitarian in&nbsp;nature:</p>
-<div class="highlight"><pre><span class="c"># Required</span>
-<span class="nv">$ </span>sudo pkg install dnsmasq
-<span class="nv">$ </span>sudo pkg install python
-<span class="c"># Utilities</span>
-<span class="nv">$ </span>sudo pkg install <span class="nb">bind</span>-tools
-<span class="nv">$ </span>sudo pkg install curl
+<div class="highlight"><pre><span></span><span class="c1"># Required</span>
+$ sudo pkg install dnsmasq
+$ sudo pkg install python
+<span class="c1"># Utilities</span>
+$ sudo pkg install bind-tools
+$ sudo pkg install curl
 </pre></div>
 <p>Shutdown the <span class="caps">VM</span> in preparation for&nbsp;packaging:</p>
-<div class="highlight"><pre><span class="nv">$ </span>sudo shutdown -p now
+<div class="highlight"><pre><span></span>$ sudo shutdown -p now
 </pre></div>
 </div>
 <div class="section" id="package-the-box">
 <h3>Package the&nbsp;Box</h3>
 <p>From the VirtualBox host&nbsp;machine:</p>
-<div class="highlight"><pre><span class="nv">$ </span>vagrant package --base freebsd-10.1-amd64-gateway
+<div class="highlight"><pre><span></span>$ vagrant package --base freebsd-10.1-amd64-gateway
 </pre></div>
 <p>Note that the VirtualBox <span class="caps">VM</span> name is <cite>freebsd-10.1-amd64-gateway</cite>.</p>
 </div>
@@ -322,156 +322,6 @@ appliance, or are utilitarian in&nbsp;nature:</p>
 
             <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
                 <ul class="list-group list-inline tagcloud" id="tags">
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/blog.html">
-                            blog
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cgp.html">
-                            CGP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/collectd.html">
-                            collectd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cygwin.html">
-                            cygwin
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dhcp.html">
-                            DHCP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dns.html">
-                            DNS
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dnsmasq.html">
-                            dnsmasq
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-1">
-                        <a href="https://egustafson.github.io/tag/freebsd.html">
-                            FreeBSD
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/install.html">
-                            install
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/ipv6.html">
-                            IPv6
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/lighttpd.html">
-                            lighttpd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/linux.html">
-                            Linux
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/mediawiki.html">
-                            mediawiki
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/monitorama.html">
-                            Monitorama
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/monitoring.html">
-                            monitoring
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/nat.html">
-                            NAT
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/oscon.html">
-                            OSCON
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/pelican.html">
-                            pelican
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/rfc2893.html">
-                            RFC2893
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sqlite.html">
-                            sqlite
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sync.html">
-                            sync
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/syncthing.html">
-                            syncthing
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/trip-report.html">
-                            trip report
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/tunneling.html">
-                            Tunneling
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/ubuntu.html">
-                            ubuntu
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vagrant.html">
-                            Vagrant
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualbox.html">
-                            VirtualBox
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualization.html">
-                            virtualization
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vmware.html">
-                            VMWare
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/wiki.html">
-                            wiki
-                        </a>
-                    </li>
                 </ul>
             </li>
     <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
@@ -482,8 +332,8 @@ appliance, or are utilitarian in&nbsp;nature:</p>
             </a>
         </li>
         <li class="list-group-item">
-            <a href="http://linuxjedi.co.uk/" target="_blank">
-                Andrew Hutchings
+            <a href="http://engineeredweb.com/" target="_blank">
+                Matt Farina
             </a>
         </li>
         <li class="list-group-item">
@@ -494,6 +344,16 @@ appliance, or are utilitarian in&nbsp;nature:</p>
         <li class="list-group-item">
             <a href="http://askyazz.com/" target="_blank">
                 Yazz Atlas
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://linuxjedi.co.uk/" target="_blank">
+                Andrew Hutchings
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://frungy.org" target="_blank">
+                Tim Potter (tpot)
             </a>
         </li>
       </ul>
@@ -508,7 +368,7 @@ appliance, or are utilitarian in&nbsp;nature:</p>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2015 Eric Gustafson
+         <div class="col-xs-10">&copy; 2016 Eric Gustafson
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

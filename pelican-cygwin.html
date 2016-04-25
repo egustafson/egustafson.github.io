@@ -14,7 +14,7 @@
 
         <meta name="author" content="Eric Gustafson" />
         <meta name="keywords" content="pelican,cygwin,blog" />
-        <meta name="description" content="One of the many good reasons I chose Pelican as a static blog site generator was because I felt confident I could deploy and use the tools under Windows, with Cygwin. What I couldn’t find was any reference to success installing Pelican under Cygwin. It turns out that the ..." />
+        <meta name="description" content="One of the many good reasons I chose Pelican as a static blog site generator was because I felt confident I could deploy and use the tools under Windows, with Cygwin. What I couldn’t find was any reference to success installing Pelican under Cygwin. It turns out that the …" />
 
 
 
@@ -156,17 +156,17 @@ Install the following packages, if not already&nbsp;present.</p>
 the installation.  If you do not already have <tt class="docutils literal">pip</tt>
 &lt;<a class="reference external" href="http://pip.readthedocs.org/">http://pip.readthedocs.org/</a>&gt; installed, use <tt class="docutils literal">easy_install</tt>, from
 <tt class="docutils literal"><span class="pre">python-setuptools</span></tt> to install <tt class="docutils literal">pip</tt>.</p>
-<div class="highlight"><pre>&gt; easy_install pip
+<div class="highlight"><pre><span></span>&gt; easy_install pip
 ...
 &gt; pip install <span class="s2">&quot;git+https://github.com/getpelican/pelican.git#egg-pelican&quot;</span>
 ...
-<span class="c"># ... a lot of output as the recursive dependencies are resolved ...</span>
-<span class="c"># expect warnings, but a final notice saying pelican was successfully</span>
-<span class="c"># installed along with additional, dependent packages.</span>
+<span class="c1"># ... a lot of output as the recursive dependencies are resolved ...</span>
+<span class="c1"># expect warnings, but a final notice saying pelican was successfully</span>
+<span class="c1"># installed along with additional, dependent packages.</span>
 ...
 &gt; pelican --help
 ...
-<span class="c"># output consistent with the help from pelican.</span>
+<span class="c1"># output consistent with the help from pelican.</span>
 </pre></div>
 <p>Note:  Pelican can be simply installed with <tt class="docutils literal">pip</tt> using <tt class="docutils literal">pip
 install pelican</tt>.  I chose to pull Pelican from source so I could
@@ -177,10 +177,10 @@ stay on their&nbsp;trunk.</p>
 <h2>Verify</h2>
 <p>It doesn&#8217;t count if it doesn&#8217;t work.  The following steps are the smoke
 test I ran to convince myself the installation was working reasonably&nbsp;correct.</p>
-<div class="highlight"><pre>&gt; mkdir tmp; <span class="nb">cd </span>tmp   <span class="c"># (optional, do what makes sense)</span>
+<div class="highlight"><pre><span></span>&gt; mkdir tmp<span class="p">;</span> <span class="nb">cd</span> tmp   <span class="c1"># (optional, do what makes sense)</span>
 &gt; pelican-quickstart
 ...
-<span class="c"># give reasonable answers</span>
+<span class="c1"># give reasonable answers</span>
 ...
 &gt; pelican content
 ...
@@ -261,156 +261,6 @@ so I&#8217;m &#8230; cautiously&nbsp;optimistic.</p>
 
             <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
                 <ul class="list-group list-inline tagcloud" id="tags">
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/blog.html">
-                            blog
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cgp.html">
-                            CGP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/collectd.html">
-                            collectd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cygwin.html">
-                            cygwin
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dhcp.html">
-                            DHCP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dns.html">
-                            DNS
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dnsmasq.html">
-                            dnsmasq
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-1">
-                        <a href="https://egustafson.github.io/tag/freebsd.html">
-                            FreeBSD
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/install.html">
-                            install
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/ipv6.html">
-                            IPv6
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/lighttpd.html">
-                            lighttpd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/linux.html">
-                            Linux
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/mediawiki.html">
-                            mediawiki
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/monitorama.html">
-                            Monitorama
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/monitoring.html">
-                            monitoring
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/nat.html">
-                            NAT
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/oscon.html">
-                            OSCON
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/pelican.html">
-                            pelican
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/rfc2893.html">
-                            RFC2893
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sqlite.html">
-                            sqlite
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sync.html">
-                            sync
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/syncthing.html">
-                            syncthing
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/trip-report.html">
-                            trip report
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/tunneling.html">
-                            Tunneling
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/ubuntu.html">
-                            ubuntu
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vagrant.html">
-                            Vagrant
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualbox.html">
-                            VirtualBox
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualization.html">
-                            virtualization
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vmware.html">
-                            VMWare
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/wiki.html">
-                            wiki
-                        </a>
-                    </li>
                 </ul>
             </li>
     <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
@@ -421,8 +271,8 @@ so I&#8217;m &#8230; cautiously&nbsp;optimistic.</p>
             </a>
         </li>
         <li class="list-group-item">
-            <a href="http://linuxjedi.co.uk/" target="_blank">
-                Andrew Hutchings
+            <a href="http://engineeredweb.com/" target="_blank">
+                Matt Farina
             </a>
         </li>
         <li class="list-group-item">
@@ -433,6 +283,16 @@ so I&#8217;m &#8230; cautiously&nbsp;optimistic.</p>
         <li class="list-group-item">
             <a href="http://askyazz.com/" target="_blank">
                 Yazz Atlas
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://linuxjedi.co.uk/" target="_blank">
+                Andrew Hutchings
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://frungy.org" target="_blank">
+                Tim Potter (tpot)
             </a>
         </li>
       </ul>
@@ -447,7 +307,7 @@ so I&#8217;m &#8230; cautiously&nbsp;optimistic.</p>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2015 Eric Gustafson
+         <div class="col-xs-10">&copy; 2016 Eric Gustafson
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

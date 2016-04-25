@@ -1,7 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Stuff I've Figured Out</title><link>https://egustafson.github.io/</link><description>A catalog of technical solutions, or hackery -- you decide.</description><atom:link href="https://egustafson.github.io/feeds/eric-gustafson.rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 22 Jun 2015 00:00:00 -0600</lastBuildDate><item><title>Monitorama 2015</title><link>https://egustafson.github.io/monitorama-2015.html</link><description>&lt;p&gt;This year&amp;#8217;s &lt;a class="reference external" href="http://monitorama.com/"&gt;Monitorama&lt;/a&gt; was another success for &lt;a class="reference external" href="https://twitter.com/obfuscurity"&gt;&amp;#64;obfuscurity&lt;/a&gt; and the
+<rss version="2.0"><channel><title>Stuff I've Figured Out</title><link>https://egustafson.github.io/</link><description>A catalog of technical solutions, or hackery -- you decide.</description><lastBuildDate>Wed, 20 Apr 2016 00:00:00 -0600</lastBuildDate><item><title>Quintessential Ceph</title><link>https://egustafson.github.io/quintessential-ceph.html</link><description>&lt;p&gt;The following is my distillation of how to install &lt;a class="reference external" href="http://docs.ceph.com"&gt;Ceph&lt;/a&gt; in the most minimal
+way.  This method of installation is &lt;em&gt;&lt;span class="caps"&gt;NOT&lt;/span&gt;&lt;/em&gt; the {right, correct, best, &amp;#8230;} way
+to install Ceph.  It is what I could discern as the most minimal way to install
+the smallest set of Ceph components to have a minimally running system.   I did
+this to better understand Ceph and hope it will help others as&amp;nbsp;well.&lt;/p&gt;
+&lt;div class="section" id="architecture-what-s-needed"&gt;
+&lt;h2&gt;Architecture &lt;span class="amp"&gt;&amp;amp;&lt;/span&gt; what&amp;#8217;s&amp;nbsp;needed&lt;/h2&gt;
+&lt;p&gt;The &lt;a class="reference external" href="http://docs.ceph.com/docs/master/architecture/"&gt;Ceph Architecture&lt;/a&gt; page starts with both a good diagram and description of
+what makes up the&amp;nbsp;cluster.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="minimal-steps-to-create-a-ceph-cluster"&gt;
+&lt;h2&gt;Minimal Steps to create a Ceph&amp;nbsp;cluster&lt;/h2&gt;
+&lt;p&gt;The architecture:  4&amp;nbsp;Hosts&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;3x Storage Nodes  (have second &amp;#8220;storage&amp;#8221; drive)
+* hostnames:&amp;nbsp;ceph-osd{0,1,2}&lt;/li&gt;
+&lt;li&gt;1x Monitor Node
+* hostname:&amp;nbsp;ceph-mon0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="section" id="prerequisites"&gt;
+&lt;h3&gt;Prerequisites&lt;/h3&gt;
+&lt;table class="docutils field-list" frame="void" rules="none"&gt;
+&lt;col class="field-name" /&gt;
+&lt;col class="field-body" /&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;Hosts:&lt;/th&gt;&lt;td class="field-body"&gt;4 &amp;#8212; ok, this isn&amp;#8217;t the minimum, but for this example it is.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;&lt;span class="caps"&gt;OS&lt;/span&gt;:&lt;/th&gt;&lt;td class="field-body"&gt;Ubuntu (4G root is sufficient) // I used Wily (15.10) Server&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;&lt;span class="caps"&gt;OSD&lt;/span&gt; Disk:&lt;/th&gt;&lt;td class="field-body"&gt;A second &amp;#8220;disk&amp;#8221; for the &lt;span class="caps"&gt;OSD&lt;/span&gt; hosts.  (sdb)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;&lt;span class="caps"&gt;DNS&lt;/span&gt;:&lt;/th&gt;&lt;td class="field-body"&gt;&lt;span class="caps"&gt;DNS&lt;/span&gt; should work to resolve the host names.  (or /etc/hosts)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The above can be accomplished in visualized environments.  Make sure your &lt;span class="caps"&gt;VM&lt;/span&gt;
+environment has networking such that all of the hosts can connect to each other
+on the same&amp;nbsp;subnet.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="install-ceph-software"&gt;
+&lt;h3&gt;Install Ceph&amp;nbsp;Software&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; sudo apt-get install ceph
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Will install the Ceph components needed.  Perform this on all&amp;nbsp;hosts.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="ceph-conf-configuration-file"&gt;
+&lt;h3&gt;ceph.conf Configuration&amp;nbsp;file&lt;/h3&gt;
+&lt;p&gt;The following configuration file will be used on all hosts; it lives in
+&lt;cite&gt;/etc/ceph/ceph.conf&lt;/cite&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;fsid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; d4b1b3b2-3bbb-4487-93ef-068d3ee73a22
+
+&lt;span class="nv"&gt;mon_initial_members&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; a
+&lt;span class="nv"&gt;mon_host&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 10.3.7.91
+
+&lt;span class="nv"&gt;auth_cluster_required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; none
+&lt;span class="nv"&gt;auth_service_required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; none
+&lt;span class="nv"&gt;auth_client_required&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; none
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Two entries in this file should be&amp;nbsp;changed:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;fsid = &lt;cite&gt;&amp;lt;uuid&amp;gt;&lt;/cite&gt;    ## use &amp;#8216;uuidgen&amp;#8217; to generate a unique &lt;span class="caps"&gt;UUID&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;mon_host = &amp;lt;ip-addr&amp;gt;  ## place the actual &lt;span class="caps"&gt;IP&lt;/span&gt; of &amp;#8216;ceph-mon0&amp;#8217;&amp;nbsp;here.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="configure-the-monitor-host"&gt;
+&lt;h3&gt;Configure the Monitor&amp;nbsp;host&lt;/h3&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Monitor host:&amp;nbsp;ceph-mon0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Place the &lt;cite&gt;ceph.conf&lt;/cite&gt; file from the previous step in /etc/ceph.  Owned by
+root and world readable&amp;nbsp;(0644).&lt;/li&gt;
+&lt;li&gt;Run &lt;cite&gt;ceph-mon&lt;/cite&gt; to initialize the &amp;#8220;mon data&amp;#8221; directory (/var/lib/ceph/mon).
+This monitor, the only monitor in this example, will be monitor &amp;#8216;a&amp;#8217;.  The &lt;cite&gt;-i
+a&lt;/cite&gt; flag identifies the monitor as having id &amp;#8216;a&amp;#8217;.  After running this command
+there will be a &lt;cite&gt;/var/lib/ceph/mon/ceph-a&lt;/cite&gt; directory.  The &amp;#8216;ceph&amp;#8217; corresponds
+to the cluster name and the &amp;#8216;-a&amp;#8217; corresponds to monitor id&amp;nbsp;&amp;#8216;a&amp;#8217;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; sudo ceph-mon --cluster&lt;span class="o"&gt;=&lt;/span&gt;ceph -i a -f --mkfs
+&lt;/pre&gt;&lt;/div&gt;
+&lt;ol class="arabic simple" start="3"&gt;
+&lt;li&gt;Start &lt;cite&gt;ceph-mon&lt;/cite&gt; as a daemon, (now that the data directory is&amp;nbsp;initialized.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; sudo ceph-mon --cluster&lt;span class="o"&gt;=&lt;/span&gt;ceph -i a
+&lt;/pre&gt;&lt;/div&gt;
+&lt;ol class="arabic simple" start="4"&gt;
+&lt;li&gt;Verify the monitor is running (from&amp;nbsp;ceph-mon0)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; ceph health
+HEALTH_ERR 64 pgs stuck inactive&lt;span class="p"&gt;;&lt;/span&gt; 64 pgs stuck unclean&lt;span class="p"&gt;;&lt;/span&gt; no osds
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It is expected that the health is in error; there are no osd daemons running
+yet.  If the call does not return, (hangs), that is the indicator of a&amp;nbsp;problem.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="configure-and-join-each-osd-host"&gt;
+&lt;h3&gt;Configure and join each &lt;span class="caps"&gt;OSD&lt;/span&gt;&amp;nbsp;host&lt;/h3&gt;
+&lt;p&gt;(optional:  Running &lt;cite&gt;ceph -w&lt;/cite&gt; on host ceph-mon0 will allow you to &amp;#8220;tail&amp;#8221; the
+activities of the cluster.  You should see output after running each &lt;cite&gt;ceph-disk&lt;/cite&gt;
+command.  The &lt;cite&gt;ceph -w&lt;/cite&gt; command can actually be run from any host configured to
+interact with the ceph cluster, but ceph-mon0 is convenient in this&amp;nbsp;case.)&lt;/p&gt;
+&lt;p&gt;Repeat this process for each &lt;span class="caps"&gt;OSD&lt;/span&gt; host:  &lt;cite&gt;mon-osd{0,1,2}&lt;/cite&gt;&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Copy and install the &lt;cite&gt;ceph.conf&lt;/cite&gt; file in /etc/ceph.  Owned by root and world
+readable (0644).   [do not change the mon_host &lt;span class="caps"&gt;IP&lt;/span&gt;&amp;nbsp;address.]&lt;/li&gt;
+&lt;li&gt;Ensure /dev/sdb is &lt;em&gt;&lt;span class="caps"&gt;UNMOUNTED&lt;/span&gt;&lt;/em&gt; and available for both partitioning and
+formatting.  &lt;em&gt;All data on /dev/sdb will be &lt;span class="caps"&gt;DESTROYED&lt;/span&gt;&lt;/em&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; sudo ceph-disk prepare &lt;span class="se"&gt;\&lt;/span&gt;
+    --cluster ceph &lt;span class="se"&gt;\&lt;/span&gt;
+    --cluster-uuid d4b1b3b2-3bbb-4487-93ef-068d3ee73a22 &lt;span class="se"&gt;\&lt;/span&gt;
+    --fs-type btrfs &lt;span class="se"&gt;\&lt;/span&gt;
+    /dev/sdb
+Creating new GPT entries.
+Setting name!
+partNum is 1
+REALLY setting name!
+The operation has completed successfully.
+Setting name!
+partNum is 0
+REALLY setting name!
+The operation has completed successfully.
+WARNING: --leafsize is deprecated, use --nodesize
+btrfs-progs v4.0
+See http://btrfs.wiki.kernel.org for more information.
+
+Turning ON incompat feature &lt;span class="s1"&gt;&amp;#39;extref&amp;#39;&lt;/span&gt;: increased hardlink &lt;span class="nb"&gt;limit &lt;/span&gt;per file to 65536
+Turning ON incompat feature &lt;span class="s1"&gt;&amp;#39;skinny-metadata&amp;#39;&lt;/span&gt;: reduced-size metadata extent refs
+fs created label &lt;span class="o"&gt;(&lt;/span&gt;null&lt;span class="o"&gt;)&lt;/span&gt; on /dev/sdb1
+     nodesize 32768 leafsize 32768 sectorsize 4096 size 15.00GiB
+Warning: The kernel is still using the old partition table.
+The new table will be used at the next reboot or after you
+run partprobe&lt;span class="o"&gt;(&lt;/span&gt;8&lt;span class="o"&gt;)&lt;/span&gt; or kpartx&lt;span class="o"&gt;(&lt;/span&gt;8&lt;span class="o"&gt;)&lt;/span&gt;
+The operation has completed successfully.
+
+&amp;gt; ceph df
+GLOBAL:
+    SIZE       AVAIL      RAW USED     %RAW USED
+    15358M     15089M       33440k          0.21
+POOLS:
+    NAME     ID     USED     %USED     MAX AVAIL     OBJECTS
+    rbd      0         0         0         5029M           0
+
+&amp;gt; ps -ef | grep ceph-osd
+root    2248   1  0 19:08 ?   00:00:00 /usr/bin/ceph-osd --id 0 --foreground --cluster ceph -c /etc/ceph/ceph.conf
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In the above example the initial size of /dev/sdb was 20G and preparing the disk
+left approximately 155358M usable for storage.  The remainder went to the
+partition used for the Ceph&amp;nbsp;journal.&lt;/p&gt;
+&lt;p&gt;After applying the above command to the 2nd and 3rd (ceph-mon{1,2}) hosts you
+will see an appropriate increase in the available&amp;nbsp;storage.&lt;/p&gt;
+&lt;p&gt;Observing the output of &lt;cite&gt;ps&lt;/cite&gt; you see that the &lt;cite&gt;ceph-disk prepare&lt;/cite&gt; command has
+started the &lt;span class="caps"&gt;OSD&lt;/span&gt; daemon as well.  Upon reboot &lt;cite&gt;ceph-osd&lt;/cite&gt; will be automatically
+started as a&amp;nbsp;service.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note:&lt;/em&gt; &lt;cite&gt;ceph-mon&lt;/cite&gt; is not configured to autostart using _this_ set of&amp;nbsp;instructions.&lt;/p&gt;
+&lt;p&gt;Repeat for hosts&amp;nbsp;mon-osd{1,2}&lt;/p&gt;
+&lt;p&gt;Done.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="exercise-the-ceph-cluster"&gt;
+&lt;h2&gt;Exercise the Ceph&amp;nbsp;cluster&lt;/h2&gt;
+&lt;p&gt;The following commands will demonstrate basic cluster functionality; they can be
+performed from any host that&amp;nbsp;has:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Direct network connectivity to the cluster (no &lt;span class="caps"&gt;NAT&lt;/span&gt; - in case you used
+Virtualbox, et.&amp;nbsp;al.)&lt;/li&gt;
+&lt;li&gt;The &lt;cite&gt;ceph.conf&lt;/cite&gt; file from above placed in /etc/ceph and&amp;nbsp;readable.&lt;/li&gt;
+&lt;li&gt;The &lt;cite&gt;ceph&lt;/cite&gt; Ubuntu package installed (from step&amp;nbsp;1).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;A convenient, but not necessary, host to use are any of the hosts you just&amp;nbsp;installed.&lt;/p&gt;
+&lt;div class="section" id="list-and-create-a-pool-for-storage"&gt;
+&lt;h3&gt;List and create a pool for&amp;nbsp;storage&lt;/h3&gt;
+&lt;p&gt;Note:  the following commands do not require the use of &lt;cite&gt;sudo&lt;/cite&gt;.  Authentication
+would be acomplished via the cephx protocol if it had not been disabled in the
+ceph.conf file, (the last three lines set the &amp;#8220;auth&amp;#8221; parameters to&amp;nbsp;&amp;#8216;none&amp;#8217;).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; ceph osd pool ls
+rbd
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ceph creates a default pool named &amp;#8216;rbd&amp;#8217; when&amp;nbsp;initialized.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; rados mkpool data
+successfully created pool data
+
+&amp;gt; rados df
+pool name        KB  objects  clones  degraded  unfound   rd   rd KB   wr   wr KB
+data              0        0       0         0        0    0       0    0       0
+rbd               0        0       0         0        0    0       0    0       0
+total used    102176       0
+total avail 46354496
+total space 47182788
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="place-a-file-directly-in-the-data-pool"&gt;
+&lt;h3&gt;Place a file directly in the &amp;#8216;data&amp;#8217;&amp;nbsp;pool&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; touch test-file.out
+&amp;gt; rados put -p data test-file.out test-file.out
+&amp;gt; rados ls -p data
+test-file.out
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This concludes the quintessential Ceph installation and simple demonstration that the cluster is&amp;nbsp;functioning.&lt;/p&gt;
+&lt;p&gt;Thank you -&amp;nbsp;Eric&lt;/p&gt;
+&lt;!-- Local Variables: --&gt;
+&lt;!-- fill-column: 80 --&gt;
+&lt;!-- End: --&gt;
+&lt;!-- LocalWords:  Ceph ceph Gustafson --&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Wed, 20 Apr 2016 00:00:00 -0600</pubDate><guid isPermaLink="false">tag:egustafson.github.io,2016-04-20:quintessential-ceph.html</guid><category>Linux</category><category>ceph</category><category>storage</category><category>persistence</category><category>install</category><category>ubuntu</category></item><item><title>Monitorama 2015</title><link>https://egustafson.github.io/monitorama-2015.html</link><description>&lt;p&gt;This year&amp;#8217;s &lt;a class="reference external" href="http://monitorama.com/"&gt;Monitorama&lt;/a&gt; was another success for &lt;a class="reference external" href="https://twitter.com/obfuscurity"&gt;&amp;#64;obfuscurity&lt;/a&gt; and the
 monitoring community.  My one line observation of this years event is that the
-event was &amp;quot;less pragmatic&amp;quot; than last year.  I would rate the more abstract
+event was &amp;#8220;less pragmatic&amp;#8221; than last year.  I would rate the more abstract
 qualities of quality, diversity, and my overall desire to attend the same as
 last year &amp;#8212; high.  My personal preference for this, and most, conferences is
 pragmatism and so I call this out; my ranking of presentations certainly
@@ -62,7 +267,7 @@ reflects this, more so than any general vote of&amp;nbsp;quality.&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;Kyle provides a good overview of Riemann, his &amp;quot;part time project&amp;quot;.  While not an
+&lt;p&gt;Kyle provides a good overview of Riemann, his &amp;#8220;part time project&amp;#8221;.  While not an
 in depth discussion of Riemann, Kyle does a good job of covering the core
 concepts and breadth of what Riemann can accomplish.  An excellent source if one
 is trying to discover if and where Riemann can be&amp;nbsp;utilized.&lt;/p&gt;
@@ -113,7 +318,7 @@ viewer enough to determine if Heka is appropriate for potential&amp;nbsp;tasks.&
 &lt;/div&gt;
 &lt;div class="section" id="insightful"&gt;
 &lt;h2&gt;&lt;a class="toc-backref" href="#id7"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;Insightful&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you make it past the first three &amp;quot;Must Watch&amp;quot; presentations then the
+&lt;p&gt;If you make it past the first three &amp;#8220;Must Watch&amp;#8221; presentations then the
 following are where I would recommend spending your time next.  The first two
 are less pragmatic, but cover lessons learned and potentially positive ways of
 looking at monitoring issues as learned from Netflix.  The Last is an good
@@ -265,7 +470,7 @@ intriguing to&amp;nbsp;you.&lt;/p&gt;
 &lt;div class="section" id="honorable-mention"&gt;
 &lt;h2&gt;&lt;a class="toc-backref" href="#id18"&gt;4&amp;nbsp;&amp;nbsp;&amp;nbsp;Honorable&amp;nbsp;Mention&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;There was one presentation that was less general, but for the audience where
-it&amp;#8217;s appropriate, it is certainly worth a watch .. not to mention any names like&amp;nbsp;&amp;quot;Todd&amp;quot;.&lt;/p&gt;
+it&amp;#8217;s appropriate, it is certainly worth a watch .. not to mention any names like&amp;nbsp;&amp;#8220;Todd&amp;#8221;.&lt;/p&gt;
 &lt;div class="section" id="cyanite-workshop"&gt;
 &lt;h3&gt;&lt;a class="toc-backref" href="#id19"&gt;4.1&amp;nbsp;&amp;nbsp;&amp;nbsp;Cyanite&amp;nbsp;(workshop)&lt;/a&gt;&lt;/h3&gt;
 &lt;table class="docutils field-list" frame="void" rules="none"&gt;
@@ -300,7 +505,7 @@ made a guest contribution to the Librato blog and&amp;nbsp;covers:&lt;/p&gt;
 &lt;!-- End: --&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Mon, 22 Jun 2015 00:00:00 -0600</pubDate><guid>tag:egustafson.github.io,2015-06-22:monitorama-2015.html</guid><category>Monitorama</category><category>trip report</category><category>monitoring</category></item><item><title>Vagrant FreeBSD Appliance Box - Part 1</title><link>https://egustafson.github.io/vagrant-freebsd-p1.html</link><description>&lt;p&gt;A Vagrant &amp;#8216;network appliance&amp;#8217; based on&amp;nbsp;FreeBSD.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Mon, 22 Jun 2015 00:00:00 -0600</pubDate><guid isPermaLink="false">tag:egustafson.github.io,2015-06-22:monitorama-2015.html</guid><category>Monitorama</category><category>trip report</category><category>monitoring</category></item><item><title>Vagrant FreeBSD Appliance Box - Part 1</title><link>https://egustafson.github.io/vagrant-freebsd-p1.html</link><description>&lt;p&gt;A Vagrant &amp;#8216;network appliance&amp;#8217; based on&amp;nbsp;FreeBSD.&lt;/p&gt;
 &lt;blockquote&gt;
 Author&amp;#8217;s note: This posting was rushed in an attempt to capture the knowledge
 gathered thus far in my learning process.  The posting is a bit of a work in
@@ -309,13 +514,13 @@ progress - expect updates over the next few weeks as the process is refined.&lt;
 intended to be used as a firewall / router appliance with Vagrant.  I have
 reached the limits of VirtualBox with respect to networking and the solution is
 to stop using VirtualBox&amp;#8217;s built in networking and build an appliance that
-provides the needed functionality.  This &amp;quot;appliance&amp;quot; will sit between a
-host-only network, where the rest of any development project will sit, and &amp;quot;the
-outside&amp;quot;.  The outside can be accessed through either &lt;span class="caps"&gt;NAT&lt;/span&gt; or Bridged networking
+provides the needed functionality.  This &amp;#8220;appliance&amp;#8221; will sit between a
+host-only network, where the rest of any development project will sit, and &amp;#8220;the
+outside&amp;#8221;.  The outside can be accessed through either &lt;span class="caps"&gt;NAT&lt;/span&gt; or Bridged networking
 with the pseudo-default &lt;span class="caps"&gt;NAT&lt;/span&gt; adapter configured as the first adapter in&amp;nbsp;Vagrant.&lt;/p&gt;
-&lt;p&gt;This appliance &amp;quot;box&amp;quot; should be an evolving project.  The first step is to create
-a VirtualBox image, along with Vagrant control files, package it as a &amp;quot;Vagrant
-Box&amp;quot;, and publish it on HashiCorp&amp;#8217;s Atlas repository &amp;#8212; possibly other
+&lt;p&gt;This appliance &amp;#8220;box&amp;#8221; should be an evolving project.  The first step is to create
+a VirtualBox image, along with Vagrant control files, package it as a &amp;#8220;Vagrant
+Box&amp;#8221;, and publish it on HashiCorp&amp;#8217;s Atlas repository &amp;#8212; possibly other
 locations as well.  Subsequent steps will elaborate configuration of the network
 functions through a Vagrantfile, or ancillary configuration&amp;nbsp;file.&lt;/p&gt;
 &lt;p&gt;The initial network functionality that this project will be seeking to provide&amp;nbsp;is:&lt;/p&gt;
@@ -332,7 +537,7 @@ functions through a Vagrantfile, or ancillary configuration&amp;nbsp;file.&lt;/p
 to create &lt;a class="reference external" href="https://docs.vagrantup.com/v2/boxes/base.html"&gt;Vagrant Base Boxes&lt;/a&gt;.  See the &lt;a class="reference internal" href="#references"&gt;References&lt;/a&gt; section at the end of
 this article for links to other postings I pulled inspiration&amp;nbsp;from.&lt;/p&gt;
 &lt;p&gt;The primary difference, in my mind, between building a generic Vagrant Base Box
-and an &amp;quot;appliance&amp;quot; box is that resources and host configuration should be
+and an &amp;#8220;appliance&amp;#8221; box is that resources and host configuration should be
 specialized for the purpose and not generalized for flexibility.  To that end,
 my choices of configuration are aimed at minimum resource utilization and
 specific configuration for the purpose.  It should be noted that, just like
@@ -391,54 +596,54 @@ following&amp;nbsp;steps:&lt;/p&gt;
 &lt;div class="section" id="reboot-and-configure-the-vm"&gt;
 &lt;h3&gt;Reboot and Configure the &lt;span class="caps"&gt;VM&lt;/span&gt;&lt;/h3&gt;
 &lt;p&gt;Log in as root and update the&amp;nbsp;system:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;freebsd-update fetch
-&lt;span class="nv"&gt;$ &lt;/span&gt;freebsd-update install
-&lt;span class="nv"&gt;$ &lt;/span&gt;pkg update
-&lt;span class="nv"&gt;$ &lt;/span&gt;pkg upgrade
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ freebsd-update fetch
+$ freebsd-update install
+$ pkg update
+$ pkg upgrade
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Install &lt;cite&gt;sudo&lt;/cite&gt; and &lt;cite&gt;bash&lt;/cite&gt;; configure the &lt;cite&gt;vagrant&lt;/cite&gt; user to have sudo access with out
 entering a&amp;nbsp;password:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;pkg install bash
-&lt;span class="c"&gt;# follow the instructions regarding `fdesc`&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;mount -t fdescfs fdesc /dev/fd
-&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;fdesc  /dev/fd  fdescfs   rw  0  0&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/fstab
-&lt;span class="c"&gt;#&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;pkg install sudo
-&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;vagrant ALL=(ALL) NOPASSWD:ALL&amp;quot;&lt;/span&gt; &amp;gt; /usr/local/etc/sudoers.d/vagrant
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pkg install bash
+&lt;span class="c1"&gt;# follow the instructions regarding `fdesc`&lt;/span&gt;
+$ mount -t fdescfs fdesc /dev/fd
+$ &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;fdesc  /dev/fd  fdescfs   rw  0  0&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/fstab
+&lt;span class="c1"&gt;#&lt;/span&gt;
+$ pkg install sudo
+$ &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;vagrant ALL=(ALL) NOPASSWD:ALL&amp;quot;&lt;/span&gt; &amp;gt; /usr/local/etc/sudoers.d/vagrant
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Log out and log back in as user &lt;cite&gt;vagrant&lt;/cite&gt;.  Configure &lt;span class="caps"&gt;SSH&lt;/span&gt; access for user
 &lt;cite&gt;vagrant&lt;/cite&gt; using the Vagrant public&amp;nbsp;keys:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo pkg install wget
-&lt;span class="nv"&gt;$ &lt;/span&gt;mkdir -p ~/.ssh
-&lt;span class="nv"&gt;$ &lt;/span&gt;wget --no-check-certificate &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo pkg install wget
+$ mkdir -p ~/.ssh
+$ wget --no-check-certificate &lt;span class="se"&gt;\&lt;/span&gt;
        https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub &lt;span class="se"&gt;\&lt;/span&gt;
        -O ~/.ssh/authorized_keys
-&lt;span class="nv"&gt;$ &lt;/span&gt;chmod 0700 ~/.ssh
-&lt;span class="nv"&gt;$ &lt;/span&gt;chmod 0400 ~/.ssh/authorized_keys
+$ chmod &lt;span class="m"&gt;0700&lt;/span&gt; ~/.ssh
+$ chmod &lt;span class="m"&gt;0400&lt;/span&gt; ~/.ssh/authorized_keys
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Ensure the the following are set in the &lt;cite&gt;/etc/ssh/sshd_config&lt;/cite&gt; file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;Port  22
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Port  22
 PubkeyAuthentication  yes
 AuthorizedKeysFile  %h/.ssh/authorized_keys
 PermitEmptyPasswords  no
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Add additional packages.  These packages are required to make the host into an
 appliance, or are utilitarian in&amp;nbsp;nature:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Required&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo pkg install dnsmasq
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo pkg install python
-&lt;span class="c"&gt;# Utilities&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo pkg install &lt;span class="nb"&gt;bind&lt;/span&gt;-tools
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo pkg install curl
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Required&lt;/span&gt;
+$ sudo pkg install dnsmasq
+$ sudo pkg install python
+&lt;span class="c1"&gt;# Utilities&lt;/span&gt;
+$ sudo pkg install bind-tools
+$ sudo pkg install curl
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Shutdown the &lt;span class="caps"&gt;VM&lt;/span&gt; in preparation for&amp;nbsp;packaging:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo shutdown -p now
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo shutdown -p now
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="package-the-box"&gt;
 &lt;h3&gt;Package the&amp;nbsp;Box&lt;/h3&gt;
 &lt;p&gt;From the VirtualBox host&amp;nbsp;machine:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;vagrant package --base freebsd-10.1-amd64-gateway
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ vagrant package --base freebsd-10.1-amd64-gateway
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Note that the VirtualBox &lt;span class="caps"&gt;VM&lt;/span&gt; name is &lt;cite&gt;freebsd-10.1-amd64-gateway&lt;/cite&gt;.&lt;/p&gt;
 &lt;/div&gt;
@@ -470,7 +675,7 @@ appliance, or are utilitarian in&amp;nbsp;nature:&lt;/p&gt;
 &lt;!-- fill-column: 80 --&gt;
 &lt;!-- End: --&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Wed, 25 Mar 2015 00:00:00 -0600</pubDate><guid>tag:egustafson.github.io,2015-03-25:vagrant-freebsd-p1.html</guid><category>Vagrant</category><category>FreeBSD</category></item><item><title>IPv6 Network (Auto) Configuration</title><link>https://egustafson.github.io/ipv6-dhcpv6.html</link><description>&lt;p&gt;In my previous article, &lt;a class="reference external" href="https://egustafson.github.io/ipv6-tunneling.html"&gt;IPv6 Tunneling over IPv4 Networks&lt;/a&gt;, I discussed how to
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Wed, 25 Mar 2015 00:00:00 -0600</pubDate><guid isPermaLink="false">tag:egustafson.github.io,2015-03-25:vagrant-freebsd-p1.html</guid><category>Vagrant</category><category>FreeBSD</category></item><item><title>IPv6 Network (Auto) Configuration</title><link>https://egustafson.github.io/ipv6-dhcpv6.html</link><description>&lt;p&gt;In my previous article, &lt;a class="reference external" href="https://egustafson.github.io/ipv6-tunneling.html"&gt;IPv6 Tunneling over IPv4 Networks&lt;/a&gt;, I discussed how to
 connect a &lt;span class="caps"&gt;LAN&lt;/span&gt; to the IPv6 public Internet.  This article continues the theme,
 discussing the issues surrounding the &lt;span class="caps"&gt;LAN&lt;/span&gt;&amp;#8217;s configuration for&amp;nbsp;IPv6.&lt;/p&gt;
 &lt;p&gt;Looking at how &lt;span class="caps"&gt;LAN&lt;/span&gt;&amp;#8217;s are configured for IPv4 proves to be instructive.  Many of
@@ -489,14 +694,14 @@ only&lt;/strong&gt; network.  The same (pre)configuration should also work if th
 happens to support IPv4, and the hosts should then configure and join the IPv4
 network as&amp;nbsp;well.&lt;/p&gt;
 &lt;p&gt;There are two use cases that are used to vet the proposed methods.  The first is
-the &amp;quot;small lab&amp;quot; use case.  Think of a small, less than 100 hosts, lab
+the &amp;#8220;small lab&amp;#8221; use case.  Think of a small, less than 100 hosts, lab
 environment, or &lt;span class="caps"&gt;SOHO&lt;/span&gt; office.  In this sort of environment some of the hosts are
 very dynamic, and some are more static with specific functions assigned to them;
 for instance, a mail, or &lt;span class="caps"&gt;IRC&lt;/span&gt; server.  The second use case is the prototype
 environment for a distributed application.  Often such environments are created
 with &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s using tools such as &lt;a class="reference external" href="https://www.vagrantup.com/"&gt;Vagrant&lt;/a&gt; inside a developer&amp;#8217;s laptop.  Such
 environments can be paused and restarted, relocated, and the hosts are often
-destroyed and recreated for a &amp;quot;fresh install&amp;quot;.  In both cases, formal rigor in
+destroyed and recreated for a &amp;#8220;fresh install&amp;#8221;.  In both cases, formal rigor in
 configuring and maintaining the network are not as important as a degree of
 automation combined with flexibility to manually adjust things as needed for the
 task at&amp;nbsp;hand.&lt;/p&gt;
@@ -509,7 +714,7 @@ it is known as &lt;a class="reference external" href="https://en.wikipedia.org/w
 &lt;div class="section" id="ipv6-autoconfiguration"&gt;
 &lt;h3&gt;IPv6&amp;nbsp;Autoconfiguration&lt;/h3&gt;
 &lt;p&gt;During the design of IPv6, then codenamed &amp;#8216;IPng&amp;#8217;, the design of
-&amp;quot;autoconfiguration&amp;quot; for &lt;span class="caps"&gt;IP&lt;/span&gt; was refactored to support a more automated method by
+&amp;#8220;autoconfiguration&amp;#8221; for &lt;span class="caps"&gt;IP&lt;/span&gt; was refactored to support a more automated method by
 which hosts could join an IPv6 network.  In the base IPv4 protocol there is no
 explicit support for autoconfiguration.  In IPv6 autoconfiguration support was
 initially integrated into &lt;a class="reference external" href="https://en.wikipedia.org/wiki/ICMPv6"&gt;ICMPv6&lt;/a&gt;.  This comes in the form of &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Neighbor_Discovery_Protocol"&gt;Neighbor
@@ -549,11 +754,11 @@ option parameters registered for &lt;span class="caps"&gt;DHCP&lt;/span&gt; &lt;
 &lt;div class="section" id="stateful-and-stateless-dhcpv6"&gt;
 &lt;h3&gt;Stateful and Stateless&amp;nbsp;DHCPv6&lt;/h3&gt;
 &lt;p&gt;The ability for a host to autoconfigure, through &lt;span class="caps"&gt;SLAAC&lt;/span&gt;, it&amp;#8217;s IPv6 details gives
-rise to a new mode of use for &lt;span class="caps"&gt;DHCP&lt;/span&gt; - &amp;quot;Stateless DHCPv6&amp;quot;.  In this mode, the host
+rise to a new mode of use for &lt;span class="caps"&gt;DHCP&lt;/span&gt; - &amp;#8220;Stateless DHCPv6&amp;#8221;.  In this mode, the host
 first uses &lt;span class="caps"&gt;SLAAC&lt;/span&gt; to configure its IPv6 details and then uses DHCPv6 to request
 additional details like &lt;span class="caps"&gt;DNS&lt;/span&gt;, &lt;span class="caps"&gt;NTP&lt;/span&gt;, etc.  In this mode the host indicates it is
-operating &amp;quot;stateless&amp;quot; and the server does not perform address&amp;nbsp;assignment.&lt;/p&gt;
-&lt;p&gt;In addition to the stateless mode, DHCPv6 can also be used in a &amp;quot;stateful&amp;quot; mode
+operating &amp;#8220;stateless&amp;#8221; and the server does not perform address&amp;nbsp;assignment.&lt;/p&gt;
+&lt;p&gt;In addition to the stateless mode, DHCPv6 can also be used in a &amp;#8220;stateful&amp;#8221; mode
 where an IPv6 address is assigned from the server&amp;#8217;s pool of addresses.  IPv6
 allows and most often requires hosts to have multiple IPv6 addresses assigned to
 a single interface; the link-local address is an excellent example of this.
@@ -627,11 +832,11 @@ can not handle locally to.  Note that the forwarder does &lt;em&gt;not&lt;/em&gt
 need to be a IPv6 address, although it could be.  Multiple
 forwarders are configurable if desired.&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class="field"&gt;&lt;th class="field-name"&gt;local=/cloud1/:&lt;/th&gt;&lt;td class="field-body"&gt;Declare the domain &amp;quot;cloud1&amp;quot; as the domain being served locally.&lt;/td&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;local=/cloud1/:&lt;/th&gt;&lt;td class="field-body"&gt;Declare the domain &amp;#8220;cloud1&amp;#8221; as the domain being served locally.&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class="field"&gt;&lt;th class="field-name"&gt;domain=cloud1:&lt;/th&gt;&lt;td class="field-body"&gt;Declare the domain &amp;quot;cloud1&amp;quot; as the domain for all &lt;span class="caps"&gt;DHCP&lt;/span&gt; requests&lt;/td&gt;
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;domain=cloud1:&lt;/th&gt;&lt;td class="field-body"&gt;Declare the domain &amp;#8220;cloud1&amp;#8221; as the domain for all &lt;span class="caps"&gt;DHCP&lt;/span&gt; requests&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class="field"&gt;&lt;th class="field-name"&gt;dhcp-fqdn:&lt;/th&gt;&lt;td class="field-body"&gt;Force all &lt;span class="caps"&gt;DHCP&lt;/span&gt; clients to be placed in the &amp;quot;cloud1&amp;quot; domain,
+&lt;tr class="field"&gt;&lt;th class="field-name"&gt;dhcp-fqdn:&lt;/th&gt;&lt;td class="field-body"&gt;Force all &lt;span class="caps"&gt;DHCP&lt;/span&gt; clients to be placed in the &amp;#8220;cloud1&amp;#8221; domain,
 regardless of what domain they specify in the &lt;span class="caps"&gt;DHCP&lt;/span&gt; request.&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class="field"&gt;&lt;th class="field-name"&gt;enable-ra:&lt;/th&gt;&lt;td class="field-body"&gt;Perform IPv6 Router Advertisement as part of Dnsmasq&amp;#8217;s operation.
@@ -649,7 +854,7 @@ host.&lt;/td&gt;
 performing &lt;span class="caps"&gt;DHCP&lt;/span&gt; requests.&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class="field"&gt;&lt;th class="field-name"&gt;dhcp-range&amp;#8230;:&lt;/th&gt;&lt;td class="field-body"&gt;Issue IPv6 addresses between ::100 and ::1ff in response to &lt;span class="caps"&gt;DHCP&lt;/span&gt;
-requests.  The clause, &amp;quot;&lt;tt class="docutils literal"&gt;constructor:em1&lt;/tt&gt;&amp;quot; directs the
+requests.  The clause, &amp;#8220;&lt;tt class="docutils literal"&gt;constructor:em1&lt;/tt&gt;&amp;#8221; directs the
 configuration to use the network prefix of the &amp;#8216;em1&amp;#8217; interface
 as the network prefix for the leased addresses.  The actual
 address returned will be [em1 prefix]::[100-1ff].&lt;/td&gt;
@@ -726,16 +931,16 @@ including Vagrant based setups on developer&amp;nbsp;laptops.&lt;/p&gt;
 &lt;!-- fill-column: 80 --&gt;
 &lt;!-- End: --&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Fri, 06 Mar 2015 00:00:00 -0700</pubDate><guid>tag:egustafson.github.io,2015-03-06:ipv6-dhcpv6.html</guid><category>IPv6</category><category>FreeBSD</category><category>Linux</category><category>DHCP</category><category>DNS</category><category>dnsmasq</category></item><item><title>IPv6 Tunneling over IPv4 Networks</title><link>https://egustafson.github.io/ipv6-tunneling.html</link><description>&lt;div class="section" id="connecting-to-the-v6-world-from-afar"&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Fri, 06 Mar 2015 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:egustafson.github.io,2015-03-06:ipv6-dhcpv6.html</guid><category>IPv6</category><category>FreeBSD</category><category>Linux</category><category>DHCP</category><category>DNS</category><category>dnsmasq</category></item><item><title>IPv6 Tunneling over IPv4 Networks</title><link>https://egustafson.github.io/ipv6-tunneling.html</link><description>&lt;div class="section" id="connecting-to-the-v6-world-from-afar"&gt;
 &lt;h2&gt;Connecting to the v6 world from&amp;nbsp;afar&lt;/h2&gt;
-&lt;p&gt;It turns out that proposing IPv6 as a &amp;quot;solution&amp;quot; for various networking problems
+&lt;p&gt;It turns out that proposing IPv6 as a &amp;#8220;solution&amp;#8221; for various networking problems
 in the Cloud and Container, read &amp;#8216;Docker&amp;#8217;, spaces opens a small Pandora&amp;#8217;s Box of
 questions.  This article is the first in a series discussing pragmatic IPv6
 issues along side multiple environments using it.  The goal of exploring IPv6 in
 these articles is to solve, or provide possible solutions, to&amp;nbsp;problems.&lt;/p&gt;
 &lt;div class="section" id="motivations"&gt;
 &lt;h3&gt;Motivations&lt;/h3&gt;
-&lt;p&gt;A while ago I took it upon myself to add my home &amp;quot;lab&amp;quot; environment to the public
+&lt;p&gt;A while ago I took it upon myself to add my home &amp;#8220;lab&amp;#8221; environment to the public
 IPv6 network.  &lt;a class="reference external" href="https://en.wikipedia.org/wiki/IPv6"&gt;IPv6&lt;/a&gt; &lt;strong&gt;is&lt;/strong&gt; coming, and it behooves any technologist to gain
 practical experience.  While IPv6 is just the next version after &lt;a class="reference external" href="https://en.wikipedia.org/wiki/IPv4"&gt;IPv4&lt;/a&gt;,
 there are sharp edges and I certainly found a few.  Unfortunately, I let the v6
@@ -752,15 +957,15 @@ as a response to the depleting IPv4 address space and it seems to have devolved
 into a hammer and we now have a generation of software developers that only see&amp;nbsp;nails.&lt;/p&gt;
 &lt;p&gt;The solution, in the truly abstract sense, is IPv6, and &lt;span class="caps"&gt;NAT&lt;/span&gt; was the hack.  So,
 one day recently it dawns on me when looking at yet another Docker networking
-project, &amp;quot;flatten the network, it should be flat, and adopt the protocol that
-was, and is the solution:&amp;nbsp;IPv6&amp;quot;.&lt;/p&gt;
+project, &amp;#8220;flatten the network, it should be flat, and adopt the protocol that
+was, and is the solution:&amp;nbsp;IPv6&amp;#8221;.&lt;/p&gt;
 &lt;p&gt;Following this reasoning, with the help of the team I work with, we set out to
 build a reusable environment with not only IPv6 support, but specifically the
 ability to run an IPv6 only environment.  Very quickly after defining this goal,
 it became obvious that connectivity between test environments, and for that
 matter, into the public IPv6 Internet would be highly desirable.  And there we
-are:  &amp;quot;how do we connect private, and possibly isolated behind &lt;span class="caps"&gt;NAT&lt;/span&gt;, networks to
-the public IPv6&amp;nbsp;Internet?&amp;quot;&lt;/p&gt;
+are:  &amp;#8220;how do we connect private, and possibly isolated behind &lt;span class="caps"&gt;NAT&lt;/span&gt;, networks to
+the public IPv6&amp;nbsp;Internet?&amp;#8221;&lt;/p&gt;
 &lt;p&gt;There are many, many, articles written about the mechanics of connecting to the
 IPv6 Internet.  What I was unsuccessful in finding is a description of how such
 connections worked, if it was possible to transition &lt;span class="caps"&gt;NAT&lt;/span&gt;, and what the possible
@@ -773,36 +978,36 @@ distilled form; I will attempt to provide such a distillation&amp;nbsp;here.&lt;
 series; don&amp;#8217;t be surprised if it&amp;nbsp;moves.)&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;All software, and almost all networking people I talk to are aware of IPv6 and
 have a mental model of what IPv6 is.  It generally goes something along the
-lines of, &amp;quot;it&amp;#8217;s IPv4 with longer addresses&amp;quot;.  The slightly more astute will also
+lines of, &amp;#8220;it&amp;#8217;s IPv4 with longer addresses&amp;#8221;.  The slightly more astute will also
 add that this requires a new record type in &lt;span class="caps"&gt;DNS&lt;/span&gt;, the &lt;span class="caps"&gt;AAAA&lt;/span&gt; record.  This is all
-true, however &amp;quot;the devil is in the details&amp;quot;, and v6 is no exception.  The
-following sections elaborate a few of the subtle, but important &amp;quot;details&amp;quot; worth
+true, however &amp;#8220;the devil is in the details&amp;#8221;, and v6 is no exception.  The
+following sections elaborate a few of the subtle, but important &amp;#8220;details&amp;#8221; worth
 noting when beginning work with&amp;nbsp;IPv6.&lt;/p&gt;
 &lt;div class="section" id="prefix-length-subnetting"&gt;
 &lt;h4&gt;Prefix Length -&amp;nbsp;Subnetting&lt;/h4&gt;
 &lt;p&gt;The concept of subnetting, or splitting an address into two sections, the
 &amp;#8216;network&amp;#8217; and &amp;#8216;host&amp;#8217; address, remains the same; the implementation differs.  In
 IPv4 addresses blocks were initially classified as Class &amp;#8216;A&amp;#8217;, &amp;#8216;B&amp;#8217;, and &amp;#8216;C&amp;#8217;&lt;a class="footnote-reference" href="#id2" id="id1"&gt;[*]&lt;/a&gt;
-and later we moved to &lt;span class="caps"&gt;CIDR&lt;/span&gt; (&amp;quot;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing"&gt;Classless Inter-Domain Routing&lt;/a&gt;&amp;quot;) where the
+and later we moved to &lt;span class="caps"&gt;CIDR&lt;/span&gt; (&amp;#8220;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing"&gt;Classless Inter-Domain Routing&lt;/a&gt;&amp;#8220;) where the
 boundary between network and host was any bit boundary in the 32 bit space of the
-IPv4 address.  Often a &amp;quot;larger&amp;quot; block, &lt;span class="caps"&gt;CIDR&lt;/span&gt; boundary to the left, more
+IPv4 address.  Often a &amp;#8220;larger&amp;#8221; block, &lt;span class="caps"&gt;CIDR&lt;/span&gt; boundary to the left, more
 significant bits, would be handed to an organization and they would define a new
-&lt;span class="caps"&gt;CIDR&lt;/span&gt; bit location within the host space and subdivide the network, aka&amp;nbsp;&amp;quot;subnetting&amp;quot;.&lt;/p&gt;
+&lt;span class="caps"&gt;CIDR&lt;/span&gt; bit location within the host space and subdivide the network, aka&amp;nbsp;&amp;#8220;subnetting&amp;#8221;.&lt;/p&gt;
 &lt;p&gt;IPv6 uses the same concept, however the boundary between network and host
 sections of the address is fixed.  An IPv6 address is 128 bits and the lower 64
 are the host segment.  This leaves 64 bits of network address.  Unlike
-configuring IPv4 network interfaces where the &amp;quot;netmask&amp;quot; must be specified, an
+configuring IPv4 network interfaces where the &amp;#8220;netmask&amp;#8221; must be specified, an
 IPv6 configuration does not need to specify the netmask, it is always 64&amp;nbsp;bits.&lt;/p&gt;
 &lt;p&gt;Subdividing IPv6 address space does still happen, it happens above the first 64
 bits in the address.  For instance the IPv4 address to IPv6 network mapping
 specifies that each IPv4 address is associated with an IPv6 network that can be
-further subdivided.  The v4 to v6 mapping provides a &amp;quot;/48&amp;quot; network for each v4
+further subdivided.  The v4 to v6 mapping provides a &amp;#8220;/48&amp;#8221; network for each v4
 address meaning that each 6to4 network has 65536 subnets or 16 remaining bits to
 subnet in the 64 bit network portion of and IPv6 address, (48 + 16 =&amp;nbsp;64).&lt;/p&gt;
 &lt;p&gt;A quick note on terminology.  In IPv4 the term &amp;#8216;subnet mask&amp;#8217;, or &amp;#8216;netmask&amp;#8217; is
 used when describing the bit boundary between network and host address segments.
-In IPv6 a new term has evolved, &amp;quot;prefix length&amp;quot;, sometimes abbreviated,
-&amp;quot;prefixlen&amp;quot;.  The prefix length is meant to describe the number of bits that are
+In IPv6 a new term has evolved, &amp;#8220;prefix length&amp;#8221;, sometimes abbreviated,
+&amp;#8220;prefixlen&amp;#8221;.  The prefix length is meant to describe the number of bits that are
 fixed in an allocated block of IPv6 addresses.  This is similar, but subtly
 different than a netmask.  The netmask in IPv6 is always /64.  If I am given a
 network block with prefix length /48 (48 bits) then I have 16 bits, or 65536
@@ -819,8 +1024,8 @@ then I have exactly &lt;em&gt;one&lt;/em&gt; IPv6 network and can not subdivide&
 &lt;/div&gt;
 &lt;div class="section" id="tunneling-rfc-4213"&gt;
 &lt;h3&gt;Tunneling - &lt;span class="caps"&gt;RFC&lt;/span&gt;-4213&lt;/h3&gt;
-&lt;p&gt;&lt;a class="reference external" href="https://www.ietf.org/rfc/rfc4213.txt"&gt;&lt;span class="caps"&gt;RFC&lt;/span&gt; 4213&lt;/a&gt; specifies, &amp;quot;IPv4 compatibility mechanisms that can be implemented
-by IPv6 hosts and routers.&amp;quot;  The document specifically details a method for
+&lt;p&gt;&lt;a class="reference external" href="https://www.ietf.org/rfc/rfc4213.txt"&gt;&lt;span class="caps"&gt;RFC&lt;/span&gt; 4213&lt;/a&gt; specifies, &amp;#8220;IPv4 compatibility mechanisms that can be implemented
+by IPv6 hosts and routers.&amp;#8221;  The document specifically details a method for
 transporting IPv6 packets across an IPv4 only network &amp;#8212; tunneling.  The &lt;span class="caps"&gt;RFC&lt;/span&gt;
 does not exclude other methods, however the method in &lt;span class="caps"&gt;RFC&lt;/span&gt; 4213 is trivially
 simple and in wide use on the public (IPv4)&amp;nbsp;Internet.&lt;/p&gt;
@@ -878,7 +1083,7 @@ not suffer from these problems.  If no state is kept and bi-directional &lt;span
 not utilized then remote packets will be dropped at the &lt;span class="caps"&gt;NAT&lt;/span&gt; device and the
 tunnel will not function&amp;nbsp;properly.&lt;/p&gt;
 &lt;p&gt;Additionally, the &lt;span class="caps"&gt;NAT&lt;/span&gt; device must support &lt;span class="caps"&gt;NAT&lt;/span&gt; translation of IPv4 protocol 41
-packets.  It has been reported that some consumer grade &amp;quot;home firewalls&amp;quot; are
+packets.  It has been reported that some consumer grade &amp;#8220;home firewalls&amp;#8221; are
 configured by default to drop such packets.  Numerous other articles advise
 checking such devices to ensure they are configured to pass this traffic.  I
 have not discovered any citations of devices that would not, and could not pass
@@ -920,8 +1125,8 @@ guarantee of&amp;nbsp;delivery.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="hop-limit"&gt;
 &lt;h5&gt;Hop&amp;nbsp;Limit&lt;/h5&gt;
-&lt;p&gt;As stated in &lt;span class="caps"&gt;RFC&lt;/span&gt; 4213, &amp;quot;IPv6-over-IPv4 tunnels are modeled as a &amp;#8216;single-hop&amp;#8217;
-from the IPv6 perspective.&amp;quot;  The encapsulated IPv6 packet does not have its hop
+&lt;p&gt;As stated in &lt;span class="caps"&gt;RFC&lt;/span&gt; 4213, &amp;#8220;IPv6-over-IPv4 tunnels are modeled as a &amp;#8216;single-hop&amp;#8217;
+from the IPv6 perspective.&amp;#8221;  The encapsulated IPv6 packet does not have its hop
 limit decremented while transiting the IPv4 network and only the IPv4 &lt;span class="caps"&gt;TTL&lt;/span&gt; is
 manipulated in transit.  The IPv6 packet&amp;#8217;s hop limit is decremented by the
 tunnel endpoint as if the IPv4 transit network is a single&amp;nbsp;hop.&lt;/p&gt;
@@ -930,12 +1135,12 @@ tunnel endpoint as if the IPv4 transit network is a single&amp;nbsp;hop.&lt;/p&g
 &lt;/div&gt;
 &lt;div class="section" id="rfc-4213-methods"&gt;
 &lt;h3&gt;&lt;span class="caps"&gt;RFC&lt;/span&gt;-4213&amp;nbsp;Methods&lt;/h3&gt;
-&lt;p&gt;The common name for &lt;em&gt;basic&lt;/em&gt; &lt;span class="caps"&gt;RFC&lt;/span&gt;-4213 tunneling is &amp;quot;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/6in4"&gt;6in4&lt;/a&gt;&amp;quot;.  Utilizing the
+&lt;p&gt;The common name for &lt;em&gt;basic&lt;/em&gt; &lt;span class="caps"&gt;RFC&lt;/span&gt;-4213 tunneling is &amp;#8220;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/6in4"&gt;6in4&lt;/a&gt;&amp;#8220;.  Utilizing the
 techniques described above, manually configuring tunnel endpoints would be
 described as&amp;nbsp;6in4.&lt;/p&gt;
 &lt;div class="section" id="to4"&gt;
 &lt;h4&gt;6to4&lt;/h4&gt;
-&lt;p&gt;The &amp;quot;&lt;a class="reference internal" href="#to4"&gt;6to4&lt;/a&gt;&amp;quot; method builds on 6in4 by providing automated configuration.
+&lt;p&gt;The &amp;#8220;&lt;a class="reference internal" href="#to4"&gt;6to4&lt;/a&gt;&amp;#8221; method builds on 6in4 by providing automated configuration.
 Tunneling is accomplished according to &lt;span class="caps"&gt;RFC&lt;/span&gt;-4213 and configuration details are
 prescribed in &lt;a class="reference external" href="https://www.ietf.org/rfc/rfc3056.txt"&gt;&lt;span class="caps"&gt;RFC&lt;/span&gt;-3056&lt;/a&gt; and &lt;a class="reference external" href="https://www.ietf.org/rfc/rfc3068.txt"&gt;&lt;span class="caps"&gt;RFC&lt;/span&gt;-3068&lt;/a&gt;.  In short, &lt;span class="caps"&gt;RFC&lt;/span&gt;-3056 reserves 2002::/16
 for statically mapping IPv4 addresses to IPv6 networks and &lt;span class="caps"&gt;RFC&lt;/span&gt;-3068 specifies an
@@ -977,12 +1182,12 @@ also a Linux/xxxBSD, open source client named &lt;a class="reference external" h
 &lt;/div&gt;
 &lt;div class="section" id="tunnel-brokers"&gt;
 &lt;h3&gt;Tunnel&amp;nbsp;Brokers&lt;/h3&gt;
-&lt;p&gt;&amp;quot;Tunnel Broker&amp;quot; is the term being used to describe &lt;span class="caps"&gt;ISP&lt;/span&gt;&amp;#8217;s who will provide tunnel
+&lt;p&gt;&lt;span class="dquo"&gt;&amp;#8220;&lt;/span&gt;Tunnel Broker&amp;#8221; is the term being used to describe &lt;span class="caps"&gt;ISP&lt;/span&gt;&amp;#8217;s who will provide tunnel
 access to the IPv6 public Internet.  There are a number of brokers, and among
 them, a number that offer free access for tunneling IPv6.  The Wikipedia page,
-&amp;quot;&amp;quot;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/List_of_IPv6_tunnel_brokers"&gt;List of IPv6 tunnel brokers&lt;/a&gt;&amp;quot; contains a&amp;nbsp;list.&lt;/p&gt;
+&amp;#8220;&amp;#8221;&lt;a class="reference external" href="https://en.wikipedia.org/wiki/List_of_IPv6_tunnel_brokers"&gt;List of IPv6 tunnel brokers&lt;/a&gt;&amp;#8221; contains a&amp;nbsp;list.&lt;/p&gt;
 &lt;p&gt;The two most popular, and well deployed brokers are &lt;a class="reference external" href="https://www.he.net/"&gt;Hurricane Electric&lt;/a&gt;&amp;#8216;s
-(&lt;span class="caps"&gt;HE&lt;/span&gt;) &amp;quot;&lt;a class="reference external" href="https://tunnelbroker.net/"&gt;IPv6 Tunnel Broker&lt;/a&gt;&amp;quot; service and &lt;a class="reference external" href="https://www.sixxs.net/"&gt;SixXS&lt;/a&gt; (Six Access).  I chose &lt;span class="caps"&gt;HE&lt;/span&gt;
+(&lt;span class="caps"&gt;HE&lt;/span&gt;) &amp;#8220;&lt;a class="reference external" href="https://tunnelbroker.net/"&gt;IPv6 Tunnel Broker&lt;/a&gt;&amp;#8221; service and &lt;a class="reference external" href="https://www.sixxs.net/"&gt;SixXS&lt;/a&gt; (Six Access).  I chose &lt;span class="caps"&gt;HE&lt;/span&gt;
 because they appeared to have more written about them and how to connect to
 their tunnel broker.  In hindsight I have concluded that SixXS and &lt;span class="caps"&gt;HE&lt;/span&gt; are on
 comparable footing.  I would recommend starting with one of the two, but believe
@@ -1005,7 +1210,7 @@ VMWare Workstation, even with 2 layers of &lt;span class="caps"&gt;NAT&lt;/span&
 &lt;/ol&gt;
 &lt;div class="section" id="he-tunnel-broker-account"&gt;
 &lt;h4&gt;&lt;span class="caps"&gt;HE&lt;/span&gt; Tunnel Broker&amp;nbsp;Account&lt;/h4&gt;
-&lt;p&gt;Go to:  &lt;a class="reference external" href="https://tunnelbroker.net"&gt;https://tunnelbroker.net&lt;/a&gt; and select the &amp;quot;Register&amp;quot; button on the upper
+&lt;p&gt;Go to:  &lt;a class="reference external" href="https://tunnelbroker.net"&gt;https://tunnelbroker.net&lt;/a&gt; and select the &amp;#8220;Register&amp;#8221; button on the upper
 left section of the page in the login box.  Complete the registration form which
 asks&amp;nbsp;for:&lt;/p&gt;
 &lt;ul class="simple"&gt;
@@ -1024,7 +1229,7 @@ keychain software, right?  &amp;lt;hint,&amp;nbsp;nudge&amp;gt;&lt;/p&gt;
 &lt;p&gt;With the registration email, go back to tunnelbroker.net and log in.  &amp;#8216;Username&amp;#8217;
 is the Account Name you registered with.  Once logged in you will be allowed to
 create up to 5 separate tunnels.  Initially tunnels are issued a single IPv6
-network, a /64 prefix.  There is an option to &amp;quot;assign a /48&amp;quot; to the tunnel which
+network, a /64 prefix.  There is an option to &amp;#8220;assign a /48&amp;#8221; to the tunnel which
 would allocate a prefix with 16 bits or 65536 subnets within it.  I have not
 tried this yet, but will update this article when I&amp;nbsp;do.&lt;/p&gt;
 &lt;p&gt;At this point you need to know the public IPv4 address that you will use as your
@@ -1037,25 +1242,25 @@ from a command line application like &lt;tt class="docutils literal"&gt;wget&lt;
 &lt;/div&gt;
 &lt;div class="section" id="allocate-a-tunnel"&gt;
 &lt;h4&gt;Allocate a&amp;nbsp;Tunnel&lt;/h4&gt;
-&lt;p&gt;Once logged in to &lt;span class="caps"&gt;HE&lt;/span&gt;&amp;#8217;s Tunnel Broker, on the left side below &amp;quot;Account Menu&amp;quot; is a
-box titled &amp;quot;User Functions&amp;quot;.  Inside User Functions click on &amp;quot;Create Regular
-Tunnel&amp;quot;.  You will be prompted for two pieces of&amp;nbsp;information:&lt;/p&gt;
+&lt;p&gt;Once logged in to &lt;span class="caps"&gt;HE&lt;/span&gt;&amp;#8217;s Tunnel Broker, on the left side below &amp;#8220;Account Menu&amp;#8221; is a
+box titled &amp;#8220;User Functions&amp;#8221;.  Inside User Functions click on &amp;#8220;Create Regular
+Tunnel&amp;#8221;.  You will be prompted for two pieces of&amp;nbsp;information:&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;IPv4 Endpoint (Your&amp;nbsp;side).&lt;/li&gt;
 &lt;li&gt;Available Tunnel&amp;nbsp;Servers.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Enter the &lt;strong&gt;public IPv4 address&lt;/strong&gt; your FreeBSD host appears on the Internet as,
-as described above, for the &amp;quot;IPv4 Endpoint&amp;quot;.  This is the address that &lt;span class="caps"&gt;HE&lt;/span&gt;&amp;#8217;s side
+as described above, for the &amp;#8220;IPv4 Endpoint&amp;#8221;.  This is the address that &lt;span class="caps"&gt;HE&lt;/span&gt;&amp;#8217;s side
 of the tunnel will send (tunnel) IPv6 packets bound for you&amp;nbsp;to.&lt;/p&gt;
-&lt;p&gt;Select the nearest location for the &amp;quot;Available Tunnel Servers&amp;quot;.  Note that
-&amp;quot;nearest&amp;quot; is in a network sense.  The astute person will perform ping checks and
+&lt;p&gt;Select the nearest location for the &amp;#8220;Available Tunnel Servers&amp;#8221;.  Note that
+&amp;#8220;nearest&amp;#8221; is in a network sense.  The astute person will perform ping checks and
 determine latency if there is any question as to which is closest.  I was pleasantly
 surprised that the physically closest node was the lowest latency - this is
 often not the my case.  Regardless, any of the server endpoints will function&amp;nbsp;properly.&lt;/p&gt;
 &lt;p&gt;Note that the &lt;span class="caps"&gt;HE&lt;/span&gt; Tunnel Broker web site will let you create, edit, and delete
-tunnels.  It is not necessary to &amp;quot;get it perfect&amp;quot; the first time; it is possible
+tunnels.  It is not necessary to &amp;#8220;get it perfect&amp;#8221; the first time; it is possible
 to change the tunnel configuration as well as destroy and&amp;nbsp;recreate.&lt;/p&gt;
-&lt;p&gt;Click the &amp;quot;Create Tunnel&amp;quot; button and you will be presented with the details of
+&lt;p&gt;Click the &amp;#8220;Create Tunnel&amp;#8221; button and you will be presented with the details of
 the newly created tunnel.  This information&amp;nbsp;includes:&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;Server IPv4 Address &amp;#8212; the remote tunnel&amp;nbsp;endpoint.&lt;/li&gt;
@@ -1064,7 +1269,7 @@ the newly created tunnel.  This information&amp;nbsp;includes:&lt;/p&gt;
 &lt;li&gt;Client IPv6 Address &amp;#8212; the IPv6 address &lt;em&gt;inside&lt;/em&gt; your end of the&amp;nbsp;tunnel.&lt;/li&gt;
 &lt;li&gt;Routed /64 (IPv6 prefix) &amp;#8212; An IPv6 network prefix to use on your end of the&amp;nbsp;tunnel.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;The &amp;quot;Routed /64&amp;quot; will &lt;em&gt;not&lt;/em&gt; overlap with the IPv6 addresses of your client or
+&lt;p&gt;The &amp;#8220;Routed /64&amp;#8221; will &lt;em&gt;not&lt;/em&gt; overlap with the IPv6 addresses of your client or
 server; this is correct.  Keep in mind that the tunnel is a separate data link
 (L2 network) from your routed network, this is why the client/server addresses
 are, and should be, on a different&amp;nbsp;network.&lt;/p&gt;
@@ -1072,29 +1277,29 @@ are, and should be, on a different&amp;nbsp;network.&lt;/p&gt;
 &lt;div class="section" id="tunnel-details-page"&gt;
 &lt;h4&gt;Tunnel Details&amp;nbsp;Page&lt;/h4&gt;
 &lt;p&gt;There are a few additional items worth noting on the Tunnel Details page.
-First, note the tabs across the top of the center section:  &amp;quot;IPv6 Tunnel&amp;quot;,
-&amp;quot;Example Configurations&amp;quot;, and &amp;quot;Advanced&amp;quot;.  Also note, along the left side that
-the &amp;quot;Account Menu&amp;quot; and &amp;quot;User Functions&amp;quot; are still&amp;nbsp;available.&lt;/p&gt;
-&lt;p&gt;On the &amp;quot;IPv6 Tunnel&amp;quot; tab there are three noteworthy items.  First, the &amp;quot;Delete&amp;quot;
+First, note the tabs across the top of the center section:  &amp;#8220;IPv6 Tunnel&amp;#8221;,
+&amp;#8220;Example Configurations&amp;#8221;, and &amp;#8220;Advanced&amp;#8221;.  Also note, along the left side that
+the &amp;#8220;Account Menu&amp;#8221; and &amp;#8220;User Functions&amp;#8221; are still&amp;nbsp;available.&lt;/p&gt;
+&lt;p&gt;On the &amp;#8220;IPv6 Tunnel&amp;#8221; tab there are three noteworthy items.  First, the &amp;#8220;Delete&amp;#8221;
 button; use this to return a tunnel you are no longer using.  The second is less
 obvious, but very useful.  Clicking on the Client IPv4 address will allow you to
 edit the value.  If you would like to adjust the IPv4 address of your end of the
 tunnel it can be done with out deleting and recreating the tunnel.  Finally,
-there is a clickable link to &amp;quot;Assign /48&amp;quot; to the tunnel.  &lt;span class="caps"&gt;HE&lt;/span&gt; documentation makes
-reference to &amp;quot;get your own /48 prefix &lt;em&gt;once&lt;/em&gt; your tunnel is up&amp;quot;.  I have not
+there is a clickable link to &amp;#8220;Assign /48&amp;#8221; to the tunnel.  &lt;span class="caps"&gt;HE&lt;/span&gt; documentation makes
+reference to &amp;#8220;get your own /48 prefix &lt;em&gt;once&lt;/em&gt; your tunnel is up&amp;#8221;.  I have not
 attempted to assign a /48 yet, but as noted earlier, will update this article
 when I&amp;nbsp;have.&lt;/p&gt;
-&lt;p&gt;The &amp;quot;Example Configurations&amp;quot; tab is just that, a place to find examples for
+&lt;p&gt;The &amp;#8220;Example Configurations&amp;#8221; tab is just that, a place to find examples for
 various operating systems.  Select the tab, and then choose an &lt;span class="caps"&gt;OS&lt;/span&gt; from the drop
-down.  Worth noting, the &amp;quot;FreeBSD &amp;gt;= 4.4&amp;quot; item has an error in it, which was the
-source of some confusion for me.  In the third line that ends with &amp;quot;prefixlen
-128&amp;quot;, this final clause, the prefixlen, should removed; the remainder of the
+down.  Worth noting, the &amp;#8220;FreeBSD &amp;gt;= 4.4&amp;#8221; item has an error in it, which was the
+source of some confusion for me.  In the third line that ends with &amp;#8220;prefixlen
+128&amp;#8221;, this final clause, the prefixlen, should removed; the remainder of the
 line remains the same.  I have not experimented with any of the other examples,
 your mileage may&amp;nbsp;vary.&lt;/p&gt;
-&lt;p&gt;The &amp;quot;Advanced&amp;quot; tab has a couple of settings.  The tunnel &lt;span class="caps"&gt;MTU&lt;/span&gt; can be tuned.
-An &amp;quot;update key&amp;quot; is provided for interacting with &lt;span class="caps"&gt;HE&lt;/span&gt;&amp;#8217;s Tunnel Broker via
+&lt;p&gt;The &amp;#8220;Advanced&amp;#8221; tab has a couple of settings.  The tunnel &lt;span class="caps"&gt;MTU&lt;/span&gt; can be tuned.
+An &amp;#8220;update key&amp;#8221; is provided for interacting with &lt;span class="caps"&gt;HE&lt;/span&gt;&amp;#8217;s Tunnel Broker via
 scripts.  Finally, there is a method to update &lt;span class="caps"&gt;DNS&lt;/span&gt; settings associated with your&amp;nbsp;tunnel.&lt;/p&gt;
-&lt;p&gt;With in the left hand side &amp;quot;Account Menu&amp;quot; the &amp;quot;Main Page&amp;quot; link will take you to
+&lt;p&gt;With in the left hand side &amp;#8220;Account Menu&amp;#8221; the &amp;#8220;Main Page&amp;#8221; link will take you to
 the landing page you started at when you logged in.  Now that you have allocated
 a tunnel it will be listed at the bottom of the center panel.  Clicking on the
 link for the tunnel will take you back to the Tunnel Details&amp;nbsp;page.&lt;/p&gt;
@@ -1127,11 +1332,11 @@ details of our tunnel as configured from &lt;span class="caps"&gt;HE&lt;/span&gt
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Also, for purposes of this example, the host will have two interfaces named
-&amp;quot;em0&amp;quot; and &amp;quot;em1&amp;quot;.  Interface &amp;quot;em0&amp;quot; is connected, behind &lt;span class="caps"&gt;NAT&lt;/span&gt;, to the Internet.
-Interface &amp;quot;em1&amp;quot; is the &amp;#8216;internal&amp;#8217; network.  Note that basic connectivity of the
-FreeBSD host can be done with just interface &amp;quot;em0&amp;quot;.  Only the later part of this
+&amp;#8220;em0&amp;#8221; and &amp;#8220;em1&amp;#8221;.  Interface &amp;#8220;em0&amp;#8221; is connected, behind &lt;span class="caps"&gt;NAT&lt;/span&gt;, to the Internet.
+Interface &amp;#8220;em1&amp;#8221; is the &amp;#8216;internal&amp;#8217; network.  Note that basic connectivity of the
+FreeBSD host can be done with just interface &amp;#8220;em0&amp;#8221;.  Only the later part of this
 example will show how to add a routed IPv6 network which will be attached to
-interface&amp;nbsp;&amp;quot;em1&amp;quot;.&lt;/p&gt;
+interface&amp;nbsp;&amp;#8220;em1&amp;#8221;.&lt;/p&gt;
 &lt;p&gt;The configuration of both interfaces starts as&amp;nbsp;follows:&lt;/p&gt;
 &lt;pre class="literal-block"&gt;
 gustafer&amp;#64;fw1&amp;gt; ifconfig -a
@@ -1151,12 +1356,12 @@ em1: flags=8843&amp;lt;UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST&amp;gt; metric 0 m
         status: active
 &lt;/pre&gt;
 &lt;p&gt;Note that neither interface has any IPv6 configuration associated with it at the
-start.  The outward facing, but still behind &lt;span class="caps"&gt;NAT&lt;/span&gt;, interface, &amp;quot;em0&amp;quot; has an &lt;span class="caps"&gt;IP&lt;/span&gt;
+start.  The outward facing, but still behind &lt;span class="caps"&gt;NAT&lt;/span&gt;, interface, &amp;#8220;em0&amp;#8221; has an &lt;span class="caps"&gt;IP&lt;/span&gt;
 address of 10.3.7.146.  The loopback details were removed for space as they have
 nothing to&amp;nbsp;add.&lt;/p&gt;
 &lt;p&gt;FreeBSD uses the &lt;a class="reference external" href="https://www.freebsd.org/cgi/man.cgi?query=gif&amp;amp;sektion=4"&gt;gif(4)&lt;/a&gt; (generic tunnel interface) device to configure 6in4
 tunnels.  There are two things that have to be done to configure the tunnel: 1)
-configure the &amp;quot;gif0&amp;quot; interface, and 2) add a default, &lt;span class="caps"&gt;IPV6&lt;/span&gt;&amp;nbsp;route.&lt;/p&gt;
+configure the &amp;#8220;gif0&amp;#8221; interface, and 2) add a default, &lt;span class="caps"&gt;IPV6&lt;/span&gt;&amp;nbsp;route.&lt;/p&gt;
 &lt;p&gt;The commands below do the&amp;nbsp;following:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
 &lt;li&gt;Create a pseudo-interface of type gif named&amp;nbsp;&amp;#8216;gif0&amp;#8217;.&lt;/li&gt;
@@ -1230,8 +1435,8 @@ PING6(56=40+8+8 bytes) 2001:db8:39:222::2 --&amp;gt; 2607:f8b0:400f:802::200e
 1 packets transmitted, 1 packets received, 0.0% packet loss
 round-trip min/avg/max/std-dev = 48.120/48.120/48.120/0.000 ms
 &lt;/pre&gt;
-&lt;p&gt;An additional way to verify your connection is functioning is to use the &amp;quot;IPv6
-Portscan&amp;quot; function found in the User Functions section of the &lt;span class="caps"&gt;HE&lt;/span&gt; Tunnel Broker
+&lt;p&gt;An additional way to verify your connection is functioning is to use the &amp;#8220;IPv6
+Portscan&amp;#8221; function found in the User Functions section of the &lt;span class="caps"&gt;HE&lt;/span&gt; Tunnel Broker
 web page.  You must be logged in to use this service and it will only allow you
 to scan addresses that &lt;span class="caps"&gt;HE&lt;/span&gt; allocated to you.  If you have simply followed the
 instructions above the scan should return results, if you are connected.  If you
@@ -1276,7 +1481,7 @@ incoming traffic.  However, connecting via IPv6 does not require &lt;span class=
 your hosts have &lt;strong&gt;public&lt;/strong&gt; address.  The solution to this problem is also the
 same, regardless of IPv4 or IPv6:  block all traffic that does not initiate from
 within your network.  This is a simplified solution, but a good starting point.
-If you know enough to start thinking, &amp;quot;but I need to allow X, Y, and Z&amp;quot;, then
+If you know enough to start thinking, &amp;#8220;but I need to allow X, Y, and Z&amp;#8221;, then
 you know enough to go beyond the simple explanation that&amp;nbsp;follows.&lt;/p&gt;
 &lt;p&gt;Filtering does not change from IPv4 to IPv6, but filtering rules do.  Most
 filter rules either explicitly, or implicitly declare the datagram protocol (v4
@@ -1308,7 +1513,7 @@ which is why I chose it for this&amp;nbsp;example.&lt;/p&gt;
 &lt;p&gt;I will specifically address two alternative below.  In pursuing the &lt;span class="caps"&gt;HE&lt;/span&gt; example
 configurations I noted all of the popular operating systems, including all of
 the &lt;span class="caps"&gt;BSD&lt;/span&gt;&amp;#8217;s, Linux, Windows, and Mac.  I also noted OpenWRT, a popular open source
-alternative firmware load for many consumer grade &amp;quot;home firewall&amp;quot;&amp;nbsp;products.&lt;/p&gt;
+alternative firmware load for many consumer grade &amp;#8220;home firewall&amp;#8221;&amp;nbsp;products.&lt;/p&gt;
 &lt;div class="section" id="pfsense"&gt;
 &lt;h4&gt;PFSense&lt;/h4&gt;
 &lt;p&gt;&lt;a class="reference external" href="https://www.pfsense.org/"&gt;PFSense&lt;/a&gt; is an open source project implementing a Firewall.  It is based on
@@ -1338,7 +1543,7 @@ additional operating systems.  This article will not cover Linux &amp;#8212;&amp
 connecting IPv6 networks across IPv4, including &lt;span class="caps"&gt;NAT&lt;/span&gt;.  There are multiple IPv6
 tunnel brokers offering free, and hassle free, tunnels using 6in4.  Modern, open
 source operating systems have good support for 6in4.  There are open source
-&amp;quot;firewall&amp;quot; appliances using these operating systems and providing simple 6in4
+&amp;#8220;firewall&amp;#8221; appliances using these operating systems and providing simple 6in4
 configuration.  Join the IPv6 network today, there&amp;#8217;s no reason to wait.  Better
 yet, start using IPv6 to solve network problems induced by using&amp;nbsp;IPv4.&lt;/p&gt;
 &lt;/div&gt;
@@ -1418,7 +1623,7 @@ yet, start using IPv6 to solve network problems induced by using&amp;nbsp;IPv4.&
 &lt;!-- End: --&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Wed, 25 Feb 2015 00:00:00 -0700</pubDate><guid>tag:egustafson.github.io,2015-02-25:ipv6-tunneling.html</guid><category>IPv6</category><category>Tunneling</category><category>NAT</category><category>RFC2893</category><category>FreeBSD</category><category>Linux</category></item><item><title>Nested Virtualization - VirtualBox inside ESXi</title><link>https://egustafson.github.io/esxi-nested-virtualbox.html</link><description>&lt;p&gt;This process describes how to configure an ESXi Linux guest so that the guest
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Wed, 25 Feb 2015 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:egustafson.github.io,2015-02-25:ipv6-tunneling.html</guid><category>IPv6</category><category>Tunneling</category><category>NAT</category><category>RFC2893</category><category>FreeBSD</category><category>Linux</category></item><item><title>Nested Virtualization - VirtualBox inside ESXi</title><link>https://egustafson.github.io/esxi-nested-virtualbox.html</link><description>&lt;p&gt;This process describes how to configure an ESXi Linux guest so that the guest
 can then run VirtualBox and create a nested, 64 bit guest within the ESXi guest
 &amp;#8212; Nested&amp;nbsp;Virtualization.&lt;/p&gt;
 &lt;p&gt;There is nothing special about the use of Linux as either the ESXi guest, or the
@@ -1440,13 +1645,13 @@ nested virtualization &amp;#8212; needed if all one has is the free bits from&am
 &lt;li&gt;Enable &lt;span class="caps"&gt;SSH&lt;/span&gt; access to the ESXi&amp;nbsp;server.&lt;/li&gt;
 &lt;li&gt;Create an ESXi &lt;span class="caps"&gt;VM&lt;/span&gt; for the initial, outer&amp;nbsp;guest.&lt;/li&gt;
 &lt;li&gt;Shutdown the ESXi &lt;span class="caps"&gt;VM&lt;/span&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Edit the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s .vmx file, adding &amp;quot;vhv.enable = &lt;span class="caps"&gt;TRUE&lt;/span&gt;&amp;quot;.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Edit the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s .vmx file, adding &amp;#8220;vhv.enable = &lt;span class="caps"&gt;TRUE&lt;/span&gt;&amp;#8221;.&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;Done.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class="section" id="enable-ssh-access-to-the-esxi-server"&gt;
 &lt;h3&gt;0. - Enable &lt;span class="caps"&gt;SSH&lt;/span&gt; access to the ESXi&amp;nbsp;Server&lt;/h3&gt;
 &lt;p&gt;If you have not already done so, this process will require direct access to the
-ESXi instance&amp;#8217;s configuration.  VMWare often calls this &amp;quot;Tech Support Mode&amp;quot;.
+ESXi instance&amp;#8217;s configuration.  VMWare often calls this &amp;#8220;Tech Support Mode&amp;#8221;.
 This can be done from the ESXi host&amp;#8217;s console, or through the vSphere Client.
 See the appendix in this document titled, &lt;a class="reference internal" href="#enabling-ssh-access-to-esxi-5-5"&gt;Enabling &lt;span class="caps"&gt;SSH&lt;/span&gt; access to ESXi 5.5&lt;/a&gt;,
 for more detailed instructions on how to enable &lt;span class="caps"&gt;SSH&lt;/span&gt;&amp;nbsp;access.&lt;/p&gt;
@@ -1482,7 +1687,7 @@ previously; if it is not the change will be reverted by ESXi.  Fundamentally,
 the change is simple:  add the configuration setting &lt;tt class="docutils literal"&gt;vhv.enable = &amp;quot;&lt;span class="caps"&gt;TRUE&lt;/span&gt;&amp;quot;&lt;/tt&gt; to
 the configuration.  This must be added to the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s &lt;tt class="docutils literal"&gt;.vmx&lt;/tt&gt; file.&lt;/p&gt;
 &lt;p&gt;&lt;span class="caps"&gt;SSH&lt;/span&gt; into the ESXi server and then locate and edit the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s .vmx&amp;nbsp;file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&amp;gt; find / -name &lt;span class="se"&gt;\*&lt;/span&gt;.vmx
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; find / -name &lt;span class="se"&gt;\*&lt;/span&gt;.vmx
 &amp;gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;vhv.enable = &amp;quot;TRUE&amp;quot;&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; /path/to/host.vmx
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
@@ -1503,9 +1708,9 @@ here, and without my crystal ball, I&amp;#8217;m at a loss for future&amp;nbsp;v
 &lt;div class="section" id="extra-credit"&gt;
 &lt;h2&gt;Extra&amp;nbsp;Credit&lt;/h2&gt;
 &lt;p&gt;In discovering the above process, which I distilled to what I felt was the
-minimum, for simplicity, I made a few &amp;quot;superfluous&amp;quot; discoveries.  So that the
+minimum, for simplicity, I made a few &amp;#8220;superfluous&amp;#8221; discoveries.  So that the
 above process may be more broadly applicable, an so that the reader is
-more informed, I have detailed the &amp;quot;extras&amp;quot;&amp;nbsp;here.&lt;/p&gt;
+more informed, I have detailed the &amp;#8220;extras&amp;#8221;&amp;nbsp;here.&lt;/p&gt;
 &lt;div class="section" id="old-wives-tales"&gt;
 &lt;h3&gt;Old Wives&amp;nbsp;Tales&lt;/h3&gt;
 &lt;p&gt;Technically not old wives tales, the following details are floating around in
@@ -1523,7 +1728,7 @@ per &lt;span class="caps"&gt;VM&lt;/span&gt; configuration detailed in this post
 &lt;div class="section" id="editing-the-vm-s-cpu-preferences"&gt;
 &lt;h4&gt;Editing the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s &lt;span class="caps"&gt;CPU&lt;/span&gt;&amp;nbsp;Preferences&lt;/h4&gt;
 &lt;p&gt;In other postings on this subject I noted that an additional step involving
-editing the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s &lt;span class="caps"&gt;CPU&lt;/span&gt; Preferences was detailed.  Changing the &amp;quot;&lt;span class="caps"&gt;CPU&lt;/span&gt;/&lt;span class="caps"&gt;MMU&lt;/span&gt; Virtualization&amp;quot; from
+editing the &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s &lt;span class="caps"&gt;CPU&lt;/span&gt; Preferences was detailed.  Changing the &amp;#8220;&lt;span class="caps"&gt;CPU&lt;/span&gt;/&lt;span class="caps"&gt;MMU&lt;/span&gt; Virtualization&amp;#8221; from
 &amp;#8216;Automatic&amp;#8217; to forced settings for Intel &lt;span class="caps"&gt;VT&lt;/span&gt;-x and hardware &lt;span class="caps"&gt;MMU&lt;/span&gt; virtualization
 appears to no longer be required.  I have successfully nested VirtualBox 64 bit
 VMs inside ESXi 5.5 VMs with the &amp;#8216;Automatic&amp;#8217; setting.  Caveat:  I have found no official
@@ -1533,7 +1738,7 @@ documentation discussing this for 5.5 either&amp;nbsp;way.&lt;/p&gt;
 &lt;div class="section" id="esxi-networking-promiscuous-mode"&gt;
 &lt;h3&gt;ESXi Networking - Promiscuous&amp;nbsp;Mode&lt;/h3&gt;
 &lt;p&gt;Almost all of the writings I encountered that discuss nesting virtualization
-with ESXi cite setting &amp;quot;networking&amp;quot; into promiscuous mode.  This is not a
+with ESXi cite setting &amp;#8220;networking&amp;#8221; into promiscuous mode.  This is not a
 requirement for nesting virtualization.  The basic example of nesting
 VirtualBox, (using &lt;span class="caps"&gt;NAT&lt;/span&gt;), inside an ESXi Linux instance was executed with out
 adjusting any ESXi network&amp;nbsp;parameters.&lt;/p&gt;
@@ -1555,10 +1760,10 @@ in performance of the nested &lt;span class="caps"&gt;VM&lt;/span&gt;.  My initi
 far as installing the &lt;span class="caps"&gt;OS&lt;/span&gt; on the nested &lt;span class="caps"&gt;VM&lt;/span&gt;.  Installing an &lt;span class="caps"&gt;OS&lt;/span&gt; is generally a disk
 intensive&amp;nbsp;activity.&lt;/p&gt;
 &lt;p&gt;Disk virtualization is more expensive than most.  Nesting virtualized disks will
-accumulate &amp;quot;virtualization debt&amp;quot; quicker than other virtualized components.  The
+accumulate &amp;#8220;virtualization debt&amp;#8221; quicker than other virtualized components.  The
 short, but rambling explanation goes something like&amp;nbsp;this:&lt;/p&gt;
 &lt;blockquote&gt;
-In my inner &lt;span class="caps"&gt;VM&lt;/span&gt; I write a block to &amp;quot;disk&amp;quot;.  This traverses the inner &lt;span class="caps"&gt;OS&lt;/span&gt;&amp;#8217;s
+In my inner &lt;span class="caps"&gt;VM&lt;/span&gt; I write a block to &amp;#8220;disk&amp;#8221;.  This traverses the inner &lt;span class="caps"&gt;OS&lt;/span&gt;&amp;#8217;s
 file system code and is mapped to a sector on the inner &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s &lt;em&gt;virtual&lt;/em&gt; block
 device.  Writing is the passed to the outer &lt;span class="caps"&gt;VM&lt;/span&gt;, traverses the file system
 code, and is mapped to the outer &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s &lt;em&gt;virtual&lt;/em&gt; block device.  Finally, the
@@ -1572,12 +1777,12 @@ of an installation.  I will not cover these here.  My point:  if your nested
 &lt;span class="caps"&gt;VM&lt;/span&gt;&amp;#8217;s strike you as slow, this may be a significant part of the&amp;nbsp;why.&lt;/p&gt;
 &lt;p&gt;Armed with the above understanding, I set out to make things run a bit smoother,
 i.e. faster.  Here are a few ideas I had; some I carried out successfully, some
-are on my &amp;quot;to try&amp;quot;&amp;nbsp;list:&lt;/p&gt;
+are on my &amp;#8220;to try&amp;#8221;&amp;nbsp;list:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
-&lt;li&gt;Enabling &amp;quot;Host I/O Caching&amp;quot;.  This seemed to help and was quick to&amp;nbsp;try.&lt;/li&gt;
+&lt;li&gt;Enabling &amp;#8220;Host I/O Caching&amp;#8221;.  This seemed to help and was quick to&amp;nbsp;try.&lt;/li&gt;
 &lt;li&gt;Giving each virtualized device some &amp;#8216;room to breath&amp;#8217; eases the pressure.
 Some extra &lt;span class="caps"&gt;CPU&lt;/span&gt; and memory felt like it&amp;nbsp;helped.&lt;/li&gt;
-&lt;li&gt;Using alternative &amp;quot;devices&amp;quot; for disk should help as well, I haven&amp;#8217;t tried
+&lt;li&gt;Using alternative &amp;#8220;devices&amp;#8221; for disk should help as well, I haven&amp;#8217;t tried
 this yet.&lt;ul&gt;
 &lt;li&gt;Raw disk device, by passing the virtualization of the device&amp;nbsp;completely.&lt;/li&gt;
 &lt;li&gt;iSCSI&lt;/li&gt;
@@ -1592,7 +1797,7 @@ this yet.&lt;ul&gt;
 &lt;div class="section" id="enabling-ssh-access-to-esxi-5-5"&gt;
 &lt;h3&gt;Enabling &lt;span class="caps"&gt;SSH&lt;/span&gt; access to ESXi&amp;nbsp;5.5&lt;/h3&gt;
 &lt;p&gt;ESXi supports direct &lt;span class="caps"&gt;SSH&lt;/span&gt; access to the server running ESXi.  This mechanism is
-referred to in VMWare documentation as &amp;quot;Tech Support Mode&amp;quot;.  VMWare has a
+referred to in VMWare documentation as &amp;#8220;Tech Support Mode&amp;#8221;.  VMWare has a
 &lt;a class="reference external" href="http://kb.vmware.com/"&gt;Knowledge Base&lt;/a&gt; article elaborating the process for a range of versions: &lt;a class="reference external" href="http://kb.vmware.com/kb/1017910"&gt;&lt;span class="caps"&gt;KB&lt;/span&gt;
 article&amp;nbsp;1017910&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Here is the verbal description to enable &lt;span class="caps"&gt;SSH&lt;/span&gt; to the ESXi server from the Windows
@@ -1608,8 +1813,8 @@ Security Profile&amp;nbsp;table.&lt;/li&gt;
 &lt;li&gt;Open the &amp;#8216;&lt;span class="caps"&gt;SSH&lt;/span&gt; Options&amp;#8217; dialog.  In the &amp;#8216;Services Properties&amp;#8217; dialog scroll
 down to the &amp;#8216;&lt;span class="caps"&gt;SSH&lt;/span&gt;&amp;#8217; label and select it, (one click).  Then press the
 &amp;#8216;Options&amp;#8230;&amp;#8217; button in the lower right corner of the&amp;nbsp;dialog.&lt;/li&gt;
-&lt;li&gt;Use the &amp;#8216;&lt;span class="caps"&gt;SSH&lt;/span&gt; Options&amp;#8217; dialog to enable &lt;span class="caps"&gt;SSH&lt;/span&gt; by choosing &amp;quot;Start and stop with
-host&amp;quot;.  The &lt;span class="caps"&gt;SSH&lt;/span&gt; service can also be started immediately with the &amp;#8216;Start&amp;#8217;&amp;nbsp;button.&lt;/li&gt;
+&lt;li&gt;Use the &amp;#8216;&lt;span class="caps"&gt;SSH&lt;/span&gt; Options&amp;#8217; dialog to enable &lt;span class="caps"&gt;SSH&lt;/span&gt; by choosing &amp;#8220;Start and stop with
+host&amp;#8221;.  The &lt;span class="caps"&gt;SSH&lt;/span&gt; service can also be started immediately with the &amp;#8216;Start&amp;#8217;&amp;nbsp;button.&lt;/li&gt;
 &lt;li&gt;Access the host by ssh&amp;#8217;ing to the &lt;span class="caps"&gt;IP&lt;/span&gt; or hostname of the ESXi server and
 logging in with an appropriate account.  The &amp;#8216;root&amp;#8217; user and password created
 during ESXi initial installation will&amp;nbsp;work.&lt;/li&gt;
@@ -1619,7 +1824,7 @@ during ESXi initial installation will&amp;nbsp;work.&lt;/li&gt;
 &lt;!-- End: --&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Tue, 10 Feb 2015 00:00:00 -0700</pubDate><guid>tag:egustafson.github.io,2015-02-10:esxi-nested-virtualbox.html</guid><category>virtualization</category><category>VirtualBox</category><category>VMWare</category></item><item><title>Syncthing on Ubuntu</title><link>https://egustafson.github.io/syncthing-ubuntu.html</link><description>&lt;p&gt;Last month, after looking at &lt;a class="reference external" href="http://www.getsync.com/"&gt;BitTorrent Sync&lt;/a&gt; and realizing it was
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Tue, 10 Feb 2015 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:egustafson.github.io,2015-02-10:esxi-nested-virtualbox.html</guid><category>virtualization</category><category>VirtualBox</category><category>VMWare</category></item><item><title>Syncthing on Ubuntu</title><link>https://egustafson.github.io/syncthing-ubuntu.html</link><description>&lt;p&gt;Last month, after looking at &lt;a class="reference external" href="http://www.getsync.com/"&gt;BitTorrent Sync&lt;/a&gt; and realizing it was
 encrypted and private, but &lt;em&gt;not&lt;/em&gt; open source, I went digging for an
 alternative.  I found the perfect project, for me:  &lt;a class="reference external" href="http://syncthing.net/"&gt;Syncthing&lt;/a&gt;.  The
 project is still relatively young and while it has proven to be
@@ -1661,7 +1866,7 @@ be applicable.  (Current rumor is that the transition will be in the next
 release &amp;#8212; caveat&amp;nbsp;emptor)&lt;/p&gt;
 &lt;div class="section" id="create-user-and-group-for-the-daemon"&gt;
 &lt;h2&gt;1. Create User and Group for the&amp;nbsp;Daemon&lt;/h2&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;## add home dir first so adduser does not populate it with skel files.&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c"&gt;## add home dir first so adduser does not populate it with skel files.&lt;/span&gt;
 sudo mkdir /opt/syncthing
 sudo mkdir /opt/syncthing/etc
 sudo adduser --system --group --home /opt/syncthing synct
@@ -1676,7 +1881,7 @@ folder(s) with out the need for sudo/root&amp;nbsp;privilege.&lt;/p&gt;
 &lt;p&gt;Fetch the binary from the &lt;a class="reference external" href="https://github.com/syncthing/syncthing"&gt;Syncthing GitHub Project&lt;/a&gt;.  The releases &lt;span class="caps"&gt;URL&lt;/span&gt; is:
 &lt;a class="reference external" href="https://github.com/syncthing/syncthing/releases"&gt;https://github.com/syncthing/syncthing/releases&lt;/a&gt;.  Download the tarball
 appropriate for your architecture.  (The example uses &lt;tt class="docutils literal"&gt;amd64&lt;/tt&gt;, and version&amp;nbsp;0.10.18)&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /tmp
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /tmp
 tar -xvf /path-to/syncthing-linux-amd64-v0.10.18.tar.gz
 sudo mkdir /opt/syncthing/bin
 sudo cp syncthing-linux-amd64-v0.10.18/syncthing /opt/syncthing/bin
@@ -1685,9 +1890,9 @@ sudo cp syncthing-linux-amd64-v0.10.18/syncthing /opt/syncthing/bin
 executable is tar&amp;#8217;ed with execute permission, but it never hurts to verify its&amp;nbsp;executable.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="install-an-upstart-script"&gt;
-&lt;h2&gt;4. Install an Upstart&amp;nbsp;&amp;quot;Script&amp;quot;&lt;/h2&gt;
+&lt;h2&gt;4. Install an Upstart&amp;nbsp;&amp;#8220;Script&amp;#8221;&lt;/h2&gt;
 &lt;p&gt;Install the following Upstart configuration file in &lt;tt class="docutils literal"&gt;/etc/init/syncthing.conf&lt;/tt&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;description  &amp;quot;syncthing daemon&amp;quot;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;description  &amp;quot;syncthing daemon&amp;quot;
 author       &amp;quot;Eric Gustafson &amp;lt;egustafson in launchpad&amp;gt;&amp;quot;
 
 start on (local-filesystems and net-device-up IFACE!=lo)
@@ -1704,19 +1909,19 @@ exec /opt/syncthing/bin/syncthing -home /opt/syncthing/etc
 &lt;ol class="arabic simple"&gt;
 &lt;li&gt;Setting the &lt;tt class="docutils literal"&gt;&lt;span class="caps"&gt;HOME&lt;/span&gt;&lt;/tt&gt; env lets syncthing know where to create the default,
 &lt;tt class="docutils literal"&gt;Sync&lt;/tt&gt; folder on initial start-up.  I had problems before I added this&amp;nbsp;stanza.&lt;/li&gt;
-&lt;li&gt;Using the &amp;quot;&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;-home&lt;/span&gt; /opt/syncthing/etc&lt;/tt&gt;&amp;quot; flag instructs syncthing to place
+&lt;li&gt;Using the &amp;#8220;&lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;-home&lt;/span&gt; /opt/syncthing/etc&lt;/tt&gt;&amp;#8221; flag instructs syncthing to place
 all configuration files &lt;em&gt;directly&lt;/em&gt; into the &lt;tt class="docutils literal"&gt;etc&lt;/tt&gt; directory.  If this flag
 is missing it will place the configuration in a hidden directory under
 &lt;tt class="docutils literal"&gt;$&lt;span class="caps"&gt;HOME&lt;/span&gt;&lt;/tt&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;It would be nice to get a list of supported environment variables and command
-line switches, but the docs are not there yet.  Conversely, I could &amp;quot;read the
-source luke&amp;quot;, so I should stop whining and go contribute&amp;nbsp;;)&lt;/p&gt;
+line switches, but the docs are not there yet.  Conversely, I could &amp;#8220;read the
+source luke&amp;#8221;, so I should stop whining and go contribute&amp;nbsp;;)&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="start-and-verify-the-service"&gt;
 &lt;h2&gt;5. Start and Verify the&amp;nbsp;Service&lt;/h2&gt;
 &lt;p&gt;If the stars are aligned, then the service will&amp;nbsp;start:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;sudo service syncthing start
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service syncthing start
 sudo tail -f /var/log/upstart/syncthing.log
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;At this point the service is (hopefully) up.  There is a small problem, however:
@@ -1724,25 +1929,25 @@ the configuration created on first-run restricts the web-gui to loopback only
 (127.0.0.1).  This is fine if the machine is your desktop, but can be a snag if
 its remote.  The config file can be edited by hand to change&amp;nbsp;this.&lt;/p&gt;
 &lt;p&gt;In preparation for changing the listening address for the&amp;nbsp;web-gui:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;sudo service syncthing stop
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service syncthing stop
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="modify-the-configuration-to-expose-the-web-gui"&gt;
 &lt;h2&gt;6. Modify the Configuration to expose the Web &lt;span class="caps"&gt;GUI&lt;/span&gt;&lt;/h2&gt;
 &lt;p&gt;Edit the config file:  &lt;tt class="docutils literal"&gt;/opt/syncthing/etc/config.xml&lt;/tt&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;## syncthing changes the permissions on etc, sudo is required&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;## syncthing changes the permissions on etc, sudo is required&lt;/span&gt;
 sudo emacs /opt/syncthing/etc/config.xml
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The following line should be changed as depicted.  The important aspect is to
 change the &lt;tt class="docutils literal"&gt;127.0.0.1&lt;/tt&gt; to the wildcard address, &lt;tt class="docutils literal"&gt;0.0.0.0&lt;/tt&gt;.  [The port could
 be changed too, if need&amp;nbsp;be.]&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nt"&gt;&amp;lt;gui&lt;/span&gt; &lt;span class="na"&gt;enabled=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;true&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;tls=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;false&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;&amp;lt;gui&lt;/span&gt; &lt;span class="na"&gt;enabled=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;true&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;tls=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;false&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
     &lt;span class="nt"&gt;&amp;lt;address&amp;gt;&lt;/span&gt;0.0.0.0:8080&lt;span class="nt"&gt;&amp;lt;/address&amp;gt;&lt;/span&gt;
     ...
 &lt;span class="nt"&gt;&amp;lt;/gui&amp;gt;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Now restart the&amp;nbsp;service&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;sudo service syncthing start
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service syncthing start
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;and point a web browser at port 8080 of the&amp;nbsp;host.&lt;/p&gt;
 &lt;/div&gt;
@@ -1753,7 +1958,7 @@ be changed too, if need&amp;nbsp;be.]&lt;/p&gt;
 sync-ing.  The first point:  if you have a consumer firewall that supports UPnP
 then Syncthing is likely visible as it supports, and enables by default, UPnP.
 If you don&amp;#8217;t have UPnP enabled on your firewall or the Syncthing instance is not
-visible then following the &amp;quot;&lt;a class="reference external" href="https://github.com/syncthing/syncthing/wiki/Firewalls-and-Port-Forwards"&gt;Firewalls and Port Forwards&lt;/a&gt;&amp;quot; instructions on the
+visible then following the &amp;#8220;&lt;a class="reference external" href="https://github.com/syncthing/syncthing/wiki/Firewalls-and-Port-Forwards"&gt;Firewalls and Port Forwards&lt;/a&gt;&amp;#8221; instructions on the
 &lt;a class="reference external" href="https://github.com/syncthing/syncthing/wiki"&gt;wiki&lt;/a&gt; will help you resolve the&amp;nbsp;issue.&lt;/p&gt;
 &lt;p&gt;In short: plumb &lt;span class="caps"&gt;TCP&lt;/span&gt; port 22000 through from your firewall to the server.  Port
 22000 is the default port for the Block Exchange Protocol &lt;a class="footnote-reference" href="#id2" id="id1"&gt;[1]&lt;/a&gt; (&lt;span class="caps"&gt;BEP&lt;/span&gt;), and the
@@ -1770,7 +1975,7 @@ only port necessary for a remote agent to connect with your&amp;nbsp;server.&lt;
 &lt;!-- fill-column: 80 --&gt;
 &lt;!-- End: --&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Fri, 09 Jan 2015 00:00:00 -0700</pubDate><guid>tag:egustafson.github.io,2015-01-09:syncthing-ubuntu.html</guid><category>install</category><category>ubuntu</category><category>sync</category><category>syncthing</category></item><item><title>OSCON 2014 Trip Report, part 1</title><link>https://egustafson.github.io/oscon-2014-p1.html</link><description>&lt;p&gt;This year&amp;#8217;s &lt;a class="reference external" href="http://www.oscon.com/oscon2014"&gt;&lt;span class="caps"&gt;OSCON&lt;/span&gt;&lt;/a&gt; was my first attendance of the conference; I was pleasantly
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Fri, 09 Jan 2015 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:egustafson.github.io,2015-01-09:syncthing-ubuntu.html</guid><category>install</category><category>ubuntu</category><category>sync</category><category>syncthing</category></item><item><title>OSCON 2014 Trip Report, part 1</title><link>https://egustafson.github.io/oscon-2014-p1.html</link><description>&lt;p&gt;This year&amp;#8217;s &lt;a class="reference external" href="http://www.oscon.com/oscon2014"&gt;&lt;span class="caps"&gt;OSCON&lt;/span&gt;&lt;/a&gt; was my first attendance of the conference; I was pleasantly
 surprised.  The conference is 5 days, the first two of which are half day
 tutorial sessions, and the remaining 3 being the core conference.  I attended
 the 3 core days of the conference, and my brain was completely overflowed by the&amp;nbsp;end.&lt;/p&gt;
@@ -1786,12 +1991,12 @@ most intriguing, (in no particular&amp;nbsp;order).&lt;/p&gt;
 &lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/36202"&gt;Building an &lt;span class="caps"&gt;API&lt;/span&gt; for the Planet with a new Approach to&amp;nbsp;Satellites&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;The folks at &lt;a class="reference external" href="https://www.planet.com/"&gt;Planet Labs&lt;/a&gt; are building bird sized,
 (raptor sized) satellites and deploying them in a polar orbit to create the
-worlds first &amp;quot;planet scanner&amp;quot;.  A goal being to image the entire planet, every
+worlds first &amp;#8220;planet scanner&amp;#8221;.  A goal being to image the entire planet, every
 day, as the earth rotates beneath the ring of satellites.  And, &amp;#8230; there&amp;#8217;s
 more - this was &lt;span class="caps"&gt;OSCON&lt;/span&gt;: make the image data available to the&amp;nbsp;public.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/35743"&gt;Anticipating the Future - an Introduction to Value Chain&amp;nbsp;Mapping&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Simon successfully argues that the &amp;quot;lemming&amp;quot; strategy of how to be successful
+&lt;p&gt;Simon successfully argues that the &amp;#8220;lemming&amp;#8221; strategy of how to be successful
 in business endeavors is not necessarily the most effective.  In lieu of
 following the leader, he argues and then exemplifies a analytic, (and
 scientific), approach to determining what actions would likely be more
@@ -1814,7 +2019,7 @@ on the&amp;nbsp;planet.&lt;/p&gt;
 &lt;!-- fill-column: 80 --&gt;
 &lt;!-- End: --&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Thu, 31 Jul 2014 00:00:00 -0600</pubDate><guid>tag:egustafson.github.io,2014-07-31:oscon-2014-p1.html</guid><category>OSCON</category><category>trip report</category></item><item><title>Installing Pelican on Cygwin</title><link>https://egustafson.github.io/pelican-cygwin.html</link><description>&lt;p&gt;One of the many good reasons I chose &lt;a class="reference external" href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt; as a static blog site
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Thu, 31 Jul 2014 00:00:00 -0600</pubDate><guid isPermaLink="false">tag:egustafson.github.io,2014-07-31:oscon-2014-p1.html</guid><category>OSCON</category><category>trip report</category></item><item><title>Installing Pelican on Cygwin</title><link>https://egustafson.github.io/pelican-cygwin.html</link><description>&lt;p&gt;One of the many good reasons I chose &lt;a class="reference external" href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt; as a static blog site
 generator was because I felt confident I could deploy and use the
 tools under Windows, with &lt;a class="reference external" href="https://www.cygwin.com/"&gt;Cygwin&lt;/a&gt;.  What I couldn&amp;#8217;t find was any
 reference to success installing Pelican under Cygwin.  It turns out
@@ -1871,17 +2076,17 @@ Install the following packages, if not already&amp;nbsp;present.&lt;/p&gt;
 the installation.  If you do not already have &lt;tt class="docutils literal"&gt;pip&lt;/tt&gt;
 &amp;lt;&lt;a class="reference external" href="http://pip.readthedocs.org/"&gt;http://pip.readthedocs.org/&lt;/a&gt;&amp;gt; installed, use &lt;tt class="docutils literal"&gt;easy_install&lt;/tt&gt;, from
 &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;python-setuptools&lt;/span&gt;&lt;/tt&gt; to install &lt;tt class="docutils literal"&gt;pip&lt;/tt&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&amp;gt; easy_install pip
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; easy_install pip
 ...
 &amp;gt; pip install &lt;span class="s2"&gt;&amp;quot;git+https://github.com/getpelican/pelican.git#egg-pelican&amp;quot;&lt;/span&gt;
 ...
-&lt;span class="c"&gt;# ... a lot of output as the recursive dependencies are resolved ...&lt;/span&gt;
-&lt;span class="c"&gt;# expect warnings, but a final notice saying pelican was successfully&lt;/span&gt;
-&lt;span class="c"&gt;# installed along with additional, dependent packages.&lt;/span&gt;
+&lt;span class="c1"&gt;# ... a lot of output as the recursive dependencies are resolved ...&lt;/span&gt;
+&lt;span class="c1"&gt;# expect warnings, but a final notice saying pelican was successfully&lt;/span&gt;
+&lt;span class="c1"&gt;# installed along with additional, dependent packages.&lt;/span&gt;
 ...
 &amp;gt; pelican --help
 ...
-&lt;span class="c"&gt;# output consistent with the help from pelican.&lt;/span&gt;
+&lt;span class="c1"&gt;# output consistent with the help from pelican.&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Note:  Pelican can be simply installed with &lt;tt class="docutils literal"&gt;pip&lt;/tt&gt; using &lt;tt class="docutils literal"&gt;pip
 install pelican&lt;/tt&gt;.  I chose to pull Pelican from source so I could
@@ -1892,10 +2097,10 @@ stay on their&amp;nbsp;trunk.&lt;/p&gt;
 &lt;h2&gt;Verify&lt;/h2&gt;
 &lt;p&gt;It doesn&amp;#8217;t count if it doesn&amp;#8217;t work.  The following steps are the smoke
 test I ran to convince myself the installation was working reasonably&amp;nbsp;correct.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&amp;gt; mkdir tmp; &lt;span class="nb"&gt;cd &lt;/span&gt;tmp   &lt;span class="c"&gt;# (optional, do what makes sense)&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; mkdir tmp&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; tmp   &lt;span class="c1"&gt;# (optional, do what makes sense)&lt;/span&gt;
 &amp;gt; pelican-quickstart
 ...
-&lt;span class="c"&gt;# give reasonable answers&lt;/span&gt;
+&lt;span class="c1"&gt;# give reasonable answers&lt;/span&gt;
 ...
 &amp;gt; pelican content
 ...
@@ -1921,7 +2126,7 @@ so I&amp;#8217;m &amp;#8230; cautiously&amp;nbsp;optimistic.&lt;/p&gt;
 &lt;/table&gt;
 &lt;!-- LocalWords:  Cygwin cygwin Gustafson pypy --&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Tue, 29 Jul 2014 00:00:00 -0600</pubDate><guid>tag:egustafson.github.io,2014-07-29:pelican-cygwin.html</guid><category>pelican</category><category>cygwin</category><category>blog</category></item><item><title>Simple collectd with Web Graphs</title><link>https://egustafson.github.io/collectd-web-graphs.html</link><description>&lt;p&gt;I want to collect machine metrics and I want to display them as a
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Tue, 29 Jul 2014 00:00:00 -0600</pubDate><guid isPermaLink="false">tag:egustafson.github.io,2014-07-29:pelican-cygwin.html</guid><category>pelican</category><category>cygwin</category><category>blog</category></item><item><title>Simple collectd with Web Graphs</title><link>https://egustafson.github.io/collectd-web-graphs.html</link><description>&lt;p&gt;I want to collect machine metrics and I want to display them as a
 pretty set of graphs through a web browser.  Here&amp;#8217;s how I do&amp;nbsp;it:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
 &lt;li&gt;Install &lt;a class="reference external" href="http://collectd.org/"&gt;collectd&lt;/a&gt; &amp;#8212; this gathers the&amp;nbsp;metrics.&lt;/li&gt;
@@ -1934,21 +2139,21 @@ pretty set of graphs through a web browser.  Here&amp;#8217;s how I do&amp;nbsp;
 &lt;p&gt;The following walk through will demonstrate the installation using
 Ubuntu Oneiric (11.10). Note, the &lt;tt class="docutils literal"&gt;sudo&lt;/tt&gt; is generally required, but
 dropped from the commands listed&amp;nbsp;below:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install collectd lighttpd php5-cgi php5
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install collectd lighttpd php5-cgi php5
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;next, edit &lt;tt class="docutils literal"&gt;/etc/php5/cgi/php.ini&lt;/tt&gt; to enable php5 in lighttpd.
-Uncomment the line &amp;quot;&lt;tt class="docutils literal"&gt;cgi.fix_pathinfo=1&lt;/tt&gt;&amp;quot;.&lt;/p&gt;
+Uncomment the line &amp;#8220;&lt;tt class="docutils literal"&gt;cgi.fix_pathinfo=1&lt;/tt&gt;&amp;#8220;.&lt;/p&gt;
 &lt;p&gt;Restart lighttpd and you have a working&amp;nbsp;lighttpd+php5.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;lighttpd-enable-mod fastcgi
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;lighttpd-enable-mod fastcgi
 lighttpd-enable-mod fastcgi-php
 service lighttpd force-reload
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Next, download and &amp;quot;&lt;cite&gt;install&lt;/cite&gt;&amp;quot; collectd graph panel (&lt;span class="caps"&gt;CGP&lt;/span&gt;).  &lt;span class="caps"&gt;CGP&lt;/span&gt; is
+&lt;p&gt;Next, download and &amp;#8220;&lt;cite&gt;install&lt;/cite&gt;&amp;#8221; collectd graph panel (&lt;span class="caps"&gt;CGP&lt;/span&gt;).  &lt;span class="caps"&gt;CGP&lt;/span&gt; is
 downloaded with &lt;tt class="docutils literal"&gt;git&lt;/tt&gt;, if you do not have git installed&amp;nbsp;then:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install git
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install git
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Download &lt;span class="caps"&gt;CGP&lt;/span&gt; into the lighttpd root&amp;nbsp;directory:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /var/www
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /var/www
 git clone http://git.nethuis.nl/pub/cgp.git
 chown -R www-data.www-data cgp   &lt;span class="c"&gt;## optional&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -1966,7 +2171,7 @@ additional configuration &amp;#8212; simply uncommenting them is a good
 starting&amp;nbsp;point.&lt;/p&gt;
 &lt;p&gt;After editing the collectd configuration, the service must be
 restarted with the typical service restart&amp;nbsp;command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;service collectd restart
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;service collectd restart
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Many of the plugins default to collecting all possible metrics covered
 by the plugin.  It is possible, via the plugin&amp;#8217;s specific
@@ -1991,7 +2196,7 @@ out configuration, which uses multicast, will suffice for configuring
 the network&amp;nbsp;plugin.&lt;/p&gt;
 &lt;p&gt;Now sit back and enjoy the pretty graphs of your running&amp;nbsp;servers.&lt;/p&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Tue, 10 Apr 2012 00:00:00 -0600</pubDate><guid>tag:egustafson.github.io,2012-04-10:collectd-web-graphs.html</guid><category>monitoring</category><category>lighttpd</category><category>collectd</category><category>CGP</category></item><item><title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu</title><link>https://egustafson.github.io/mediawiki-lighttpd-sqlite.html</link><description>&lt;p&gt;In rebuilding an old, and rarely used server that runs &lt;a class="reference external" href="https://www.mediawiki.org/"&gt;MediaWiki&lt;/a&gt; I
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Tue, 10 Apr 2012 00:00:00 -0600</pubDate><guid isPermaLink="false">tag:egustafson.github.io,2012-04-10:collectd-web-graphs.html</guid><category>monitoring</category><category>lighttpd</category><category>collectd</category><category>CGP</category></item><item><title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu</title><link>https://egustafson.github.io/mediawiki-lighttpd-sqlite.html</link><description>&lt;p&gt;In rebuilding an old, and rarely used server that runs &lt;a class="reference external" href="https://www.mediawiki.org/"&gt;MediaWiki&lt;/a&gt; I
 reconsidered how to install all of the dependencies that MediaWiki
 sits on top of. My goal was to choose lightweight components. The only
 thing that would run on this web server would be MediaWiki, and the
@@ -2012,7 +2217,7 @@ installation guide is based on Ubuntu Oneiric&amp;nbsp;(11.10).&lt;/p&gt;
 &lt;div class="section" id="install-prerequisites"&gt;
 &lt;h2&gt;Install&amp;nbsp;Prerequisites&lt;/h2&gt;
 &lt;p&gt;(note, &lt;cite&gt;sudo&lt;/cite&gt; is generally required, but dropped from the commands&amp;nbsp;below)&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install lighttpd
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install lighttpd
 apt-get install php5-cgi php5
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;next, edit &lt;tt class="docutils literal"&gt;/etc/php5/cgi/php.ini&lt;/tt&gt; to enable php5 in lighttpd and
@@ -2021,16 +2226,16 @@ uncomment the&amp;nbsp;line:&lt;/p&gt;
 `cgi.fix_pathinfo=1`
 &lt;/pre&gt;
 &lt;p&gt;Then enable the fastcgi configuration in&amp;nbsp;lighttpd:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;lighttpd-enable-mod fastcgi
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;lighttpd-enable-mod fastcgi
 lighttpd-enable-mod fastcgi-php
 service lighttpd force-reload
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Install&amp;nbsp;php5-sqlite:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install php5-sqlite
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install php5-sqlite
 service lighttpd restart
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Install optional extras that MediaWiki will take advantage&amp;nbsp;of:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;apt-get install imagemagick php5-gd php5-cli
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install imagemagick php5-gd php5-cli
 service lighttpd restart
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
@@ -2041,20 +2246,20 @@ listed as a ’&lt;em&gt;recommends&lt;/em&gt;’ dependency. This has the impli
 unless explicitly forced to &lt;strong&gt;not&lt;/strong&gt; include the dependency, it will be
 included as part of the package install. This is accomplished with the
 &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;--no-install-recommends&lt;/span&gt;&lt;/tt&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;apt-get --no-install-recommends install mediawiki
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get --no-install-recommends install mediawiki
 apt-get install mediawiki-math
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;div class="section" id="configure-mediawiki"&gt;
 &lt;h2&gt;Configure&amp;nbsp;MediaWiki&lt;/h2&gt;
 &lt;p&gt;Add the following to lighttpd&amp;#8217;s&amp;nbsp;configuration:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;alias.url += ( &amp;quot;/wiki&amp;quot; =&amp;gt; &amp;quot;/var/lib/mediawiki/&amp;quot; )
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;alias.url += ( &amp;quot;/wiki&amp;quot; =&amp;gt; &amp;quot;/var/lib/mediawiki/&amp;quot; )
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;restart lighttpd to effect the configuration&amp;nbsp;change:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;service lighttpd restart
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;service lighttpd restart
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Create a data directory for MediaWiki to store the SQLite database&amp;nbsp;in:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;mkdir /var/lib/mediawiki-data
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir /var/lib/mediawiki-data
 chown www-data.www-data /var/lib/mediawiki-data
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Browse to the wiki root: &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;http://hostname/wiki&lt;/span&gt;&lt;/tt&gt; and complete
@@ -2063,19 +2268,19 @@ configuration through the web&amp;nbsp;browser.&lt;/p&gt;
 &amp;#8230;&lt;/blockquote&gt;
 &lt;p&gt;Following browser configuration, copy the generated configuration to
 the permanent location, as specified on the final browser&amp;nbsp;page:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;cp /var/lib/mediawiki/config/LocalSettings.php /etc/mediawiki/LocalSettings.php
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cp /var/lib/mediawiki/config/LocalSettings.php /etc/mediawiki/LocalSettings.php
 chown www-data /etc/mediawiki/LocalSettings.php
 chmod 600 /etc/mediawiki/LocalSettings.php
 rm -rf /var/lib/mediawiki/config
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Done.&lt;/p&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Sat, 18 Feb 2012 00:00:00 -0700</pubDate><guid>tag:egustafson.github.io,2012-02-18:mediawiki-lighttpd-sqlite.html</guid><category>lighttpd</category><category>sqlite</category><category>mediawiki</category><category>wiki</category></item><item><title>Hello, World</title><link>https://egustafson.github.io/hello-world.html</link><description>&lt;p&gt;Obligatory first&amp;nbsp;post:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;Hello, world.
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Sat, 18 Feb 2012 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:egustafson.github.io,2012-02-18:mediawiki-lighttpd-sqlite.html</guid><category>lighttpd</category><category>sqlite</category><category>mediawiki</category><category>wiki</category></item><item><title>Hello, World</title><link>https://egustafson.github.io/hello-world.html</link><description>&lt;p&gt;Obligatory first&amp;nbsp;post:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Hello, world.
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;I&amp;#8217;ve chosen to follow the GitHub masses and publish this blog with
 Brandon Mathis&amp;#8217; most excellent &lt;a class="reference external" href="http://octopress.org/"&gt;Octopress&lt;/a&gt;.  Next on the agenda is to
 port a number of my wiki notes and how-to&amp;#8217;s to a more &amp;#8230; revision
 controlled outlet:&amp;nbsp;GitHub.&lt;/p&gt;
 &lt;p&gt;Stay tuned -&amp;nbsp;Eric&lt;/p&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Fri, 09 Dec 2011 00:00:00 -0700</pubDate><guid>tag:egustafson.github.io,2011-12-09:hello-world.html</guid></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Eric Gustafson</dc:creator><pubDate>Fri, 09 Dec 2011 00:00:00 -0700</pubDate><guid isPermaLink="false">tag:egustafson.github.io,2011-12-09:hello-world.html</guid></item></channel></rss>

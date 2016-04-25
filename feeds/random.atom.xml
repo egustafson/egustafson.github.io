@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="https://egustafson.github.io/" rel="alternate"></link><link href="https://egustafson.github.io/feeds/random.atom.xml" rel="self"></link><id>https://egustafson.github.io/</id><updated>2011-12-09T00:00:00-07:00</updated><entry><title>Hello, World</title><link href="https://egustafson.github.io/hello-world.html" rel="alternate"></link><updated>2011-12-09T00:00:00-07:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2011-12-09:hello-world.html</id><summary type="html">&lt;p&gt;Obligatory first&amp;nbsp;post:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;Hello, world.
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="https://egustafson.github.io/" rel="alternate"></link><link href="https://egustafson.github.io/feeds/random.atom.xml" rel="self"></link><id>https://egustafson.github.io/</id><updated>2011-12-09T00:00:00-07:00</updated><entry><title>Hello, World</title><link href="https://egustafson.github.io/hello-world.html" rel="alternate"></link><published>2011-12-09T00:00:00-07:00</published><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2011-12-09:hello-world.html</id><summary type="html">&lt;p&gt;Obligatory first&amp;nbsp;post:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Hello, world.
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;I&amp;#8217;ve chosen to follow the GitHub masses and publish this blog with
 Brandon Mathis&amp;#8217; most excellent &lt;a class="reference external" href="http://octopress.org/"&gt;Octopress&lt;/a&gt;.  Next on the agenda is to

@@ -14,7 +14,7 @@
 
         <meta name="author" content="Eric Gustafson" />
         <meta name="keywords" content="virtualization,VirtualBox,VMWare" />
-        <meta name="description" content="This process describes how to configure an ESXi Linux guest so that the guest can then run VirtualBox and create a nested, 64 bit guest within the ESXi guest — Nested Virtualization. There is nothing special about the use of Linux as either the ESXi guest, or the nested guest. Any ..." />
+        <meta name="description" content="This process describes how to configure an ESXi Linux guest so that the guest can then run VirtualBox and create a nested, 64 bit guest within the ESXi guest — Nested Virtualization. There is nothing special about the use of Linux as either the ESXi guest, or the nested guest. Any …" />
 
 
 
@@ -121,13 +121,13 @@ nested virtualization &#8212; needed if all one has is the free bits from&nbsp;V
 <li>Enable <span class="caps">SSH</span> access to the ESXi&nbsp;server.</li>
 <li>Create an ESXi <span class="caps">VM</span> for the initial, outer&nbsp;guest.</li>
 <li>Shutdown the ESXi <span class="caps">VM</span>.</li>
-<li><strong>Edit the <span class="caps">VM</span>&#8217;s .vmx file, adding &quot;vhv.enable = <span class="caps">TRUE</span>&quot;.</strong></li>
+<li><strong>Edit the <span class="caps">VM</span>&#8217;s .vmx file, adding &#8220;vhv.enable = <span class="caps">TRUE</span>&#8221;.</strong></li>
 <li>Done.</li>
 </ol>
 <div class="section" id="enable-ssh-access-to-the-esxi-server">
 <h3>0. - Enable <span class="caps">SSH</span> access to the ESXi&nbsp;Server</h3>
 <p>If you have not already done so, this process will require direct access to the
-ESXi instance&#8217;s configuration.  VMWare often calls this &quot;Tech Support Mode&quot;.
+ESXi instance&#8217;s configuration.  VMWare often calls this &#8220;Tech Support Mode&#8221;.
 This can be done from the ESXi host&#8217;s console, or through the vSphere Client.
 See the appendix in this document titled, <a class="reference internal" href="#enabling-ssh-access-to-esxi-5-5">Enabling <span class="caps">SSH</span> access to ESXi 5.5</a>,
 for more detailed instructions on how to enable <span class="caps">SSH</span>&nbsp;access.</p>
@@ -163,7 +163,7 @@ previously; if it is not the change will be reverted by ESXi.  Fundamentally,
 the change is simple:  add the configuration setting <tt class="docutils literal">vhv.enable = &quot;<span class="caps">TRUE</span>&quot;</tt> to
 the configuration.  This must be added to the <span class="caps">VM</span>&#8217;s <tt class="docutils literal">.vmx</tt> file.</p>
 <p><span class="caps">SSH</span> into the ESXi server and then locate and edit the <span class="caps">VM</span>&#8217;s .vmx&nbsp;file:</p>
-<div class="highlight"><pre>&gt; find / -name <span class="se">\*</span>.vmx
+<div class="highlight"><pre><span></span>&gt; find / -name <span class="se">\*</span>.vmx
 &gt; <span class="nb">echo</span> <span class="s1">&#39;vhv.enable = &quot;TRUE&quot;&#39;</span> &gt;&gt; /path/to/host.vmx
 </pre></div>
 </div>
@@ -184,9 +184,9 @@ here, and without my crystal ball, I&#8217;m at a loss for future&nbsp;versions.
 <div class="section" id="extra-credit">
 <h2>Extra&nbsp;Credit</h2>
 <p>In discovering the above process, which I distilled to what I felt was the
-minimum, for simplicity, I made a few &quot;superfluous&quot; discoveries.  So that the
+minimum, for simplicity, I made a few &#8220;superfluous&#8221; discoveries.  So that the
 above process may be more broadly applicable, an so that the reader is
-more informed, I have detailed the &quot;extras&quot;&nbsp;here.</p>
+more informed, I have detailed the &#8220;extras&#8221;&nbsp;here.</p>
 <div class="section" id="old-wives-tales">
 <h3>Old Wives&nbsp;Tales</h3>
 <p>Technically not old wives tales, the following details are floating around in
@@ -204,7 +204,7 @@ per <span class="caps">VM</span> configuration detailed in this posting and requ
 <div class="section" id="editing-the-vm-s-cpu-preferences">
 <h4>Editing the <span class="caps">VM</span>&#8217;s <span class="caps">CPU</span>&nbsp;Preferences</h4>
 <p>In other postings on this subject I noted that an additional step involving
-editing the <span class="caps">VM</span>&#8217;s <span class="caps">CPU</span> Preferences was detailed.  Changing the &quot;<span class="caps">CPU</span>/<span class="caps">MMU</span> Virtualization&quot; from
+editing the <span class="caps">VM</span>&#8217;s <span class="caps">CPU</span> Preferences was detailed.  Changing the &#8220;<span class="caps">CPU</span>/<span class="caps">MMU</span> Virtualization&#8221; from
 &#8216;Automatic&#8217; to forced settings for Intel <span class="caps">VT</span>-x and hardware <span class="caps">MMU</span> virtualization
 appears to no longer be required.  I have successfully nested VirtualBox 64 bit
 VMs inside ESXi 5.5 VMs with the &#8216;Automatic&#8217; setting.  Caveat:  I have found no official
@@ -214,7 +214,7 @@ documentation discussing this for 5.5 either&nbsp;way.</p>
 <div class="section" id="esxi-networking-promiscuous-mode">
 <h3>ESXi Networking - Promiscuous&nbsp;Mode</h3>
 <p>Almost all of the writings I encountered that discuss nesting virtualization
-with ESXi cite setting &quot;networking&quot; into promiscuous mode.  This is not a
+with ESXi cite setting &#8220;networking&#8221; into promiscuous mode.  This is not a
 requirement for nesting virtualization.  The basic example of nesting
 VirtualBox, (using <span class="caps">NAT</span>), inside an ESXi Linux instance was executed with out
 adjusting any ESXi network&nbsp;parameters.</p>
@@ -236,10 +236,10 @@ in performance of the nested <span class="caps">VM</span>.  My initial experimen
 far as installing the <span class="caps">OS</span> on the nested <span class="caps">VM</span>.  Installing an <span class="caps">OS</span> is generally a disk
 intensive&nbsp;activity.</p>
 <p>Disk virtualization is more expensive than most.  Nesting virtualized disks will
-accumulate &quot;virtualization debt&quot; quicker than other virtualized components.  The
+accumulate &#8220;virtualization debt&#8221; quicker than other virtualized components.  The
 short, but rambling explanation goes something like&nbsp;this:</p>
 <blockquote>
-In my inner <span class="caps">VM</span> I write a block to &quot;disk&quot;.  This traverses the inner <span class="caps">OS</span>&#8217;s
+In my inner <span class="caps">VM</span> I write a block to &#8220;disk&#8221;.  This traverses the inner <span class="caps">OS</span>&#8217;s
 file system code and is mapped to a sector on the inner <span class="caps">VM</span>&#8217;s <em>virtual</em> block
 device.  Writing is the passed to the outer <span class="caps">VM</span>, traverses the file system
 code, and is mapped to the outer <span class="caps">VM</span>&#8217;s <em>virtual</em> block device.  Finally, the
@@ -253,12 +253,12 @@ of an installation.  I will not cover these here.  My point:  if your nested
 <span class="caps">VM</span>&#8217;s strike you as slow, this may be a significant part of the&nbsp;why.</p>
 <p>Armed with the above understanding, I set out to make things run a bit smoother,
 i.e. faster.  Here are a few ideas I had; some I carried out successfully, some
-are on my &quot;to try&quot;&nbsp;list:</p>
+are on my &#8220;to try&#8221;&nbsp;list:</p>
 <ol class="arabic simple">
-<li>Enabling &quot;Host I/O Caching&quot;.  This seemed to help and was quick to&nbsp;try.</li>
+<li>Enabling &#8220;Host I/O Caching&#8221;.  This seemed to help and was quick to&nbsp;try.</li>
 <li>Giving each virtualized device some &#8216;room to breath&#8217; eases the pressure.
 Some extra <span class="caps">CPU</span> and memory felt like it&nbsp;helped.</li>
-<li>Using alternative &quot;devices&quot; for disk should help as well, I haven&#8217;t tried
+<li>Using alternative &#8220;devices&#8221; for disk should help as well, I haven&#8217;t tried
 this yet.<ul>
 <li>Raw disk device, by passing the virtualization of the device&nbsp;completely.</li>
 <li>iSCSI</li>
@@ -273,7 +273,7 @@ this yet.<ul>
 <div class="section" id="enabling-ssh-access-to-esxi-5-5">
 <h3>Enabling <span class="caps">SSH</span> access to ESXi&nbsp;5.5</h3>
 <p>ESXi supports direct <span class="caps">SSH</span> access to the server running ESXi.  This mechanism is
-referred to in VMWare documentation as &quot;Tech Support Mode&quot;.  VMWare has a
+referred to in VMWare documentation as &#8220;Tech Support Mode&#8221;.  VMWare has a
 <a class="reference external" href="http://kb.vmware.com/">Knowledge Base</a> article elaborating the process for a range of versions: <a class="reference external" href="http://kb.vmware.com/kb/1017910"><span class="caps">KB</span>
 article&nbsp;1017910</a></p>
 <p>Here is the verbal description to enable <span class="caps">SSH</span> to the ESXi server from the Windows
@@ -289,8 +289,8 @@ Security Profile&nbsp;table.</li>
 <li>Open the &#8216;<span class="caps">SSH</span> Options&#8217; dialog.  In the &#8216;Services Properties&#8217; dialog scroll
 down to the &#8216;<span class="caps">SSH</span>&#8217; label and select it, (one click).  Then press the
 &#8216;Options&#8230;&#8217; button in the lower right corner of the&nbsp;dialog.</li>
-<li>Use the &#8216;<span class="caps">SSH</span> Options&#8217; dialog to enable <span class="caps">SSH</span> by choosing &quot;Start and stop with
-host&quot;.  The <span class="caps">SSH</span> service can also be started immediately with the &#8216;Start&#8217;&nbsp;button.</li>
+<li>Use the &#8216;<span class="caps">SSH</span> Options&#8217; dialog to enable <span class="caps">SSH</span> by choosing &#8220;Start and stop with
+host&#8221;.  The <span class="caps">SSH</span> service can also be started immediately with the &#8216;Start&#8217;&nbsp;button.</li>
 <li>Access the host by ssh&#8217;ing to the <span class="caps">IP</span> or hostname of the ESXi server and
 logging in with an appropriate account.  The &#8216;root&#8217; user and password created
 during ESXi initial installation will&nbsp;work.</li>
@@ -355,156 +355,6 @@ during ESXi initial installation will&nbsp;work.</li>
 
             <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
                 <ul class="list-group list-inline tagcloud" id="tags">
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/blog.html">
-                            blog
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cgp.html">
-                            CGP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/collectd.html">
-                            collectd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/cygwin.html">
-                            cygwin
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dhcp.html">
-                            DHCP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dns.html">
-                            DNS
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/dnsmasq.html">
-                            dnsmasq
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-1">
-                        <a href="https://egustafson.github.io/tag/freebsd.html">
-                            FreeBSD
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/install.html">
-                            install
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/ipv6.html">
-                            IPv6
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/lighttpd.html">
-                            lighttpd
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/linux.html">
-                            Linux
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/mediawiki.html">
-                            mediawiki
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/monitorama.html">
-                            Monitorama
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/monitoring.html">
-                            monitoring
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/nat.html">
-                            NAT
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/oscon.html">
-                            OSCON
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/pelican.html">
-                            pelican
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/rfc2893.html">
-                            RFC2893
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sqlite.html">
-                            sqlite
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/sync.html">
-                            sync
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/syncthing.html">
-                            syncthing
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="https://egustafson.github.io/tag/trip-report.html">
-                            trip report
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/tunneling.html">
-                            Tunneling
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/ubuntu.html">
-                            ubuntu
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vagrant.html">
-                            Vagrant
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualbox.html">
-                            VirtualBox
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/virtualization.html">
-                            virtualization
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/vmware.html">
-                            VMWare
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="https://egustafson.github.io/tag/wiki.html">
-                            wiki
-                        </a>
-                    </li>
                 </ul>
             </li>
     <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
@@ -515,8 +365,8 @@ during ESXi initial installation will&nbsp;work.</li>
             </a>
         </li>
         <li class="list-group-item">
-            <a href="http://linuxjedi.co.uk/" target="_blank">
-                Andrew Hutchings
+            <a href="http://engineeredweb.com/" target="_blank">
+                Matt Farina
             </a>
         </li>
         <li class="list-group-item">
@@ -527,6 +377,16 @@ during ESXi initial installation will&nbsp;work.</li>
         <li class="list-group-item">
             <a href="http://askyazz.com/" target="_blank">
                 Yazz Atlas
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://linuxjedi.co.uk/" target="_blank">
+                Andrew Hutchings
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://frungy.org" target="_blank">
+                Tim Potter (tpot)
             </a>
         </li>
       </ul>
@@ -541,7 +401,7 @@ during ESXi initial installation will&nbsp;work.</li>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2015 Eric Gustafson
+         <div class="col-xs-10">&copy; 2016 Eric Gustafson
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

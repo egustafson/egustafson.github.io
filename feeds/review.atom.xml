@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="https://egustafson.github.io/" rel="alternate"></link><link href="https://egustafson.github.io/feeds/review.atom.xml" rel="self"></link><id>https://egustafson.github.io/</id><updated>2015-06-22T00:00:00-06:00</updated><entry><title>Monitorama 2015</title><link href="https://egustafson.github.io/monitorama-2015.html" rel="alternate"></link><updated>2015-06-22T00:00:00-06:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2015-06-22:monitorama-2015.html</id><summary type="html">&lt;p&gt;This year&amp;#8217;s &lt;a class="reference external" href="http://monitorama.com/"&gt;Monitorama&lt;/a&gt; was another success for &lt;a class="reference external" href="https://twitter.com/obfuscurity"&gt;&amp;#64;obfuscurity&lt;/a&gt; and the
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Stuff I've Figured Out</title><link href="https://egustafson.github.io/" rel="alternate"></link><link href="https://egustafson.github.io/feeds/review.atom.xml" rel="self"></link><id>https://egustafson.github.io/</id><updated>2015-06-22T00:00:00-06:00</updated><entry><title>Monitorama 2015</title><link href="https://egustafson.github.io/monitorama-2015.html" rel="alternate"></link><published>2015-06-22T00:00:00-06:00</published><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2015-06-22:monitorama-2015.html</id><summary type="html">&lt;p&gt;This year&amp;#8217;s &lt;a class="reference external" href="http://monitorama.com/"&gt;Monitorama&lt;/a&gt; was another success for &lt;a class="reference external" href="https://twitter.com/obfuscurity"&gt;&amp;#64;obfuscurity&lt;/a&gt; and the
 monitoring community.  My one line observation of this years event is that the
-event was &amp;quot;less pragmatic&amp;quot; than last year.  I would rate the more abstract
+event was &amp;#8220;less pragmatic&amp;#8221; than last year.  I would rate the more abstract
 qualities of quality, diversity, and my overall desire to attend the same as
 last year &amp;#8212; high.  My personal preference for this, and most, conferences is
 pragmatism and so I call this out; my ranking of presentations certainly
@@ -62,7 +62,7 @@ reflects this, more so than any general vote of&amp;nbsp;quality.&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;Kyle provides a good overview of Riemann, his &amp;quot;part time project&amp;quot;.  While not an
+&lt;p&gt;Kyle provides a good overview of Riemann, his &amp;#8220;part time project&amp;#8221;.  While not an
 in depth discussion of Riemann, Kyle does a good job of covering the core
 concepts and breadth of what Riemann can accomplish.  An excellent source if one
 is trying to discover if and where Riemann can be&amp;nbsp;utilized.&lt;/p&gt;
@@ -113,7 +113,7 @@ viewer enough to determine if Heka is appropriate for potential&amp;nbsp;tasks.&
 &lt;/div&gt;
 &lt;div class="section" id="insightful"&gt;
 &lt;h2&gt;&lt;a class="toc-backref" href="#id7"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;Insightful&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;If you make it past the first three &amp;quot;Must Watch&amp;quot; presentations then the
+&lt;p&gt;If you make it past the first three &amp;#8220;Must Watch&amp;#8221; presentations then the
 following are where I would recommend spending your time next.  The first two
 are less pragmatic, but cover lessons learned and potentially positive ways of
 looking at monitoring issues as learned from Netflix.  The Last is an good
@@ -265,7 +265,7 @@ intriguing to&amp;nbsp;you.&lt;/p&gt;
 &lt;div class="section" id="honorable-mention"&gt;
 &lt;h2&gt;&lt;a class="toc-backref" href="#id18"&gt;4&amp;nbsp;&amp;nbsp;&amp;nbsp;Honorable&amp;nbsp;Mention&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;There was one presentation that was less general, but for the audience where
-it&amp;#8217;s appropriate, it is certainly worth a watch .. not to mention any names like&amp;nbsp;&amp;quot;Todd&amp;quot;.&lt;/p&gt;
+it&amp;#8217;s appropriate, it is certainly worth a watch .. not to mention any names like&amp;nbsp;&amp;#8220;Todd&amp;#8221;.&lt;/p&gt;
 &lt;div class="section" id="cyanite-workshop"&gt;
 &lt;h3&gt;&lt;a class="toc-backref" href="#id19"&gt;4.1&amp;nbsp;&amp;nbsp;&amp;nbsp;Cyanite&amp;nbsp;(workshop)&lt;/a&gt;&lt;/h3&gt;
 &lt;table class="docutils field-list" frame="void" rules="none"&gt;
@@ -300,7 +300,7 @@ made a guest contribution to the Librato blog and&amp;nbsp;covers:&lt;/p&gt;
 &lt;!-- End: --&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</summary><category term="Monitorama"></category><category term="trip report"></category><category term="monitoring"></category></entry><entry><title>OSCON 2014 Trip Report, part 1</title><link href="https://egustafson.github.io/oscon-2014-p1.html" rel="alternate"></link><updated>2014-07-31T00:00:00-06:00</updated><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2014-07-31:oscon-2014-p1.html</id><summary type="html">&lt;p&gt;This year&amp;#8217;s &lt;a class="reference external" href="http://www.oscon.com/oscon2014"&gt;&lt;span class="caps"&gt;OSCON&lt;/span&gt;&lt;/a&gt; was my first attendance of the conference; I was pleasantly
+</summary><category term="Monitorama"></category><category term="trip report"></category><category term="monitoring"></category></entry><entry><title>OSCON 2014 Trip Report, part 1</title><link href="https://egustafson.github.io/oscon-2014-p1.html" rel="alternate"></link><published>2014-07-31T00:00:00-06:00</published><author><name>Eric Gustafson</name></author><id>tag:egustafson.github.io,2014-07-31:oscon-2014-p1.html</id><summary type="html">&lt;p&gt;This year&amp;#8217;s &lt;a class="reference external" href="http://www.oscon.com/oscon2014"&gt;&lt;span class="caps"&gt;OSCON&lt;/span&gt;&lt;/a&gt; was my first attendance of the conference; I was pleasantly
 surprised.  The conference is 5 days, the first two of which are half day
 tutorial sessions, and the remaining 3 being the core conference.  I attended
 the 3 core days of the conference, and my brain was completely overflowed by the&amp;nbsp;end.&lt;/p&gt;
@@ -316,12 +316,12 @@ most intriguing, (in no particular&amp;nbsp;order).&lt;/p&gt;
 &lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/36202"&gt;Building an &lt;span class="caps"&gt;API&lt;/span&gt; for the Planet with a new Approach to&amp;nbsp;Satellites&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;The folks at &lt;a class="reference external" href="https://www.planet.com/"&gt;Planet Labs&lt;/a&gt; are building bird sized,
 (raptor sized) satellites and deploying them in a polar orbit to create the
-worlds first &amp;quot;planet scanner&amp;quot;.  A goal being to image the entire planet, every
+worlds first &amp;#8220;planet scanner&amp;#8221;.  A goal being to image the entire planet, every
 day, as the earth rotates beneath the ring of satellites.  And, &amp;#8230; there&amp;#8217;s
 more - this was &lt;span class="caps"&gt;OSCON&lt;/span&gt;: make the image data available to the&amp;nbsp;public.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="http://www.oscon.com/oscon2014/public/schedule/detail/35743"&gt;Anticipating the Future - an Introduction to Value Chain&amp;nbsp;Mapping&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Simon successfully argues that the &amp;quot;lemming&amp;quot; strategy of how to be successful
+&lt;p&gt;Simon successfully argues that the &amp;#8220;lemming&amp;#8221; strategy of how to be successful
 in business endeavors is not necessarily the most effective.  In lieu of
 following the leader, he argues and then exemplifies a analytic, (and
 scientific), approach to determining what actions would likely be more

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en"
+>
+<head>
+    <title>Quintessential Ceph - Stuff I've Figured Out</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="https://egustafson.github.io/quintessential-ceph.html">
+
+        <meta name="author" content="Eric Gustafson" />
+        <meta name="keywords" content="Linux,ceph,storage,persistence,install,ubuntu" />
+        <meta name="description" content="The following is my distillation of how to install Ceph in the most minimal way. This method of installation is NOT the {right, correct, best, …} way to install Ceph. It is what I could discern as the most minimal way to install the smallest set of Ceph components to have …" />
+
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://egustafson.github.io/theme/css/bootstrap.flatly.min.css" type="text/css"/>
+    <link href="https://egustafson.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://egustafson.github.io/theme/css/pygments/manni.css" rel="stylesheet">
+        <link href="https://egustafson.github.io/theme/css/typogrify.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://egustafson.github.io/theme/css/style.css" type="text/css"/>
+
+        <link href="https://egustafson.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Stuff I've Figured Out ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="https://egustafson.github.io/" class="navbar-brand">
+Stuff I've Figured Out            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="https://egustafson.github.io/category/howto.html">Howto</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/random.html">Random</a>
+                        </li>
+                        <li >
+                            <a href="https://egustafson.github.io/category/review.html">Review</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="https://egustafson.github.io/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="https://egustafson.github.io/quintessential-ceph.html"
+                       rel="bookmark"
+                       title="Permalink to Quintessential Ceph">
+                        Quintessential&nbsp;Ceph
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2016-04-20T00:00:00-06:00"> Wed 20 April 2016</time>
+    </span>
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://egustafson.github.io/tag/linux.html">Linux</a>
+        /
+	<a href="https://egustafson.github.io/tag/ceph.html">ceph</a>
+        /
+	<a href="https://egustafson.github.io/tag/storage.html">storage</a>
+        /
+	<a href="https://egustafson.github.io/tag/persistence.html">persistence</a>
+        /
+	<a href="https://egustafson.github.io/tag/install.html">install</a>
+        /
+	<a href="https://egustafson.github.io/tag/ubuntu.html">ubuntu</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>The following is my distillation of how to install <a class="reference external" href="http://docs.ceph.com">Ceph</a> in the most minimal
+way.  This method of installation is <em><span class="caps">NOT</span></em> the {right, correct, best, &#8230;} way
+to install Ceph.  It is what I could discern as the most minimal way to install
+the smallest set of Ceph components to have a minimally running system.   I did
+this to better understand Ceph and hope it will help others as&nbsp;well.</p>
+<div class="section" id="architecture-what-s-needed">
+<h2>Architecture <span class="amp">&amp;</span> what&#8217;s&nbsp;needed</h2>
+<p>The <a class="reference external" href="http://docs.ceph.com/docs/master/architecture/">Ceph Architecture</a> page starts with both a good diagram and description of
+what makes up the&nbsp;cluster.</p>
+</div>
+<div class="section" id="minimal-steps-to-create-a-ceph-cluster">
+<h2>Minimal Steps to create a Ceph&nbsp;cluster</h2>
+<p>The architecture:  4&nbsp;Hosts</p>
+<ul class="simple">
+<li>3x Storage Nodes  (have second &#8220;storage&#8221; drive)
+* hostnames:&nbsp;ceph-osd{0,1,2}</li>
+<li>1x Monitor Node
+* hostname:&nbsp;ceph-mon0</li>
+</ul>
+<div class="section" id="prerequisites">
+<h3>Prerequisites</h3>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Hosts:</th><td class="field-body">4 &#8212; ok, this isn&#8217;t the minimum, but for this example it is.</td>
+</tr>
+<tr class="field"><th class="field-name"><span class="caps">OS</span>:</th><td class="field-body">Ubuntu (4G root is sufficient) // I used Wily (15.10) Server</td>
+</tr>
+<tr class="field"><th class="field-name"><span class="caps">OSD</span> Disk:</th><td class="field-body">A second &#8220;disk&#8221; for the <span class="caps">OSD</span> hosts.  (sdb)</td>
+</tr>
+<tr class="field"><th class="field-name"><span class="caps">DNS</span>:</th><td class="field-body"><span class="caps">DNS</span> should work to resolve the host names.  (or /etc/hosts)</td>
+</tr>
+</tbody>
+</table>
+<p>The above can be accomplished in visualized environments.  Make sure your <span class="caps">VM</span>
+environment has networking such that all of the hosts can connect to each other
+on the same&nbsp;subnet.</p>
+</div>
+<div class="section" id="install-ceph-software">
+<h3>Install Ceph&nbsp;Software</h3>
+<div class="highlight"><pre><span></span>&gt; sudo apt-get install ceph
+</pre></div>
+<p>Will install the Ceph components needed.  Perform this on all&nbsp;hosts.</p>
+</div>
+<div class="section" id="ceph-conf-configuration-file">
+<h3>ceph.conf Configuration&nbsp;file</h3>
+<p>The following configuration file will be used on all hosts; it lives in
+<cite>/etc/ceph/ceph.conf</cite>:</p>
+<div class="highlight"><pre><span></span><span class="nv">fsid</span> <span class="o">=</span> d4b1b3b2-3bbb-4487-93ef-068d3ee73a22
+
+<span class="nv">mon_initial_members</span> <span class="o">=</span> a
+<span class="nv">mon_host</span> <span class="o">=</span> 10.3.7.91
+
+<span class="nv">auth_cluster_required</span> <span class="o">=</span> none
+<span class="nv">auth_service_required</span> <span class="o">=</span> none
+<span class="nv">auth_client_required</span> <span class="o">=</span> none
+</pre></div>
+<p>Two entries in this file should be&nbsp;changed:</p>
+<ul class="simple">
+<li>fsid = <cite>&lt;uuid&gt;</cite>    ## use &#8216;uuidgen&#8217; to generate a unique <span class="caps">UUID</span></li>
+<li>mon_host = &lt;ip-addr&gt;  ## place the actual <span class="caps">IP</span> of &#8216;ceph-mon0&#8217;&nbsp;here.</li>
+</ul>
+</div>
+<div class="section" id="configure-the-monitor-host">
+<h3>Configure the Monitor&nbsp;host</h3>
+<ul class="simple">
+<li>Monitor host:&nbsp;ceph-mon0</li>
+</ul>
+<ol class="arabic simple">
+<li>Place the <cite>ceph.conf</cite> file from the previous step in /etc/ceph.  Owned by
+root and world readable&nbsp;(0644).</li>
+<li>Run <cite>ceph-mon</cite> to initialize the &#8220;mon data&#8221; directory (/var/lib/ceph/mon).
+This monitor, the only monitor in this example, will be monitor &#8216;a&#8217;.  The <cite>-i
+a</cite> flag identifies the monitor as having id &#8216;a&#8217;.  After running this command
+there will be a <cite>/var/lib/ceph/mon/ceph-a</cite> directory.  The &#8216;ceph&#8217; corresponds
+to the cluster name and the &#8216;-a&#8217; corresponds to monitor id&nbsp;&#8216;a&#8217;.</li>
+</ol>
+<div class="highlight"><pre><span></span>&gt; sudo ceph-mon --cluster<span class="o">=</span>ceph -i a -f --mkfs
+</pre></div>
+<ol class="arabic simple" start="3">
+<li>Start <cite>ceph-mon</cite> as a daemon, (now that the data directory is&nbsp;initialized.</li>
+</ol>
+<div class="highlight"><pre><span></span>&gt; sudo ceph-mon --cluster<span class="o">=</span>ceph -i a
+</pre></div>
+<ol class="arabic simple" start="4">
+<li>Verify the monitor is running (from&nbsp;ceph-mon0)</li>
+</ol>
+<div class="highlight"><pre><span></span>&gt; ceph health
+HEALTH_ERR 64 pgs stuck inactive<span class="p">;</span> 64 pgs stuck unclean<span class="p">;</span> no osds
+</pre></div>
+<p>It is expected that the health is in error; there are no osd daemons running
+yet.  If the call does not return, (hangs), that is the indicator of a&nbsp;problem.</p>
+</div>
+<div class="section" id="configure-and-join-each-osd-host">
+<h3>Configure and join each <span class="caps">OSD</span>&nbsp;host</h3>
+<p>(optional:  Running <cite>ceph -w</cite> on host ceph-mon0 will allow you to &#8220;tail&#8221; the
+activities of the cluster.  You should see output after running each <cite>ceph-disk</cite>
+command.  The <cite>ceph -w</cite> command can actually be run from any host configured to
+interact with the ceph cluster, but ceph-mon0 is convenient in this&nbsp;case.)</p>
+<p>Repeat this process for each <span class="caps">OSD</span> host:  <cite>mon-osd{0,1,2}</cite></p>
+<ol class="arabic simple">
+<li>Copy and install the <cite>ceph.conf</cite> file in /etc/ceph.  Owned by root and world
+readable (0644).   [do not change the mon_host <span class="caps">IP</span>&nbsp;address.]</li>
+<li>Ensure /dev/sdb is <em><span class="caps">UNMOUNTED</span></em> and available for both partitioning and
+formatting.  <em>All data on /dev/sdb will be <span class="caps">DESTROYED</span></em></li>
+</ol>
+<div class="highlight"><pre><span></span>&gt; sudo ceph-disk prepare <span class="se">\</span>
+    --cluster ceph <span class="se">\</span>
+    --cluster-uuid d4b1b3b2-3bbb-4487-93ef-068d3ee73a22 <span class="se">\</span>
+    --fs-type btrfs <span class="se">\</span>
+    /dev/sdb
+Creating new GPT entries.
+Setting name!
+partNum is 1
+REALLY setting name!
+The operation has completed successfully.
+Setting name!
+partNum is 0
+REALLY setting name!
+The operation has completed successfully.
+WARNING: --leafsize is deprecated, use --nodesize
+btrfs-progs v4.0
+See http://btrfs.wiki.kernel.org for more information.
+
+Turning ON incompat feature <span class="s1">&#39;extref&#39;</span>: increased hardlink <span class="nb">limit </span>per file to 65536
+Turning ON incompat feature <span class="s1">&#39;skinny-metadata&#39;</span>: reduced-size metadata extent refs
+fs created label <span class="o">(</span>null<span class="o">)</span> on /dev/sdb1
+     nodesize 32768 leafsize 32768 sectorsize 4096 size 15.00GiB
+Warning: The kernel is still using the old partition table.
+The new table will be used at the next reboot or after you
+run partprobe<span class="o">(</span>8<span class="o">)</span> or kpartx<span class="o">(</span>8<span class="o">)</span>
+The operation has completed successfully.
+
+&gt; ceph df
+GLOBAL:
+    SIZE       AVAIL      RAW USED     %RAW USED
+    15358M     15089M       33440k          0.21
+POOLS:
+    NAME     ID     USED     %USED     MAX AVAIL     OBJECTS
+    rbd      0         0         0         5029M           0
+
+&gt; ps -ef | grep ceph-osd
+root    2248   1  0 19:08 ?   00:00:00 /usr/bin/ceph-osd --id 0 --foreground --cluster ceph -c /etc/ceph/ceph.conf
+</pre></div>
+<p>In the above example the initial size of /dev/sdb was 20G and preparing the disk
+left approximately 155358M usable for storage.  The remainder went to the
+partition used for the Ceph&nbsp;journal.</p>
+<p>After applying the above command to the 2nd and 3rd (ceph-mon{1,2}) hosts you
+will see an appropriate increase in the available&nbsp;storage.</p>
+<p>Observing the output of <cite>ps</cite> you see that the <cite>ceph-disk prepare</cite> command has
+started the <span class="caps">OSD</span> daemon as well.  Upon reboot <cite>ceph-osd</cite> will be automatically
+started as a&nbsp;service.</p>
+<p><em>Note:</em> <cite>ceph-mon</cite> is not configured to autostart using _this_ set of&nbsp;instructions.</p>
+<p>Repeat for hosts&nbsp;mon-osd{1,2}</p>
+<p>Done.</p>
+</div>
+</div>
+<div class="section" id="exercise-the-ceph-cluster">
+<h2>Exercise the Ceph&nbsp;cluster</h2>
+<p>The following commands will demonstrate basic cluster functionality; they can be
+performed from any host that&nbsp;has:</p>
+<ol class="arabic simple">
+<li>Direct network connectivity to the cluster (no <span class="caps">NAT</span> - in case you used
+Virtualbox, et.&nbsp;al.)</li>
+<li>The <cite>ceph.conf</cite> file from above placed in /etc/ceph and&nbsp;readable.</li>
+<li>The <cite>ceph</cite> Ubuntu package installed (from step&nbsp;1).</li>
+</ol>
+<p>A convenient, but not necessary, host to use are any of the hosts you just&nbsp;installed.</p>
+<div class="section" id="list-and-create-a-pool-for-storage">
+<h3>List and create a pool for&nbsp;storage</h3>
+<p>Note:  the following commands do not require the use of <cite>sudo</cite>.  Authentication
+would be acomplished via the cephx protocol if it had not been disabled in the
+ceph.conf file, (the last three lines set the &#8220;auth&#8221; parameters to&nbsp;&#8216;none&#8217;).</p>
+<div class="highlight"><pre><span></span>&gt; ceph osd pool ls
+rbd
+</pre></div>
+<p>Ceph creates a default pool named &#8216;rbd&#8217; when&nbsp;initialized.</p>
+<div class="highlight"><pre><span></span>&gt; rados mkpool data
+successfully created pool data
+
+&gt; rados df
+pool name        KB  objects  clones  degraded  unfound   rd   rd KB   wr   wr KB
+data              0        0       0         0        0    0       0    0       0
+rbd               0        0       0         0        0    0       0    0       0
+total used    102176       0
+total avail 46354496
+total space 47182788
+</pre></div>
+</div>
+<div class="section" id="place-a-file-directly-in-the-data-pool">
+<h3>Place a file directly in the &#8216;data&#8217;&nbsp;pool</h3>
+<div class="highlight"><pre><span></span>&gt; touch test-file.out
+&gt; rados put -p data test-file.out test-file.out
+&gt; rados ls -p data
+test-file.out
+</pre></div>
+<p>This concludes the quintessential Ceph installation and simple demonstration that the cluster is&nbsp;functioning.</p>
+<p>Thank you -&nbsp;Eric</p>
+<!-- Local Variables: -->
+<!-- fill-column: 80 -->
+<!-- End: -->
+<!-- LocalWords:  Ceph ceph Gustafson -->
+</div>
+</div>
+
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'egustafson'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'quintessential-ceph';
+                var disqus_url = 'https://egustafson.github.io/quintessential-ceph.html';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="http://twitter.com/elfwerks"><i class="fa fa-twitter-square fa-lg"></i> twitter</a></li>
+                <li class="list-group-item"><a href="http://delicious.com/elfwerks"><i class="fa fa-delicious-square fa-lg"></i> delicious</a></li>
+                <li class="list-group-item"><a href="http://www.linkedin.com/in/ericggustafson/"><i class="fa fa-linkedin-square fa-lg"></i> linkedin</a></li>
+                <li class="list-group-item"><a href="https://github.com/egustafson"><i class="fa fa-github-square fa-lg"></i> github</a></li>
+              </ul>
+            </li>
+
+
+
+            <li class="list-group-item"><a href="https://egustafson.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                <ul class="list-group list-inline tagcloud" id="tags">
+                </ul>
+            </li>
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://krow.net/" target="_blank">
+                Brian Aker
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://engineeredweb.com/" target="_blank">
+                Matt Farina
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://patg.net/" target="_blank">
+                Patrick Galbraith
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://askyazz.com/" target="_blank">
+                Yazz Atlas
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://linuxjedi.co.uk/" target="_blank">
+                Andrew Hutchings
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://frungy.org" target="_blank">
+                Tim Potter (tpot)
+            </a>
+        </li>
+      </ul>
+    </li>
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2016 Eric Gustafson
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="https://egustafson.github.io/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://egustafson.github.io/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="https://egustafson.github.io/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'egustafson'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-59717139-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+    <!-- End Google Analytics Code -->
+</body>
+</html>
