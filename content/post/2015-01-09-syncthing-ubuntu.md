@@ -176,7 +176,7 @@ visible then following the "[Firewalls and Port Forwards][fwds]" instructions on
 [wiki]: https://github.com/syncthing/syncthing/wiki
 
 In short: plumb TCP port 22000 through from your firewall to the server.  Port
-22000 is the default port for the Block Exchange Protocol (BEP)[^1], and the
+22000 is the default port for the Block Exchange Protocol (BEP)[[^1]], and the
 only port necessary for a remote agent to connect with your server.
 
 [^1]: The protocols Syncthing uses are documented here:  https://github.com/syncthing/specs

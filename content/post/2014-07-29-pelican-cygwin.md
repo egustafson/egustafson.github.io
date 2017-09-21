@@ -19,7 +19,7 @@ my success story installing Pelican under Cygwin.
 
 + Windows -- hopefully obvious.
 + [Cygwin](https://www.cygwin.com/) -- also hopefully obvious
-+ [Cygwin Ports](http://cygwinports.org/) [^1]
++ [Cygwin Ports](http://cygwinports.org/) [[^1]]
 + and the following Cygwin Packages:
   - git
   - python
@@ -42,7 +42,7 @@ further ado.
 
 Pelican Dependencies: http://docs.getpelican.com/en/3.4.0/install.html#dependencies
 
-Start Cygwin's `setup-x86.exe` [^2] to update your installation.
+Start Cygwin's `setup-x86.exe` [[^2]] to update your installation.
 Install the following packages, if not already present.
 
 [^2]: https://www.cygwin.com/install.html
