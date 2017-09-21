@@ -1,8 +1,10 @@
-:title: Nested Virtualization - VirtualBox inside ESXi
-:date: 2015-02-10
-:slug: esxi-nested-virtualbox
-:author: Eric Gustafson
-:tags: virtualization, VirtualBox, VMWare
+---
+title:   Nested Virtualization - VirtualBox inside ESXi
+date:    2015-02-10
+slug:    esxi-nested-virtualbox
+author:  Eric Gustafson
+tags:    [virtualization, VirtualBox, VMWare]
+---
 
 This process describes how to configure an ESXi Linux guest so that the guest
 can then run VirtualBox and create a nested, 64 bit guest within the ESXi guest
@@ -22,18 +24,16 @@ postings detailing how to use the vSphere Web UI to effect the reconfiguration.
 Unfortunately, the Web UI is not part of the free license VMWare grants for an
 ESXi host.  As a consequence, this posting details the manual editing to enable
 nested virtualization -- needed if all one has is the free bits from VMWare.
-   
-The Process
-===========
 
-0. Enable SSH access to the ESXi server.
-1. Create an ESXi VM for the initial, outer guest.  
-2. Shutdown the ESXi VM. 
-3. **Edit the VM's .vmx file, adding "vhv.enable = TRUE".**
-4. Done.
+# The Process
 
-0. - Enable SSH access to the ESXi Server
------------------------------------------
+1. Enable SSH access to the ESXi server.
+2. Create an ESXi VM for the initial, outer guest.
+3. Shutdown the ESXi VM.
+4. ***Edit the VM's .vmx file, adding "vhv.enable = TRUE".***
+5. Done.
+
+## 1. Enable SSH access to the ESXi Server
 
 If you have not already done so, this process will require direct access to the
 ESXi instance's configuration.  VMWare often calls this "Tech Support Mode".
@@ -42,8 +42,7 @@ See the appendix in this document titled, `Enabling SSH access to ESXi 5.5`_,
 for more detailed instructions on how to enable SSH access.
 
 
-1. - Create an ESXi VM
-----------------------
+## 2. Create an ESXi VM
 
 Create an ESXi VM for the initial, outer guest.  VMWare 'virtual machine
 version' 8 or greater should be used; this is the default for ESXi 5.5.  Install
@@ -58,8 +57,7 @@ resource overheads.  Generally I'm finding that virtualized components do behave
 as advertised, but default configurations on install do need some finer tuning
 -- in short, no surprises.
 
-2. - Shutdown the ESXi VM
--------------------------
+## 3. Shutdown the ESXi VM
 
 With an ESXi VM configured and installed with an operating system, you are ready
 to (re)configure the VM to allow nested virtualization.  The reconfiguration
@@ -68,8 +66,7 @@ the stopped state.  ESXi, as all others I'm aware of, does not let you
 (virtually) modify the hardware while the VM is running.  Stop the ESXi VM that
 will be reconfigured to support nested virtualization.
 
-**3. - Edit the VM's Configuration**
-------------------------------------
+## ***4. Edit the VM's Configuration***
 
 This step is the critical step.  The ESXi VM must be shutdown, as noted
 previously; if it is not the change will be reverted by ESXi.  Fundamentally,
@@ -78,14 +75,12 @@ the configuration.  This must be added to the VM's ``.vmx`` file.
 
 SSH into the ESXi server and then locate and edit the VM's .vmx file:
 
-.. code-block:: bash
-                
-   > find / -name \*.vmx
-   > echo 'vhv.enable = "TRUE"' >> /path/to/host.vmx
+```bash
+> find / -name \*.vmx
+> echo 'vhv.enable = "TRUE"' >> /path/to/host.vmx
+```
 
-
-4. - Done
----------
+## 5. Done
 
 Once the change to the VM's configuration is effected, simply boot the VM and
 use VirtualBox within the ESXi VM to create a nested VM.
@@ -99,34 +94,30 @@ ESXi 5.5.  Earlier versions of ESXi have a different process, not described
 here, and without my crystal ball, I'm at a loss for future versions.
 
 ----
-      
-Extra Credit
-============
+
+# Extra Credit
 
 In discovering the above process, which I distilled to what I felt was the
 minimum, for simplicity, I made a few "superfluous" discoveries.  So that the
 above process may be more broadly applicable, an so that the reader is
 more informed, I have detailed the "extras" here.
 
-Old Wives Tales
----------------
+## Old Wives Tales
 
 Technically not old wives tales, the following details are floating around in
 blog postings and are no longer accurate, for ESXi 5.5.  At one point in time,
 they were correct; I performed the process detailed here with out them as
 verification that they were not necessary.
 
-``vhv.allow`` vs. ``vhv.enable``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### `vhv.allow` vs. `vhv.enable`
 
 Earlier versions of ESXi, possibly as late as early 5.x versions, used a
-slightly different means of enabling nested virtualization.  The ``vhv.allow``
+slightly different means of enabling nested virtualization.  The `vhv.allow`
 parameter was applied to the ESXi server's configuration in
-``/etc/vmware/config``.  This is not necessary, but does not conflict with the
-per VM configuration detailed in this posting and required by ESXi 5.5.  
+`/etc/vmware/config`.  This is not necessary, but does not conflict with the
+per VM configuration detailed in this posting and required by ESXi 5.5.
 
-Editing the VM's CPU Preferences
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Editing the VM's CPU Preferences
 
 In other postings on this subject I noted that an additional step involving
 editing the VM's CPU Preferences was detailed.  Changing the "CPU/MMU Virtualization" from
@@ -134,10 +125,9 @@ editing the VM's CPU Preferences was detailed.  Changing the "CPU/MMU Virtualiza
 appears to no longer be required.  I have successfully nested VirtualBox 64 bit
 VMs inside ESXi 5.5 VMs with the 'Automatic' setting.  Caveat:  I have found no official
 documentation discussing this for 5.5 either way.
-         
 
-ESXi Networking - Promiscuous Mode
-----------------------------------
+
+## ESXi Networking - Promiscuous Mode
 
 Almost all of the writings I encountered that discuss nesting virtualization
 with ESXi cite setting "networking" into promiscuous mode.  This is not a
@@ -158,8 +148,7 @@ configuration because that model is a bridged model in which each VM is given a
 newly allocated, and different, MAC address.
 
 
-Disk Performance
-----------------
+## Disk Performance
 
 During my initial experimentation with nested VM's I observed a clear decrease
 in performance of the nested VM.  My initial experimentation mostly only went as
@@ -170,14 +159,14 @@ Disk virtualization is more expensive than most.  Nesting virtualized disks will
 accumulate "virtualization debt" quicker than other virtualized components.  The
 short, but rambling explanation goes something like this:
 
-  In my inner VM I write a block to "disk".  This traverses the inner OS's
-  file system code and is mapped to a sector on the inner VM's *virtual* block
-  device.  Writing is the passed to the outer VM, traverses the file system
-  code, and is mapped to the outer VM's *virtual* block device.  Finally, the
-  block is passed to the host, (physical), file system, mapped through to a
-  sector, and finally placed on the actual physical device.  -- If your head is
-  spinning now, it should be.  That's **three** times the block is passed
-  through file system code on it's eventual path to a physical write.
+> In my inner VM I write a block to "disk".  This traverses the inner OS's
+> file system code and is mapped to a sector on the inner VM's *virtual* block
+> device.  Writing is the passed to the outer VM, traverses the file system
+> code, and is mapped to the outer VM's *virtual* block device.  Finally, the
+> block is passed to the host, (physical), file system, mapped through to a
+> sector, and finally placed on the actual physical device.  -- If your head is
+> spinning now, it should be.  That's **three** times the block is passed
+> through file system code on it's eventual path to a physical write.
 
 This problem is understood in the virtualization community, and there are
 methods for avoiding differing degrees of the penalty based on the requirements
@@ -193,26 +182,23 @@ are on my "to try" list:
    Some extra CPU and memory felt like it helped.
 3. Using alternative "devices" for disk should help as well, I haven't tried
    this yet.
-   
    - Raw disk device, by passing the virtualization of the device completely.
    - iSCSI
-      
+
 
 ----
-       
-Appendix
-========
 
-Enabling SSH access to ESXi 5.5
--------------------------------
+# Appendix
+
+## Enabling SSH access to ESXi 5.5
 
 ESXi supports direct SSH access to the server running ESXi.  This mechanism is
 referred to in VMWare documentation as "Tech Support Mode".  VMWare has a
-`Knowledge Base`_ article elaborating the process for a range of versions: `KB
-article 1017910`_
+[Knowledge Base][kb] article elaborating the process for a range of versions:
+[KB article 1017910][kb-1017910]
 
-.. _Knowledge Base: http://kb.vmware.com/
-.. _KB article 1017910: http://kb.vmware.com/kb/1017910
+[kb]: http://kb.vmware.com/
+[kb-1017910]: http://kb.vmware.com/kb/1017910
 
 Here is the verbal description to enable SSH to the ESXi server from the Windows
 vSphere (thick) Client:
@@ -234,7 +220,3 @@ vSphere (thick) Client:
 6. Access the host by ssh'ing to the IP or hostname of the ESXi server and
    logging in with an appropriate account.  The 'root' user and password created
    during ESXi initial installation will work.
-
-.. Local Variables:
-.. fill-column: 80
-.. End:

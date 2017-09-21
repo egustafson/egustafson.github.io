@@ -8,6 +8,8 @@ googleAnalytics = ""
 # Disable comments by leaving disqusShortname empty
 disqusShortname = ""
 
+ignoreFiles = [ "\\.rst$" ]
+
 [params]
 	name = "Eric Gustafson"
 	description = "Stuff I've Figured Out"
