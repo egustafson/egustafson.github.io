@@ -1,16 +1,19 @@
 baseurl = "https://egustafson.github.io/"
 languageCode = "en-us"
 title = "Stuff I've Figured Out"
-theme = "hugo-xmin"
-googleAnalytics = ""
-disqusShortname = ""
+theme = "xmin"
+disqusShortname = "egustafson"
+googleAnalytics = "UA-59717139-1"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "\\.rst$"]
 preserveTaxonomyNames = true
 footnotereturnlinkcontents = "↩"
 
-# [permalinks]
-#     post = "/post/:year/:month/:day/:slug/"
-#     note = "/note/:year/:month/:day/:slug/"
+[params]
+    description = "A website built through Hugo and blogdown."
+    footer = "&copy; [Eric Gustafson](http://www.elfwerks.org/ericg) 2017 | [Github](https://github.com/egustafson) | [Twitter](https://twitter.com/elfwerks)"
+
+## ########################################
+## Menus                                 ##
 
 [[menu.main]]
     name = "Home"
@@ -35,7 +38,3 @@ footnotereturnlinkcontents = "↩"
 [[menu.main]]
     name = "Subscribe"
     url = "/index.xml"
-
-[params]
-    description = "A website built through Hugo and blogdown."
-    footer = "&copy; [Eric Gustafson](http://www.elfwerks.org/ericg) 2017 | [Github](https://github.com/egustafson) | [Twitter](https://twitter.com/elfwerks)"

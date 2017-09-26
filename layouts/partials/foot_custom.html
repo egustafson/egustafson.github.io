@@ -1,0 +1,7 @@
+{{ if .IsPage }}
+  <hr/>
+  <h1 id="comments">Comments</h1>
+  {{ template "_internal/disqus.html" . }}
+{{ end }}
+
+  {{ template "_internal/google_analytics.html" . }}
