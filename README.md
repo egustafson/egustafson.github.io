@@ -2,10 +2,16 @@ Notes to myself on how to clone & publish:
 
 ## Cloning this repo
 
-1. `git checkout hugo-source`
-2. `cd theme/xmin`
-3. `git submodule init`
-4. `git submodule update`
++ `git clone --recursive -b hugo-source github.com:egustafson/egustafson.github.io`
+
+(or)
+
+1. `git clone github.com:egustafson/egustafson.github.io`
+2. `cd egustafson.github.io`
+3. `git checkout hugo-source`
+4. `cd theme/xmin`
+5. `git submodule init`
+6. `git submodule update`
 
 ## Publishing
 
