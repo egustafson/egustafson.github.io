@@ -13,3 +13,7 @@ Notes to myself on how to clone & publish:
 2. `pub2gh.sh`
 3. `cd public; git push origin master`  (echoed from pub2gh.sh)
 
+## Clean after Publishing
+
+1. `rm -rf public`
+2. `git worktree prune`
