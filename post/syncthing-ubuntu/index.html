@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Syncthing on Ubuntu | Stuff I&#39;ve Figured Out</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+        <link rel="stylesheet" href="/css/style_custom.css" />
+
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/credits/">Credits</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Syncthing on Ubuntu</span></h1>
+<h2 class="author">Eric Gustafson</h2>
+<h2 class="date">2015/01/09</h2>
+</div>
+
+<main>
+
+
+<p>Last month, after looking at <a href="http://www.getsync.com/">BitTorrent Sync</a> and realizing it was
+encrypted and private, but <em>not</em> open source, I went digging for an
+alternative.  I found the perfect project, for me:  <a href="http://syncthing.net/">Syncthing</a>.  The
+project is still relatively young and while it has proven to be
+perfectly functional, it did not come with batteries included &ndash; an
+installer package.   It does come with init scripts for some
+environments, but not for Ubuntu &ndash; at least until Ubuntu transitions
+to systemd.  So, without further ado, here&rsquo;s what I did to install
+Syncthing as daemon (service) under Ubuntu.</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Run as:</td>
+<td>user: <code>synct</code> &amp;  group: <code>synct</code></td>
+</tr>
+
+<tr>
+<td>Service Name:</td>
+<td><code>syncthing</code></td>
+</tr>
+
+<tr>
+<td>Install to:</td>
+<td><code>/opt/syncthing</code></td>
+</tr>
+
+<tr>
+<td>Config:</td>
+<td><code>/opt/syncthing/etc</code></td>
+</tr>
+
+<tr>
+<td>GUI:</td>
+<td>Exposed at <code>0.0.0.0:8080</code></td>
+</tr>
+
+<tr>
+<td>Public Access:</td>
+<td>Firewall port redirect.</td>
+</tr>
+</tbody>
+</table>
+
+<p>There&rsquo;s nothing out of the ordinary about installing Syncthing as a service.
+Above are the details I chose for how I&rsquo;d install the service.  There are two
+points are worth noting.  First, after the initial install the service&rsquo;s
+configuration is editable through the web-gui; the XML config will be in
+/opt/syncthing/etc.  Second, sync-able repositories do not have to live in the
+installation directory.  Installing is mostly about creating the extra fluff
+needed to have init start the binary.</p>
+
+<p>A reminder - this is aimed at an <strong><em>Ubuntu</em></strong> system.  Specifically, 14.10
+(Utopic) was used, although earlier versions should work too.  When Ubuntu
+transitions to systemd as an init system, the included Upstart script will not
+be applicable.  (Current rumor is that the transition will be in the next
+release &ndash; caveat emptor)</p>
+
+<h2 id="1-create-user-and-group-for-the-daemon">1. Create User and Group for the Daemon</h2>
+
+<pre><code class="language-bash">## add home dir first so adduser does not populate it with skel files.
+&gt; sudo mkdir /opt/syncthing
+&gt; sudo mkdir /opt/syncthing/etc
+&gt; sudo adduser --system --group --home /opt/syncthing synct
+&gt; sudo chown -R synct.synct /opt/syncthing
+</code></pre>
+
+<p>The <code>synct</code> group provides the opportunity to add authorized users to make
+&lsquo;syncable&rsquo; folders with the <code>synct</code> group.  Those users can manage their
+folder(s) with out the need for sudo/root privilege.</p>
+
+<h2 id="2-install-the-syncthing-binary">2. Install the Syncthing Binary</h2>
+
+<p>Fetch the binary from the <a href="https://github.com/syncthing/syncthing">Syncthing GitHub Project</a>.  The releases URL is:
+<a href="https://github.com/syncthing/syncthing/releases">https://github.com/syncthing/syncthing/releases</a>.  Download the tarball
+appropriate for your architecture.  (The example uses amd64, and version
+0.10.18)</p>
+
+<pre><code class="language-bash">&gt; cd /tmp
+&gt; tar -xvf /path-to/syncthing-linux-amd64-v0.10.18.tar.gz
+&gt; sudo mkdir /opt/syncthing/bin
+&gt; sudo cp syncthing-linux-amd64-v0.10.18/syncthing /opt/syncthing/bin
+</code></pre>
+
+<p>The only file needed from the release tarball is the executable itself.  The
+executable is tar&rsquo;ed with execute permission, but it never hurts to verify its
+executable.</p>
+
+<h2 id="4-install-an-upstart-script">4. Install an Upstart &ldquo;Script&rdquo;</h2>
+
+<p>Install the following Upstart configuration file in <code>/etc/init/syncthing.conf</code></p>
+
+<pre><code>description  &quot;syncthing daemon&quot;
+author       &quot;Eric Gustafson &lt;egustafson in launchpad&gt;&quot;
+
+start on (local-filesystems and net-device-up IFACE!=lo)
+stop on runlevel [!2345]
+
+setuid synct
+setgid synct
+
+env HOME=/opt/syncthing
+
+exec /opt/syncthing/bin/syncthing -home /opt/syncthing/etc
+</code></pre>
+
+<p>A couple of notes on the conf file:</p>
+
+<ol>
+<li><p>Setting the <code>$HOME</code> env lets syncthing know where to create the default,
+<code>Sync</code> folder on initial start-up.  I had problems before I added this
+stanza.</p></li>
+
+<li><p>Using the <code>-home /opt/syncthing/etc</code> flag instructs syncthing to place
+all configuration files <em>directly</em> into the <code>etc</code> directory.  If this flag
+is missing it will place the configuration in a hidden directory under
+<code>$HOME</code>.</p></li>
+</ol>
+
+<p>It would be nice to get a list of supported environment variables and command
+line switches, but the docs are not there yet.  Conversely, I could &ldquo;read the
+source luke&rdquo;, so I should stop whining and go contribute ;)</p>
+
+<h2 id="5-start-and-verify-the-service">5. Start and Verify the Service</h2>
+
+<p>If the stars are aligned, then the service will start:</p>
+
+<pre><code class="language-bash">&gt; sudo service syncthing start
+&gt; sudo tail -f /var/log/upstart/syncthing.log
+</code></pre>
+
+<p>At this point the service is (hopefully) up.  There is a small problem, however:
+the configuration created on first-run restricts the web-gui to loopback only
+(127.0.0.1).  This is fine if the machine is your desktop, but can be a snag if
+its remote.  The config file can be edited by hand to change this.</p>
+
+<p>In preparation for changing the listening address for the web-gui:</p>
+
+<pre><code class="language-bash">&gt; sudo service syncthing stop
+</code></pre>
+
+<h2 id="6-modify-the-configuration-to-expose-the-web-gui">6. Modify the Configuration to expose the Web GUI</h2>
+
+<p>Edit the config file:  <code>/opt/syncthing/etc/config.xml</code></p>
+
+<pre><code class="language-bash">## syncthing changes the permissions on etc, sudo is required
+&gt; sudo emacs /opt/syncthing/etc/config.xml
+</code></pre>
+
+<p>The following line should be changed as depicted.  The important aspect is to
+change the <code>127.0.0.1</code> to the wildcard address, <code>0.0.0.0</code>.  [The port could
+be changed too, if need be.]</p>
+
+<pre><code class="language-xml">&lt;gui enabled=&quot;true&quot; tls=&quot;false&quot;&gt;
+    &lt;address&gt;0.0.0.0:8080&lt;/address&gt;
+    ...
+&lt;/gui&gt;
+</code></pre>
+
+<p>Now restart the service</p>
+
+<pre><code class="language-bash">&gt; sudo service syncthing start
+</code></pre>
+
+<p>and point a web browser at port 8080 of the host.</p>
+
+<h2 id="7-optional-firewall-port-redirect">7. (Optional) Firewall Port Redirect</h2>
+
+<p>At this point you have a perfectly good, working Syncthing &ndash; congratulations.</p>
+
+<p>However, if your host is behind a firewall it may not be reachable for
+sync-ing.  The first point:  if you have a consumer firewall that supports UPnP
+then Syncthing is likely visible as it supports, and enables by default, UPnP.
+If you don&rsquo;t have UPnP enabled on your firewall or the Syncthing instance is not
+visible then following the &ldquo;<a href="https://github.com/syncthing/syncthing/wiki/Firewalls-and-Port-Forwards">Firewalls and Port Forwards</a>&rdquo; instructions on the
+<a href="https://github.com/syncthing/syncthing/wiki">wiki</a> will help you resolve the issue.</p>
+
+<p>In short: plumb TCP port 22000 through from your firewall to the server.  Port
+22000 is the default port for the Block Exchange Protocol (BEP)[<sup class="footnote-ref" id="fnref:1"><a rel="footnote" href="#fn:1">1</a></sup>], and the
+only port necessary for a remote agent to connect with your server.</p>
+
+<p>That&rsquo;s it, you&rsquo;re done.  Happy syncing.</p>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:1">The protocols Syncthing uses are documented here:  <a href="https://github.com/syncthing/specs">https://github.com/syncthing/specs</a>
+ <a class="footnote-return" href="#fnref:1">↩</a></li>
+</ol>
+</div>
+
+</main>
+
+  <footer>
+  
+  <hr/>
+  <h1 id="comments">Comments</h1>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "egustafson" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-59717139-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+  
+  <hr/>
+  &copy; <a href="http://www.elfwerks.org/ericg">Eric Gustafson</a> 2017 | <a href="https://github.com/egustafson">Github</a> | <a href="https://twitter.com/elfwerks">Twitter</a>
+  
+  </footer>
+  </body>
+</html>
+

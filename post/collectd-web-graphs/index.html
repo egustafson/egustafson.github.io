@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Simple collectd with Web Graphs | Stuff I&#39;ve Figured Out</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+        <link rel="stylesheet" href="/css/style_custom.css" />
+
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/credits/">Credits</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Simple collectd with Web Graphs</span></h1>
+<h2 class="author">Eric Gustafson</h2>
+<h2 class="date">2012/04/10</h2>
+</div>
+
+<main>
+
+
+<p>I want to collect machine metrics and I want to display them as a
+pretty set of graphs through a web browser.  Here&rsquo;s how I do it:</p>
+
+<ol>
+<li>Install <a href="http://collectd.org/">collectd</a> &ndash; this gathers the
+metrics.</li>
+<li>Install <a href="http://lighttpd.net/">lighttpd</a> &ndash; my web server
+preference, also install php.</li>
+<li>Download and install collectd graph panel
+(<a href="https://github.com/pommi/CGP">CGP</a>) &ndash; a PHP webapp.</li>
+</ol>
+
+<p>That&rsquo;s the short version.</p>
+
+<h1 id="installation">Installation</h1>
+
+<p>The following walk through will demonstrate the installation using
+Ubuntu Oneiric (11.10). Note, the <code>sudo</code> is generally required, but
+dropped from the commands listed below:</p>
+
+<pre><code class="language-sh"># apt-get install collectd lighttpd php5-cgi php5
+</code></pre>
+
+<p>next, edit <code>/etc/php5/cgi/php.ini</code> to enable php5 in lighttpd.
+Uncomment the line &ldquo;<code>cgi.fix_pathinfo=1</code>&rdquo;.</p>
+
+<p>Restart lighttpd and you have a working lighttpd+php5.</p>
+
+<pre><code class="language-sh"># lighttpd-enable-mod fastcgi
+# lighttpd-enable-mod fastcgi-php
+# service lighttpd force-reload
+</code></pre>
+
+<p>Next, download and &ldquo;<code>install</code>&rdquo; collectd graph panel (CGP).  CGP is
+downloaded with <code>git</code>, if you do not have git installed then:</p>
+
+<pre><code class="language-sh"># apt-get install git
+</code></pre>
+
+<p>Download CGP into the lighttpd root directory:</p>
+
+<pre><code class="language-sh"># cd /var/www
+# git clone http://git.nethuis.nl/pub/cgp.git
+# chown -R www-data.www-data cgp   ## optional
+</code></pre>
+
+<p>Done!  Browse to <a href="http://localhost/cgp/">http://localhost/cgp/</a> to access the graphs.</p>
+
+<hr />
+
+<h1 id="configuring-what-metrics-collectd-collects">Configuring what metrics collectd collects</h1>
+
+<p>The primary configuration for <code>collectd &lt;http://collectd.org/&gt;</code>_ as
+Ubuntu installs it is placed in <code>/etc/collectd/collectd.conf</code>.  The
+configuration file is commented.  Refer to the collectd
+<a href="http://collectd.org/documentation.shtml">documentation</a>
+page for further details.  For each plugin see the plugin pages listed
+along the side of the documentation page.  Many plugins do not require
+additional configuration &ndash; simply uncommenting them is a good
+starting point.</p>
+
+<p>After editing the collectd configuration, the service must be
+restarted with the typical service restart command:</p>
+
+<pre><code class="language-sh"># service collectd restart
+</code></pre>
+
+<p>Many of the plugins default to collecting all possible metrics covered
+by the plugin.  It is possible, via the plugin&rsquo;s specific
+configuration, to prune out unwanted metrics.  A good example of this
+is the &lsquo;<code>interfaces</code>&rsquo; plugin which includes statistics for the
+loopback interface by default.</p>
+
+<h1 id="customizing-cgp">Customizing CGP</h1>
+
+<p>The CGP_ website does not provide any configuration documentation,
+however it is not difficult to customize CGP.  If installed, as shown
+above, CGP&rsquo;s configuration file will be:
+<code>/var/www/cgp/conf/config.php</code>.  This file is commented with details
+for changing the configuration.</p>
+
+<h1 id="adding-additional-hosts">Adding additional hosts</h1>
+
+<p>Nothing is required of CGP to add additional hosts.  Simply install
+<a href="http://collectd.org/">collectd</a> on the additional machines and
+configure the <a href="http://collectd.org/wiki/index.php/Plugin:Network">network
+plugin</a> on both the
+client and server.  In most cases, the commented out configuration,
+which uses multicast, will suffice for configuring the network plugin.</p>
+
+<p>Now sit back and enjoy the pretty graphs of your running servers.</p>
+
+</main>
+
+  <footer>
+  
+  <hr/>
+  <h1 id="comments">Comments</h1>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "egustafson" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-59717139-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+  
+  <hr/>
+  &copy; <a href="http://www.elfwerks.org/ericg">Eric Gustafson</a> 2017 | <a href="https://github.com/egustafson">Github</a> | <a href="https://twitter.com/elfwerks">Twitter</a>
+  
+  </footer>
+  </body>
+</html>
+

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>HowTo on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/categories/howto/</link>
+    <description>Recent content in HowTo on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 25 Mar 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/categories/howto/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Vagrant FreeBSD Appliance Box - Part 1</title>
+      <link>https://egustafson.github.io/post/vagrant-freebsd-p1/</link>
+      <pubDate>Wed, 25 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/vagrant-freebsd-p1/</guid>
+      <description>A Vagrant &amp;lsquo;network appliance&amp;rsquo; based on FreeBSD.
+ Author&amp;rsquo;s note: This posting was rushed in an attempt to capture the knowledge gathered thus far in my learning process. The posting is a bit of a work in progress - expect updates over the next few weeks as the process is refined.
+ This is part 1, (and take, 1 I suspect), describing the creation of a Vagrant Box intended to be used as a firewall / router appliance with Vagrant.</description>
+    </item>
+    
+    <item>
+      <title>IPv6 Network (Auto) Configuration</title>
+      <link>https://egustafson.github.io/post/ipv6-dhcpv6/</link>
+      <pubDate>Fri, 06 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/ipv6-dhcpv6/</guid>
+      <description>In my previous article, IPv6 Tunneling over IPv4 Networks, I discussed how to connect a LAN to the IPv6 public Internet. This article continues the theme, discussing the issues surrounding the LAN&amp;rsquo;s configuration for IPv6.
+Looking at how LAN&amp;rsquo;s are configured for IPv4 proves to be instructive. Many of the techniques, and all of the patterns turn out to have parallels in IPv6. During the design of IPv6 engineers took the opportunity for refactoring using lessons learned from IPv4.</description>
+    </item>
+    
+    <item>
+      <title>IPv6 Tunneling over IPv4 Networks</title>
+      <link>https://egustafson.github.io/post/ipv6-tunneling/</link>
+      <pubDate>Wed, 25 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/ipv6-tunneling/</guid>
+      <description>Connecting to the v6 world from afar It turns out that proposing IPv6 as a &amp;ldquo;solution&amp;rdquo; for various networking problems in the Cloud and Container, read &amp;lsquo;Docker&amp;rsquo;, spaces opens a small Pandora&amp;rsquo;s Box of questions. This article is the first in a series discussing pragmatic IPv6 issues along side multiple environments using it. The goal of exploring IPv6 in these articles is to solve, or provide possible solutions, to problems.</description>
+    </item>
+    
+    <item>
+      <title>Nested Virtualization - VirtualBox inside ESXi</title>
+      <link>https://egustafson.github.io/post/esxi-nested-virtualbox/</link>
+      <pubDate>Tue, 10 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/esxi-nested-virtualbox/</guid>
+      <description>This process describes how to configure an ESXi Linux guest so that the guest can then run VirtualBox and create a nested, 64 bit guest within the ESXi guest &amp;ndash; Nested Virtualization.
+There is nothing special about the use of Linux as either the ESXi guest, or the nested guest. Any supported operating system should work at either nesting level. This includes nesting ESXi inside of ESXi, which appears to be the most common form of documentation to describe this process.</description>
+    </item>
+    
+    <item>
+      <title>Syncthing on Ubuntu</title>
+      <link>https://egustafson.github.io/post/syncthing-ubuntu/</link>
+      <pubDate>Fri, 09 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/syncthing-ubuntu/</guid>
+      <description>Last month, after looking at BitTorrent Sync and realizing it was encrypted and private, but not open source, I went digging for an alternative. I found the perfect project, for me: Syncthing. The project is still relatively young and while it has proven to be perfectly functional, it did not come with batteries included &amp;ndash; an installer package. It does come with init scripts for some environments, but not for Ubuntu &amp;ndash; at least until Ubuntu transitions to systemd.</description>
+    </item>
+    
+    <item>
+      <title>Installing Pelican on Cygwin</title>
+      <link>https://egustafson.github.io/post/pelican-cygwin/</link>
+      <pubDate>Tue, 29 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/pelican-cygwin/</guid>
+      <description>One of the many good reasons I chose Pelican as a static blog site generator was because I felt confident I could deploy and use the tools under Windows, with Cygwin. What I couldn&amp;rsquo;t find was any reference to success installing Pelican under Cygwin. It turns out that the combination is not difficult to make work. Here is my success story installing Pelican under Cygwin.
+Prerequisites  Windows &amp;ndash; hopefully obvious.</description>
+    </item>
+    
+    <item>
+      <title>Simple collectd with Web Graphs</title>
+      <link>https://egustafson.github.io/post/collectd-web-graphs/</link>
+      <pubDate>Tue, 10 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/collectd-web-graphs/</guid>
+      <description>I want to collect machine metrics and I want to display them as a pretty set of graphs through a web browser. Here&amp;rsquo;s how I do it:
+ Install collectd &amp;ndash; this gathers the metrics. Install lighttpd &amp;ndash; my web server preference, also install php. Download and install collectd graph panel (CGP) &amp;ndash; a PHP webapp.  That&amp;rsquo;s the short version.
+Installation The following walk through will demonstrate the installation using Ubuntu Oneiric (11.</description>
+    </item>
+    
+    <item>
+      <title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu</title>
+      <link>https://egustafson.github.io/post/mediawiki-lighttpd-sqlite/</link>
+      <pubDate>Sat, 18 Feb 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/mediawiki-lighttpd-sqlite/</guid>
+      <description>In rebuilding an old, and rarely used server that runs MediaWiki I reconsidered how to install all of the dependencies that MediaWiki sits on top of. My goal was to choose lightweight components. The only thing that would run on this web server would be MediaWiki, and the wiki would be lightly used. I concluded the following components were likely more suitable choices than the defaults MediaWiki and/or Ubuntu’s package system used.</description>
+    </item>
+    
+  </channel>
+</rss>

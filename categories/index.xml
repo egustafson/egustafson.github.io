@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/categories/</link>
+    <description>Recent content in Categories on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://egustafson.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>HowTo</title>
+      <link>https://egustafson.github.io/categories/howto/</link>
+      <pubDate>Wed, 25 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/categories/howto/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Random</title>
+      <link>https://egustafson.github.io/categories/random/</link>
+      <pubDate>Fri, 09 Dec 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/categories/random/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

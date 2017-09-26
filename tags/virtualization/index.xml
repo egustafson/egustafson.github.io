@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Virtualization on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/tags/virtualization/</link>
+    <description>Recent content in Virtualization on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 10 Feb 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/tags/virtualization/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Nested Virtualization - VirtualBox inside ESXi</title>
+      <link>https://egustafson.github.io/post/esxi-nested-virtualbox/</link>
+      <pubDate>Tue, 10 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/esxi-nested-virtualbox/</guid>
+      <description>This process describes how to configure an ESXi Linux guest so that the guest can then run VirtualBox and create a nested, 64 bit guest within the ESXi guest &amp;ndash; Nested Virtualization.
+There is nothing special about the use of Linux as either the ESXi guest, or the nested guest. Any supported operating system should work at either nesting level. This includes nesting ESXi inside of ESXi, which appears to be the most common form of documentation to describe this process.</description>
+    </item>
+    
+  </channel>
+</rss>

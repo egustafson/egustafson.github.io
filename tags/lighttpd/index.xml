@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lighttpd on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/tags/lighttpd/</link>
+    <description>Recent content in Lighttpd on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 10 Apr 2012 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/tags/lighttpd/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Simple collectd with Web Graphs</title>
+      <link>https://egustafson.github.io/post/collectd-web-graphs/</link>
+      <pubDate>Tue, 10 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/collectd-web-graphs/</guid>
+      <description>I want to collect machine metrics and I want to display them as a pretty set of graphs through a web browser. Here&amp;rsquo;s how I do it:
+ Install collectd &amp;ndash; this gathers the metrics. Install lighttpd &amp;ndash; my web server preference, also install php. Download and install collectd graph panel (CGP) &amp;ndash; a PHP webapp.  That&amp;rsquo;s the short version.
+Installation The following walk through will demonstrate the installation using Ubuntu Oneiric (11.</description>
+    </item>
+    
+    <item>
+      <title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu</title>
+      <link>https://egustafson.github.io/post/mediawiki-lighttpd-sqlite/</link>
+      <pubDate>Sat, 18 Feb 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/mediawiki-lighttpd-sqlite/</guid>
+      <description>In rebuilding an old, and rarely used server that runs MediaWiki I reconsidered how to install all of the dependencies that MediaWiki sits on top of. My goal was to choose lightweight components. The only thing that would run on this web server would be MediaWiki, and the wiki would be lightly used. I concluded the following components were likely more suitable choices than the defaults MediaWiki and/or Ubuntu’s package system used.</description>
+    </item>
+    
+  </channel>
+</rss>

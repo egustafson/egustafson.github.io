@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nested Virtualization - VirtualBox inside ESXi | Stuff I&#39;ve Figured Out</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+        <link rel="stylesheet" href="/css/style_custom.css" />
+
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/credits/">Credits</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Nested Virtualization - VirtualBox inside ESXi</span></h1>
+<h2 class="author">Eric Gustafson</h2>
+<h2 class="date">2015/02/10</h2>
+</div>
+
+<main>
+
+
+<p>This process describes how to configure an ESXi Linux guest so that the guest
+can then run VirtualBox and create a nested, 64 bit guest within the ESXi guest
+&ndash; Nested Virtualization.</p>
+
+<p>There is nothing special about the use of Linux as either the ESXi guest, or the
+nested guest.  Any supported operating system <em>should</em> work at either nesting
+level.  This includes nesting ESXi inside of ESXi, which appears to be the most
+common form of documentation to describe this process.</p>
+
+<p>This process details <em>manually</em> editing an ESXi hosts&rsquo;s VM configuration file to
+direct the inclusion of support for virtualization from within the guest.  ESXi
+version 5.5 is specifically addressed.  I found a number of blog postings
+detailing earlier versions of ESXi, unfortunately the process changed in 5.5 and
+the newer version is much less prevalently documented.  I also found blog
+postings detailing how to use the vSphere Web UI to effect the reconfiguration.
+Unfortunately, the Web UI is not part of the free license VMWare grants for an
+ESXi host.  As a consequence, this posting details the manual editing to enable
+nested virtualization &ndash; needed if all one has is the free bits from VMWare.</p>
+
+<h1 id="the-process">The Process</h1>
+
+<ol>
+<li>Enable SSH access to the ESXi server.</li>
+<li>Create an ESXi VM for the initial, outer guest.</li>
+<li>Shutdown the ESXi VM.</li>
+<li><strong><em>Edit the VM&rsquo;s .vmx file, adding &ldquo;vhv.enable = TRUE&rdquo;.</em></strong></li>
+<li>Done.</li>
+</ol>
+
+<h2 id="1-enable-ssh-access-to-the-esxi-server">1. Enable SSH access to the ESXi Server</h2>
+
+<p>If you have not already done so, this process will require direct access to the
+ESXi instance&rsquo;s configuration.  VMWare often calls this &ldquo;Tech Support Mode&rdquo;.
+This can be done from the ESXi host&rsquo;s console, or through the vSphere Client.
+See the appendix in this document titled, <code>Enabling SSH access to ESXi 5.5</code>_,
+for more detailed instructions on how to enable SSH access.</p>
+
+<h2 id="2-create-an-esxi-vm">2. Create an ESXi VM</h2>
+
+<p>Create an ESXi VM for the initial, outer guest.  VMWare &lsquo;virtual machine
+version&rsquo; 8 or greater should be used; this is the default for ESXi 5.5.  Install
+the operating system, (Linux), nothing special here, just perform a normal
+install; ensure the installed OS is 64 bit.  Do make sure to provision the disk
+with enough space for the nested OS&rsquo;s virtual disk.  An appropriate amount of
+CPU and memory will also be needed.  The first time you attempt this I recommend
+over provisioning all three: disk, memory, and CPU.  As I was experimenting I
+found that the nested OS ran notably slower; giving everything extra resources
+seemed to improve performance.  I am still experimenting with fine tuning
+resource overheads.  Generally I&rsquo;m finding that virtualized components do behave
+as advertised, but default configurations on install do need some finer tuning
+&ndash; in short, no surprises.</p>
+
+<h2 id="3-shutdown-the-esxi-vm">3. Shutdown the ESXi VM</h2>
+
+<p>With an ESXi VM configured and installed with an operating system, you are ready
+to (re)configure the VM to allow nested virtualization.  The reconfiguration
+will happen to the VM&rsquo;s definition, and as a consequence, the VM needs to be in
+the stopped state.  ESXi, as all others I&rsquo;m aware of, does not let you
+(virtually) modify the hardware while the VM is running.  Stop the ESXi VM that
+will be reconfigured to support nested virtualization.</p>
+
+<h2 id="4-edit-the-vm-s-configuration"><strong><em>4. Edit the VM&rsquo;s Configuration</em></strong></h2>
+
+<p>This step is the critical step.  The ESXi VM must be shutdown, as noted
+previously; if it is not the change will be reverted by ESXi.  Fundamentally,
+the change is simple:  add the configuration setting <code>vhv.enable = &quot;TRUE&quot;</code> to
+the configuration.  This must be added to the VM&rsquo;s <code>.vmx</code> file.</p>
+
+<p>SSH into the ESXi server and then locate and edit the VM&rsquo;s .vmx file:</p>
+
+<pre><code class="language-bash">&gt; find / -name \*.vmx
+&gt; echo 'vhv.enable = &quot;TRUE&quot;' &gt;&gt; /path/to/host.vmx
+</code></pre>
+
+<h2 id="5-done">5. Done</h2>
+
+<p>Once the change to the VM&rsquo;s configuration is effected, simply boot the VM and
+use VirtualBox within the ESXi VM to create a nested VM.</p>
+
+<p>Note:  You should be able to create 64 bit, and multiple processor/core VM&rsquo;s, up
+to the limits of the ESXi VM&rsquo;s resources.  If the (re)configuration was not
+successful then it is likely that VirtualBox will allow you to create a VM, but
+that VM will be restricted to 32 bit and will not support multiple processors -
+this is a specific pattern I noted prior to discovering the correct process for
+ESXi 5.5.  Earlier versions of ESXi have a different process, not described
+here, and without my crystal ball, I&rsquo;m at a loss for future versions.</p>
+
+<hr />
+
+<h1 id="extra-credit">Extra Credit</h1>
+
+<p>In discovering the above process, which I distilled to what I felt was the
+minimum, for simplicity, I made a few &ldquo;superfluous&rdquo; discoveries.  So that the
+above process may be more broadly applicable, an so that the reader is
+more informed, I have detailed the &ldquo;extras&rdquo; here.</p>
+
+<h2 id="old-wives-tales">Old Wives Tales</h2>
+
+<p>Technically not old wives tales, the following details are floating around in
+blog postings and are no longer accurate, for ESXi 5.5.  At one point in time,
+they were correct; I performed the process detailed here with out them as
+verification that they were not necessary.</p>
+
+<h3 id="vhv-allow-vs-vhv-enable"><code>vhv.allow</code> vs. <code>vhv.enable</code></h3>
+
+<p>Earlier versions of ESXi, possibly as late as early 5.x versions, used a
+slightly different means of enabling nested virtualization.  The <code>vhv.allow</code>
+parameter was applied to the ESXi server&rsquo;s configuration in
+<code>/etc/vmware/config</code>.  This is not necessary, but does not conflict with the
+per VM configuration detailed in this posting and required by ESXi 5.5.</p>
+
+<h3 id="editing-the-vm-s-cpu-preferences">Editing the VM&rsquo;s CPU Preferences</h3>
+
+<p>In other postings on this subject I noted that an additional step involving
+editing the VM&rsquo;s CPU Preferences was detailed.  Changing the &ldquo;CPU/MMU Virtualization&rdquo; from
+&lsquo;Automatic&rsquo; to forced settings for Intel VT-x and hardware MMU virtualization
+appears to no longer be required.  I have successfully nested VirtualBox 64 bit
+VMs inside ESXi 5.5 VMs with the &lsquo;Automatic&rsquo; setting.  Caveat:  I have found no official
+documentation discussing this for 5.5 either way.</p>
+
+<h2 id="esxi-networking-promiscuous-mode">ESXi Networking - Promiscuous Mode</h2>
+
+<p>Almost all of the writings I encountered that discuss nesting virtualization
+with ESXi cite setting &ldquo;networking&rdquo; into promiscuous mode.  This is not a
+requirement for nesting virtualization.  The basic example of nesting
+VirtualBox, (using NAT), inside an ESXi Linux instance was executed with out
+adjusting any ESXi network parameters.</p>
+
+<p>Enabling promiscuous mode <em>is</em> required if your ESXi VM will nest virtual
+machines that require bridge mode, sometimes evidenced by the fact that the
+nested VM has a new ethernet MAC address.  Promiscuous mode, be it on ESXi, or
+other technologies, is the means by which a network interface can receive
+packets for hardware addresses, (MAC addresses), other than the one the
+interface is assigned.</p>
+
+<p>The most common nesting example I observed was ESXi inside ESXi.  In this case,
+promiscuous mode would be necessary with the default ESXi networking
+configuration because that model is a bridged model in which each VM is given a
+newly allocated, and different, MAC address.</p>
+
+<h2 id="disk-performance">Disk Performance</h2>
+
+<p>During my initial experimentation with nested VM&rsquo;s I observed a clear decrease
+in performance of the nested VM.  My initial experimentation mostly only went as
+far as installing the OS on the nested VM.  Installing an OS is generally a disk
+intensive activity.</p>
+
+<p>Disk virtualization is more expensive than most.  Nesting virtualized disks will
+accumulate &ldquo;virtualization debt&rdquo; quicker than other virtualized components.  The
+short, but rambling explanation goes something like this:</p>
+
+<blockquote>
+<p>In my inner VM I write a block to &ldquo;disk&rdquo;.  This traverses the inner OS&rsquo;s
+file system code and is mapped to a sector on the inner VM&rsquo;s <em>virtual</em> block
+device.  Writing is the passed to the outer VM, traverses the file system
+code, and is mapped to the outer VM&rsquo;s <em>virtual</em> block device.  Finally, the
+block is passed to the host, (physical), file system, mapped through to a
+sector, and finally placed on the actual physical device.  &ndash; If your head is
+spinning now, it should be.  That&rsquo;s <strong>three</strong> times the block is passed
+through file system code on it&rsquo;s eventual path to a physical write.</p>
+</blockquote>
+
+<p>This problem is understood in the virtualization community, and there are
+methods for avoiding differing degrees of the penalty based on the requirements
+of an installation.  I will not cover these here.  My point:  if your nested
+VM&rsquo;s strike you as slow, this may be a significant part of the why.</p>
+
+<p>Armed with the above understanding, I set out to make things run a bit smoother,
+i.e. faster.  Here are a few ideas I had; some I carried out successfully, some
+are on my &ldquo;to try&rdquo; list:</p>
+
+<ol>
+<li>Enabling &ldquo;Host I/O Caching&rdquo;.  This seemed to help and was quick to try.</li>
+<li>Giving each virtualized device some &lsquo;room to breath&rsquo; eases the pressure.
+Some extra CPU and memory felt like it helped.</li>
+<li>Using alternative &ldquo;devices&rdquo; for disk should help as well, I haven&rsquo;t tried
+this yet.
+
+<ul>
+<li>Raw disk device, by passing the virtualization of the device completely.</li>
+<li>iSCSI</li>
+</ul></li>
+</ol>
+
+<hr />
+
+<h1 id="appendix">Appendix</h1>
+
+<h2 id="enabling-ssh-access-to-esxi-5-5">Enabling SSH access to ESXi 5.5</h2>
+
+<p>ESXi supports direct SSH access to the server running ESXi.  This mechanism is
+referred to in VMWare documentation as &ldquo;Tech Support Mode&rdquo;.  VMWare has a
+<a href="http://kb.vmware.com/">Knowledge Base</a> article elaborating the process for a range of versions:
+<a href="http://kb.vmware.com/kb/1017910">KB article 1017910</a></p>
+
+<p>Here is the verbal description to enable SSH to the ESXi server from the Windows
+vSphere (thick) Client:</p>
+
+<ol>
+<li>Select the server&rsquo;s Configuration tab.  Select the server, not a child VM,
+from the left hand side and then select the &lsquo;Configuration&rsquo; tab across the
+top.</li>
+<li>Select the &lsquo;Security Profile&rsquo; from the Software section on the left hand side
+of the Configuration tab.</li>
+<li>Open the &lsquo;Services Properties&rsquo; dialog window.  Click on the &lsquo;Properties&hellip;&rsquo;
+link along the right hand side near the top in the &lsquo;Services&rsquo; section of the
+Security Profile table.</li>
+<li>Open the &lsquo;SSH Options&rsquo; dialog.  In the &lsquo;Services Properties&rsquo; dialog scroll
+down to the &lsquo;SSH&rsquo; label and select it, (one click).  Then press the
+&lsquo;Options&hellip;&rsquo; button in the lower right corner of the dialog.</li>
+<li>Use the &lsquo;SSH Options&rsquo; dialog to enable SSH by choosing &ldquo;Start and stop with
+host&rdquo;.  The SSH service can also be started immediately with the &lsquo;Start&rsquo;
+button.</li>
+<li>Access the host by ssh&rsquo;ing to the IP or hostname of the ESXi server and
+logging in with an appropriate account.  The &lsquo;root&rsquo; user and password created
+during ESXi initial installation will work.</li>
+</ol>
+
+</main>
+
+  <footer>
+  
+  <hr/>
+  <h1 id="comments">Comments</h1>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "egustafson" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-59717139-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+  
+  <hr/>
+  &copy; <a href="http://www.elfwerks.org/ericg">Eric Gustafson</a> 2017 | <a href="https://github.com/egustafson">Github</a> | <a href="https://twitter.com/elfwerks">Twitter</a>
+  
+  </footer>
+  </body>
+</html>
+

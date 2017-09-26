@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Migrating to Pelican | Stuff I&#39;ve Figured Out</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+        <link rel="stylesheet" href="/css/style_custom.css" />
+
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/credits/">Credits</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Migrating to Pelican</span></h1>
+<h2 class="author">Eric Gustafson</h2>
+<h2 class="date">2014/07/10</h2>
+</div>
+
+<main>
+
+
+<p>After a 2 year hiatus, I&rsquo;m working towards writing more about work and
+technology.  I gave <a href="http://octopres.org">Octopress</a> a try, but in the
+end concluded that I wanted a Python_ solution.  I evaluated a few
+packages: <a href="http://hyde.githug.io/">Hyde</a>,
+<a href="http://getnikola.com/">Nikola</a>, and
+<a href="http://blog.getpelican.com/">Pelican</a>.  There were two other Python
+based static site generators that I did not look at, but should
+probably take a look at &ndash; both got positive mentions in the
+blogosphere: <a href="http://posativ.org/acrylamid/index.html">Acrylamid</a> and
+<a href="http://mynt.uhnomoli.com/">mynt</a>.</p>
+
+<p>Why did I choose what I chose?  Everyone has different motivations and
+I find understanding peoples motivations is more insightful than
+debating &ldquo;what&rsquo;s better&rdquo; &ndash; to that end, here were my motivations and
+conclusions:</p>
+
+<h3 id="static-site">Static Site</h3>
+
+<p>My motivations are the standard and obvious.  This is a simple site
+that I&rsquo;m blogging to.  I&rsquo;m a software developer so I have greater
+mastery of emacs than Word as well as a hard time keeping files in a
+folder when there&rsquo;s version control.  GitHub has turned common
+development tool into a social movement and to that end <a href="https://pages.github.com">GitHub
+Pages</a> is an awesome advancement to the &ldquo;state of the art&rdquo; and a key
+aspect of the &lsquo;social&rsquo; in Social Coding.</p>
+
+<h3 id="python">Python</h3>
+
+<p>... why I chose Python</p>
+
+<h3 id="restructuredtext">reStructuredText</h3>
+
+<p>... why I&rsquo;m giving
+<a href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> a try
+(include a reference to the
+<a href="https://github.com/ralsina/rst-cheatsheet/blob/dfaf3e283ee5df9d4c4b50ff9be2fa7db93c0427/rst-cheatsheet.pdf?raw=true">rst-cheetsheet</a>)</p>
+
+<h3 id="pelican">Pelican</h3>
+
+<p>... why I chose Pelican</p>
+
+<h1 id="migration-process">Migration Process</h1>
+
+<p>So that I have a (reproducible) record of how I to where I am, the
+following is what I did to setup the site, including migrating the
+old, Octopress content.</p>
+
+<h3 id="1-get-up-and-running-under-pelican">1. Get up and running under Pelican</h3>
+
+<ol>
+<li>Install Pelican from pip (use GitHub source)</li>
+<li>Port old articles from Markdown to reStructuredText</li>
+<li>Tweak basic configuration to align with existing GH-Pages site.</li>
+</ol>
+
+<h3 id="2-move-things-under-git-and-commit">2. Move things under git and commit</h3>
+
+<ol>
+<li>Clone a new copy of the GH repo.</li>
+<li>Create an archival branch and push the old source to it.</li>
+<li>Stomp the &lsquo;source&rsquo; branch with the new, Pelican source.</li>
+<li>Generate the production site into a local directory.</li>
+<li>?? use :code:<code>ghp-import</code> to commit to the &lsquo;gh-pages&rsquo; branch.</li>
+<li>git-push from &lsquo;gh-pages&rsquo; to the &lsquo;master&rsquo; branch on GitHub.</li>
+</ol>
+
+<h1 id="todo-s">Todo(s)</h1>
+
+<p>Further exploration and refinement I&rsquo;d like to undertake &ndash; in no
+particular order:</p>
+
+<h3 id="1-cleanup-blogroll">1. Cleanup blogroll</h3>
+
+<p>The blogroll and social links at the bottom of each page could use
+  some tweaking.</p>
+
+<h3 id="2-tweak-the-theme">2. Tweak the Theme</h3>
+
+<p>I used the example theme from the getting started by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing
+Magazine</a>
+and it&rsquo;s a pretty good starting point.  There are certainly a few
+tweaks that may or may not be doable through the config.  I&rsquo;d also
+like to change the color scheme which I&rsquo;m sure will require tweaking
+the theme.</p>
+
+<h3 id="3-re-theme">3. (re)Theme</h3>
+
+<p>I&rsquo;ve let my HTML / CSS skills dwindle; I don&rsquo;t use them much, but
+being able to craft an HTML page for some evil purpose is a good skill
+for any software person to have in their back pocket.  It looks like
+the <a href="http://getbootstrap.com">Bootstrap</a> project has gained a
+reasonable reputation in this space and creating a Bootstrap_ derived
+theme would certainly blow the dust off of my web page-ie skills.</p>
+
+</main>
+
+  <footer>
+  
+  <hr/>
+  <h1 id="comments">Comments</h1>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "egustafson" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-59717139-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+  
+  <hr/>
+  &copy; <a href="http://www.elfwerks.org/ericg">Eric Gustafson</a> 2017 | <a href="https://github.com/egustafson">Github</a> | <a href="https://twitter.com/elfwerks">Twitter</a>
+  
+  </footer>
+  </body>
+</html>
+

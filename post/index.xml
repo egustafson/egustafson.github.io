@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/post/</link>
+    <description>Recent content in Posts on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 20 Sep 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Example Demonstrating Rendering &amp; Style</title>
+      <link>https://egustafson.github.io/post/demo-formatting/</link>
+      <pubDate>Wed, 20 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/demo-formatting/</guid>
+      <description>This page contains examples of Markdown markup so that the resulting output can be viewed after static site rendering and site styling.
+Heading 1 Body text following a heading. This paragraph is onnly here to show the spacing between heading and paragraby body.
+Heading 2 Body text following a heading. This paragraph is onnly here to show the spacing between heading and paragraby body.
+Heading 3 Body text following a heading.</description>
+    </item>
+    
+    <item>
+      <title>Quintessential Ceph</title>
+      <link>https://egustafson.github.io/post/quintessential-ceph/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/quintessential-ceph/</guid>
+      <description>The following is my distillation of how to install Ceph in the most minimal way. This method of installation is NOT the {right, correct, best, &amp;hellip;} way to install Ceph. It is what I could discern as the most minimal way to install the smallest set of Ceph components to have a minimally running system. I did this to better understand Ceph and hope it will help others as well.</description>
+    </item>
+    
+    <item>
+      <title>Monitorama 2015</title>
+      <link>https://egustafson.github.io/post/monitorama-2015/</link>
+      <pubDate>Mon, 22 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/monitorama-2015/</guid>
+      <description>This year&amp;rsquo;s Monitorama was another success for @obfuscurity and the monitoring community. My one line observation of this years event is that the event was &amp;ldquo;less pragmatic&amp;rdquo; than last year. I would rate the more abstract qualities of quality, diversity, and my overall desire to attend the same as last year &amp;ndash; high. My personal preference for this, and most, conferences is pragmatism and so I call this out; my ranking of presentations certainly reflects this, more so than any general vote of quality.</description>
+    </item>
+    
+    <item>
+      <title>Vagrant FreeBSD Appliance Box - Part 1</title>
+      <link>https://egustafson.github.io/post/vagrant-freebsd-p1/</link>
+      <pubDate>Wed, 25 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/vagrant-freebsd-p1/</guid>
+      <description>A Vagrant &amp;lsquo;network appliance&amp;rsquo; based on FreeBSD.
+ Author&amp;rsquo;s note: This posting was rushed in an attempt to capture the knowledge gathered thus far in my learning process. The posting is a bit of a work in progress - expect updates over the next few weeks as the process is refined.
+ This is part 1, (and take, 1 I suspect), describing the creation of a Vagrant Box intended to be used as a firewall / router appliance with Vagrant.</description>
+    </item>
+    
+    <item>
+      <title>IPv6 Network (Auto) Configuration</title>
+      <link>https://egustafson.github.io/post/ipv6-dhcpv6/</link>
+      <pubDate>Fri, 06 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/ipv6-dhcpv6/</guid>
+      <description>In my previous article, IPv6 Tunneling over IPv4 Networks, I discussed how to connect a LAN to the IPv6 public Internet. This article continues the theme, discussing the issues surrounding the LAN&amp;rsquo;s configuration for IPv6.
+Looking at how LAN&amp;rsquo;s are configured for IPv4 proves to be instructive. Many of the techniques, and all of the patterns turn out to have parallels in IPv6. During the design of IPv6 engineers took the opportunity for refactoring using lessons learned from IPv4.</description>
+    </item>
+    
+    <item>
+      <title>IPv6 Tunneling over IPv4 Networks</title>
+      <link>https://egustafson.github.io/post/ipv6-tunneling/</link>
+      <pubDate>Wed, 25 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/ipv6-tunneling/</guid>
+      <description>Connecting to the v6 world from afar It turns out that proposing IPv6 as a &amp;ldquo;solution&amp;rdquo; for various networking problems in the Cloud and Container, read &amp;lsquo;Docker&amp;rsquo;, spaces opens a small Pandora&amp;rsquo;s Box of questions. This article is the first in a series discussing pragmatic IPv6 issues along side multiple environments using it. The goal of exploring IPv6 in these articles is to solve, or provide possible solutions, to problems.</description>
+    </item>
+    
+    <item>
+      <title>Nested Virtualization - VirtualBox inside ESXi</title>
+      <link>https://egustafson.github.io/post/esxi-nested-virtualbox/</link>
+      <pubDate>Tue, 10 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/esxi-nested-virtualbox/</guid>
+      <description>This process describes how to configure an ESXi Linux guest so that the guest can then run VirtualBox and create a nested, 64 bit guest within the ESXi guest &amp;ndash; Nested Virtualization.
+There is nothing special about the use of Linux as either the ESXi guest, or the nested guest. Any supported operating system should work at either nesting level. This includes nesting ESXi inside of ESXi, which appears to be the most common form of documentation to describe this process.</description>
+    </item>
+    
+    <item>
+      <title>Syncthing on Ubuntu</title>
+      <link>https://egustafson.github.io/post/syncthing-ubuntu/</link>
+      <pubDate>Fri, 09 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/syncthing-ubuntu/</guid>
+      <description>Last month, after looking at BitTorrent Sync and realizing it was encrypted and private, but not open source, I went digging for an alternative. I found the perfect project, for me: Syncthing. The project is still relatively young and while it has proven to be perfectly functional, it did not come with batteries included &amp;ndash; an installer package. It does come with init scripts for some environments, but not for Ubuntu &amp;ndash; at least until Ubuntu transitions to systemd.</description>
+    </item>
+    
+    <item>
+      <title>Diskless Install of Ubuntu with PXE &amp; Dnsmasq</title>
+      <link>https://egustafson.github.io/post/pxe-install-ubuntu/</link>
+      <pubDate>Tue, 19 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/pxe-install-ubuntu/</guid>
+      <description>The other day I received a &amp;ldquo;server&amp;rdquo; (HP Z620) as part of work. I set out to integrate it into a new subnet to be used like a mini-cloud LAN. Since my &amp;ldquo;lab&amp;rdquo; is a floor down from my office my first goal was to make this &amp;ldquo;server&amp;rdquo; remote everything, right down to the BIOS. This way I could reboot and even reload the bare metal OS remotely. The Z620 has Intel AMT and I&amp;rsquo;ve progressed that to the point where I can remotely power on/off the machine &amp;ndash; more on that in another article.</description>
+    </item>
+    
+    <item>
+      <title>OSCON 2014 Trip Report, part 2</title>
+      <link>https://egustafson.github.io/post/oscon-2014-p2/</link>
+      <pubDate>Fri, 08 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/oscon-2014-p2/</guid>
+      <description>Note (2017): this draft document was never completed. I am publishing it in its incomplete, draft state because there are a number of good links in the document &amp;ndash; reader beware.
+ In this second part of my trip report I have included my notes on each of the sessions I attended. The purpose of this post is two fold. First, as a place to archive my notes and catalog the materials of the presentation.</description>
+    </item>
+    
+    <item>
+      <title>OSCON 2014 Trip Report, part 1</title>
+      <link>https://egustafson.github.io/post/oscon-2014-p1/</link>
+      <pubDate>Thu, 31 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/oscon-2014-p1/</guid>
+      <description>This year&amp;rsquo;s OSCON was my first attendance of the conference; I was pleasantly surprised. The conference is 5 days, the first two of which are half day tutorial sessions, and the remaining 3 being the core conference. I attended the 3 core days of the conference, and my brain was completely overflowed by the end.
+In this post, part 1 of 2, the interesting items of note in the Keynote presentations are discussed.</description>
+    </item>
+    
+    <item>
+      <title>Installing Pelican on Cygwin</title>
+      <link>https://egustafson.github.io/post/pelican-cygwin/</link>
+      <pubDate>Tue, 29 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/pelican-cygwin/</guid>
+      <description>One of the many good reasons I chose Pelican as a static blog site generator was because I felt confident I could deploy and use the tools under Windows, with Cygwin. What I couldn&amp;rsquo;t find was any reference to success installing Pelican under Cygwin. It turns out that the combination is not difficult to make work. Here is my success story installing Pelican under Cygwin.
+Prerequisites  Windows &amp;ndash; hopefully obvious.</description>
+    </item>
+    
+    <item>
+      <title>Migrating to Pelican</title>
+      <link>https://egustafson.github.io/post/migrating-pelican/</link>
+      <pubDate>Thu, 10 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/migrating-pelican/</guid>
+      <description>After a 2 year hiatus, I&amp;rsquo;m working towards writing more about work and technology. I gave Octopress a try, but in the end concluded that I wanted a Python_ solution. I evaluated a few packages: Hyde, Nikola, and Pelican. There were two other Python based static site generators that I did not look at, but should probably take a look at &amp;ndash; both got positive mentions in the blogosphere: Acrylamid and mynt.</description>
+    </item>
+    
+    <item>
+      <title>Simple collectd with Web Graphs</title>
+      <link>https://egustafson.github.io/post/collectd-web-graphs/</link>
+      <pubDate>Tue, 10 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/collectd-web-graphs/</guid>
+      <description>I want to collect machine metrics and I want to display them as a pretty set of graphs through a web browser. Here&amp;rsquo;s how I do it:
+ Install collectd &amp;ndash; this gathers the metrics. Install lighttpd &amp;ndash; my web server preference, also install php. Download and install collectd graph panel (CGP) &amp;ndash; a PHP webapp.  That&amp;rsquo;s the short version.
+Installation The following walk through will demonstrate the installation using Ubuntu Oneiric (11.</description>
+    </item>
+    
+    <item>
+      <title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu</title>
+      <link>https://egustafson.github.io/post/mediawiki-lighttpd-sqlite/</link>
+      <pubDate>Sat, 18 Feb 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/mediawiki-lighttpd-sqlite/</guid>
+      <description>In rebuilding an old, and rarely used server that runs MediaWiki I reconsidered how to install all of the dependencies that MediaWiki sits on top of. My goal was to choose lightweight components. The only thing that would run on this web server would be MediaWiki, and the wiki would be lightly used. I concluded the following components were likely more suitable choices than the defaults MediaWiki and/or Ubuntu’s package system used.</description>
+    </item>
+    
+    <item>
+      <title>Hello, World</title>
+      <link>https://egustafson.github.io/post/hello-world/</link>
+      <pubDate>Fri, 09 Dec 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/hello-world/</guid>
+      <description>Obligatory first post:
+ Hello, world.  I&amp;rsquo;ve chosen to follow the GitHub masses and publish this blog with Brandon Mathis&amp;rsquo; most excellent Octopress. Next on the agenda is to port a number of my wiki notes and how-to&amp;rsquo;s to a more &amp;hellip; revision controlled outlet: GitHub.
+Stay tuned - Eric</description>
+    </item>
+    
+  </channel>
+</rss>

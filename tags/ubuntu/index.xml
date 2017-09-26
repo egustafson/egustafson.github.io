@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ubuntu on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/tags/ubuntu/</link>
+    <description>Recent content in Ubuntu on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 20 Apr 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Quintessential Ceph</title>
+      <link>https://egustafson.github.io/post/quintessential-ceph/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/quintessential-ceph/</guid>
+      <description>The following is my distillation of how to install Ceph in the most minimal way. This method of installation is NOT the {right, correct, best, &amp;hellip;} way to install Ceph. It is what I could discern as the most minimal way to install the smallest set of Ceph components to have a minimally running system. I did this to better understand Ceph and hope it will help others as well.</description>
+    </item>
+    
+    <item>
+      <title>Syncthing on Ubuntu</title>
+      <link>https://egustafson.github.io/post/syncthing-ubuntu/</link>
+      <pubDate>Fri, 09 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/syncthing-ubuntu/</guid>
+      <description>Last month, after looking at BitTorrent Sync and realizing it was encrypted and private, but not open source, I went digging for an alternative. I found the perfect project, for me: Syncthing. The project is still relatively young and while it has proven to be perfectly functional, it did not come with batteries included &amp;ndash; an installer package. It does come with init scripts for some environments, but not for Ubuntu &amp;ndash; at least until Ubuntu transitions to systemd.</description>
+    </item>
+    
+    <item>
+      <title>Diskless Install of Ubuntu with PXE &amp; Dnsmasq</title>
+      <link>https://egustafson.github.io/post/pxe-install-ubuntu/</link>
+      <pubDate>Tue, 19 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/pxe-install-ubuntu/</guid>
+      <description>The other day I received a &amp;ldquo;server&amp;rdquo; (HP Z620) as part of work. I set out to integrate it into a new subnet to be used like a mini-cloud LAN. Since my &amp;ldquo;lab&amp;rdquo; is a floor down from my office my first goal was to make this &amp;ldquo;server&amp;rdquo; remote everything, right down to the BIOS. This way I could reboot and even reload the bare metal OS remotely. The Z620 has Intel AMT and I&amp;rsquo;ve progressed that to the point where I can remotely power on/off the machine &amp;ndash; more on that in another article.</description>
+    </item>
+    
+  </channel>
+</rss>

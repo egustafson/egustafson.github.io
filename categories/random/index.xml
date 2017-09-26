@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Random on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/categories/random/</link>
+    <description>Recent content in Random on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 09 Dec 2011 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/categories/random/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Hello, World</title>
+      <link>https://egustafson.github.io/post/hello-world/</link>
+      <pubDate>Fri, 09 Dec 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/hello-world/</guid>
+      <description>Obligatory first post:
+ Hello, world.  I&amp;rsquo;ve chosen to follow the GitHub masses and publish this blog with Brandon Mathis&amp;rsquo; most excellent Octopress. Next on the agenda is to port a number of my wiki notes and how-to&amp;rsquo;s to a more &amp;hellip; revision controlled outlet: GitHub.
+Stay tuned - Eric</description>
+    </item>
+    
+  </channel>
+</rss>

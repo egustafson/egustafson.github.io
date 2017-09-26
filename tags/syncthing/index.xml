@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Syncthing on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/tags/syncthing/</link>
+    <description>Recent content in Syncthing on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 09 Jan 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/tags/syncthing/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Syncthing on Ubuntu</title>
+      <link>https://egustafson.github.io/post/syncthing-ubuntu/</link>
+      <pubDate>Fri, 09 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/syncthing-ubuntu/</guid>
+      <description>Last month, after looking at BitTorrent Sync and realizing it was encrypted and private, but not open source, I went digging for an alternative. I found the perfect project, for me: Syncthing. The project is still relatively young and while it has proven to be perfectly functional, it did not come with batteries included &amp;ndash; an installer package. It does come with init scripts for some environments, but not for Ubuntu &amp;ndash; at least until Ubuntu transitions to systemd.</description>
+    </item>
+    
+  </channel>
+</rss>

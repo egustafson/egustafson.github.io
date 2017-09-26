@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OSCON 2014 Trip Report, part 2 | Stuff I&#39;ve Figured Out</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+        <link rel="stylesheet" href="/css/style_custom.css" />
+
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/credits/">Credits</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">OSCON 2014 Trip Report, part 2</span></h1>
+<h2 class="author">Eric Gustafson</h2>
+<h2 class="date">2014/08/08</h2>
+</div>
+
+<main>
+
+
+<blockquote>
+<p>Note (2017): this draft document was never completed.  I am
+publishing it in its incomplete, draft state because there are a
+number of good links in the document &ndash; reader beware.</p>
+</blockquote>
+
+<p>In this second part of my trip report I have included my notes on each
+of the sessions I attended.  The purpose of this post is two fold.
+First, as a place to archive my notes and catalog the materials of the
+presentation.  Second, to convey my impressions on the sessions I was
+able to attend.  This post is not so much an opinion piece, but more
+of a archive for future reference.</p>
+
+<!--
+.. contents:: Table of Contents
+   :depth: 2
+.. section-numbering::
+   :depth: 2
+-->
+
+<hr />
+
+<h1 id="session-topics">Session Topics</h1>
+
+<h2 id="1-an-elasticsearch-crash-course">1. An Elasticsearch Crash Course</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/33571">http://www.oscon.com/oscon2014/public/schedule/detail/33571</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td><a href="https://gist.github.com/andrewvc/5022184">https://gist.github.com/andrewvc/5022184</a></td>
+</tr>
+
+<tr>
+<td>Book</td>
+<td><a href="http://exploringelasticsearch.com/">http://exploringelasticsearch.com/</a></td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>Just a distributed document store.</li>
+<li>Uses URL for key into data</li>
+<li>Lucine as the underlying index engine.</li>
+<li>TODO: BLOG - &ldquo;Hello, world Elastic Search&rdquo;</li>
+</ul>
+
+<h2 id="2-is-it-safe-to-run-applications-in-linux-containers">2. Is it safe to run applications in Linux Containers?</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/34137">http://www.oscon.com/oscon2014/public/schedule/detail/34137</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td><a href="http://bit.ly/UGchuV">http://bit.ly/UGchuV</a></td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>root is root, inside the container as well.</li>
+</ul>
+
+<h3 id="a-strategy-rings-of-security">A strategy:  Rings of Security</h3>
+
+<p>Application ring:</p>
+
+<ul>
+<li>&ldquo;defang it&rdquo; - take away root privileges.</li>
+<li>place limits on resource usage</li>
+<li>use more secure kernels and secure them</li>
+</ul>
+
+<p>System Services (upper level):</p>
+
+<ul>
+<li>(sshd, cron, syslog &hellip;) - typically run as root</li>
+<li>usually don&rsquo;t NEED to run as root</li>
+<li>often interact w/ /dev &ndash; Fix:  &ldquo;devices&rdquo; control group</li>
+<li>/proc &amp; /sys are &ldquo;not perfectly namespaced&rdquo;</li>
+</ul>
+
+<p>System services (lower level):</p>
+
+<ul>
+<li>much less, to completely not necessary inside &ldquo;container&rdquo;</li>
+</ul>
+
+<blockquote>
+<h4 id="vm-in-container">VM in Container</h4>
+
+<p>The general impression that was given is that placing a VM inside a
+container gave the same level of isolation (i.e. security) as a VM
+running directly under a hyper-visor with no containerization present.</p>
+
+<ul>
+<li>This attitude was not defended or questioned but the audience
+seemed to accept the conclusion.  It should like the community has
+accepted this. &ndash; [eg: look for &ldquo;proof&rdquo; of this]</li>
+</ul>
+</blockquote>
+
+<h3 id="vm-in-container-1">VM in Container</h3>
+
+<p>The following is really VM in Docker</p>
+
+<ul>
+<li><a href="https://github.com/jpetazzo/docker2docker">https://github.com/jpetazzo/docker2docker</a> &ndash; (Author: speaker of
+this session)</li>
+</ul>
+
+<h3 id="immutable-immutable-infrastructure">Immutable immutable infrastructure</h3>
+
+<ul>
+<li>build a new &ldquo;operating system&rdquo; for each change
+
+<ul>
+<li>copy on write mentality.</li>
+</ul></li>
+<li>container becomes Read-Only &ndash; (a model for security)</li>
+<li>scalability becomes easier &hellip; its read only.</li>
+</ul>
+
+<h2 id="3-graph-theory-you-need-to-know">3. Graph Theory - you need to know</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/34756">http://www.oscon.com/oscon2014/public/schedule/detail/34756</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td>none posted</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>Based on lectures from Arthur Benjamin</li>
+<li>has a set of online lectures</li>
+<li><a href="https://www.math.hmc.edu/~benjamin/">https://www.math.hmc.edu/~benjamin/</a></li>
+</ul>
+
+<blockquote>
+<p>&ldquo;Wikipedia is good at 2 things:  comic books and computer science&rdquo;
+   &ndash; Tim Berglund</p>
+</blockquote>
+
+<h2 id="4-building-a-massively-scalable-cloud-service-from-the-ground-up">4. Building a Massively Scalable Cloud Service from the Ground Up</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/33581">http://www.oscon.com/oscon2014/public/schedule/detail/33581</a></td>
+</tr>
+
+<tr>
+<td>Slides (alt)</td>
+<td><a href="http://slidesha.re/1xMcHfT">http://slidesha.re/1xMcHfT</a></td>
+</tr>
+</tbody>
+</table>
+
+<p>This session was a presentation of JFrog&rsquo;s experiences as part of the
+design and deployment of their Bintray project.  Of particular note:
+JFrog chose to evolve away from AWS back to Physical infrastructure
+for this project.</p>
+
+<ul>
+<li>Were unhappy with the virtualization penalty</li>
+<li>Determined their elasticity did not require &ldquo;dynamic&rdquo; elasticity.</li>
+<li>Their hosting provider (physical hosting) can spin a new instance up
+in a few hours.</li>
+<li>Their demand is predictable to daily-ish levels.</li>
+</ul>
+
+<h2 id="5-monitoring-distributed-systems-in-real-time-with-riemann-and-cassandra">5. Monitoring Distributed Systems in Real-time with Riemann and Cassandra</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/34587">http://www.oscon.com/oscon2014/public/schedule/detail/34587</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td><a href="http://slidesha.re/1pwhY9P">http://slidesha.re/1pwhY9P</a></td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>TODO: Blog - Standing up Rieman</li>
+<li>Note: Used Coda Hale&rsquo;s Metrics</li>
+</ul>
+
+<h2 id="6-real-time-analytics-with-open-source-technologies">6. Real-time Analytics with Open Source Technologies</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/34076">http://www.oscon.com/oscon2014/public/schedule/detail/34076</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td><a href="http://bit.ly/1oh9tvc">http://bit.ly/1oh9tvc</a></td>
+</tr>
+
+<tr>
+<td>Video</td>
+<td><a href="http://youtu.be/kJMYVpnW_AQ">http://youtu.be/kJMYVpnW_AQ</a></td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>System&rsquo;s Goals: System for Arbitrary exploration of analytical data.</li>
+<li>Hadoop was the obvious starting point, but was rejected due to it&rsquo;s
+non-interactive nature.</li>
+
+<li><p>&ldquo;Exploration of analytical data&rdquo; is NOT:</p>
+
+<ul>
+<li>Batch processing of bulk data</li>
+<li>looking for an individual event (thresholding, anomaly detection,
+...) [eg:  exploration is a middle ground]</li>
+</ul></li>
+
+<li><p>Druid <a href="http://druid.io/">http://druid.io/</a> (@druidio) was started by the speakers.</p>
+
+<ul>
+<li>started in 2011</li>
+<li>targeting this problem specifically</li>
+<li>Goals
+
+<ul>
+<li>Low latency ingestion</li>
+<li>good &ldquo;exploration&rdquo; characteristics</li>
+</ul></li>
+</ul></li>
+</ul>
+
+<p>The straw-man extended the prototype by continuing to use Hadoop in
+parallel to Storm.  This addressed the long tail problem of latent
+data arrival while also allowing for interactive exploration::</p>
+
+<pre><code>Kafka --&gt; Storm   ---&gt; Druid  == Real-Time path
+      |--&gt; Hadoop --^         == Batch, warehouse path
+</code></pre>
+
+<h2 id="7-application-deployment-and-auto-scaling-on-openstack-using-heat">7. Application Deployment and Auto-scaling On OpenStack using Heat</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/34162">http://www.oscon.com/oscon2014/public/schedule/detail/34162</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td>none posted</td>
+</tr>
+</tbody>
+</table>
+
+<p>All about OpenShift.  Almost no Heat.</p>
+
+<h2 id="8-how-we-built-a-cloud-platform-using-netflix-oss">8. How We Built a Cloud Platform Using Netflix OSS</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/34731">http://www.oscon.com/oscon2014/public/schedule/detail/34731</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td>none posted</td>
+</tr>
+
+<tr>
+<td>Video</td>
+<td>(old) <a href="http://vimeo.com/99888966">http://vimeo.com/99888966</a></td>
+</tr>
+</tbody>
+</table>
+
+<p>Get the slide deck.  There&rsquo;s lots of good stuff in the deck.</p>
+
+<ul>
+<li>built their own discovery</li>
+<li>build their own configuration service</li>
+<li>Netflix &ldquo;Bakery&rdquo; - frozen image &ndash; good reasons this works better
+than config through composition.</li>
+<li>Multiple levels of configuration
+
+<ul>
+<li>Program defaults</li>
+<li>backed in</li>
+<li>pushed with bootstrap</li>
+<li>pulled from config service</li>
+</ul></li>
+</ul>
+
+<h2 id="9-mesos-elastically-scalable-operations-simplified">9. Mesos: Elastically Scalable Operations, Simplified</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/34422">http://www.oscon.com/oscon2014/public/schedule/detail/34422</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td><a href="http://mesosphere.io/slides/oscon-mesos-2014/">http://mesosphere.io/slides/oscon-mesos-2014/</a> (use arrow keys, reveal.js slide deck)</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><a href="http://elastic.mesosphere.io">http://elastic.mesosphere.io</a> - sandbox, pay AWS for instances.</li>
+<li>Mesos has a programmable API - focus of prior workshop.</li>
+<li>Focus of this talk is Operations.</li>
+<li>Mesos is &ldquo;below PaaS, but above IaaS&rdquo; - treats stuff as a giant
+resource pool.</li>
+<li>Speaks protobuf</li>
+<li>Mesos creates partitioned spaces using CGroups.</li>
+<li>Mesos has it&rsquo;s own container, but can use other containers.</li>
+<li>Uses ZooKeeper for &ldquo;leader election&rdquo;, probably for distributed
+execution for the scheduler framework.</li>
+<li>Tutorials (that can be used with the sandbox) - <a href="http://mesosphere.io/learn">http://mesosphere.io/learn</a></li>
+</ul>
+
+<h2 id="10-multiple-datastores-working-together-will-it-blend">10. Multiple Datastores Working Together: Will It Blend?</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/34542">http://www.oscon.com/oscon2014/public/schedule/detail/34542</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td><a href="http://bit.ly/1pvXVrX">http://bit.ly/1pvXVrX</a></td>
+</tr>
+</tbody>
+</table>
+
+<!-- no notes -->
+
+<h2 id="11-migrating-to-the-web-using-dart-and-polymer-a-guide-for-legacy-oop-developers">11. Migrating to the Web Using Dart and Polymer - A guide for Legacy OOP Developers</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/33451">http://www.oscon.com/oscon2014/public/schedule/detail/33451</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td>none posted</td>
+</tr>
+</tbody>
+</table>
+
+<p>Dart <a href="https://www.dartlang.org/">https://www.dartlang.org/</a> is a object oriented alternative to
+JavaScript for the browser that Google initiated.  I attended this
+session because I have been following Dart&rsquo;s progress for ~9 months.
+I didn&rsquo;t gain any new revelations, however my suspicions about its
+popularity in the developers of the web client application world
+proved correct.  In my opinion, Dart is something to keep an eye on.</p>
+
+<h2 id="12-thinking-in-a-highly-concurrent-mostly-functional-language">12. Thinking in a Highly Concurrent, Mostly Functional Language</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/34530">http://www.oscon.com/oscon2014/public/schedule/detail/34530</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td>(old) <a href="http://slidesha.re/1o06cGj">http://slidesha.re/1o06cGj</a></td>
+</tr>
+</tbody>
+</table>
+
+<!-- no notes -->
+
+<h2 id="13-big-data-pipeline-and-analytics-platform-using-netflixoss-and-other-open-source-libraries">13. Big Data Pipeline and Analytics Platform Using NetflixOSS and Other Open Source Libraries</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/34159">http://www.oscon.com/oscon2014/public/schedule/detail/34159</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td><a href="http://bit.ly/1tDZND6">http://bit.ly/1tDZND6</a></td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li>&ldquo;Data is the most important asset at Netflix&rdquo;</li>
+<li>3.2M msg/s</li>
+<li>This talk was about Netflix&rsquo;s &ldquo;Suro&rdquo; project</li>
+<li>&ldquo;Suro&rdquo; - NetflixOSS:  &ldquo;Data Pipeline&rdquo; - java library::
+
+<ul>
+<li>feeds S3 and then hadoop to process out of S3</li>
+</ul></li>
+<li>Get the deck for this talk, it goes through what some of the
+tooling is.  (surprise, surprise)</li>
+<li>Netflix is using Druid for ad-hoc analytics investigation.
+
+<ul>
+<li>Druid is in parallel to ElasticSearch, both feed from Kafka</li>
+</ul></li>
+<li>RxJava - functional REACTIVE programming model</li>
+<li>(Fault tolerant features slide)
+
+<ul>
+<li>disk backed queue &ndash; &ldquo;big-queue&rdquo; &lt;&ndash; OSS package</li>
+</ul></li>
+</ul>
+
+<h2 id="14-a-presentation-toolbox-that-just-might-blow-your-audience-away">14. A Presentation Toolbox that Just Might Blow Your Audience Away</h2>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Abstract</td>
+<td><a href="http://www.oscon.com/oscon2014/public/schedule/detail/34137">http://www.oscon.com/oscon2014/public/schedule/detail/34137</a></td>
+</tr>
+
+<tr>
+<td>Slides</td>
+<td><a href="https://fghaas.github.io/oscon2014-presentationtoolbox/#/">https://fghaas.github.io/oscon2014-presentationtoolbox/#/</a></td>
+</tr>
+</tbody>
+</table>
+
+<h1 id="not-covered-but-recommended">Not covered, but recommended:</h1>
+
+<ul>
+<li>Presentation Zen (have the book)</li>
+<li>Presentation Aikido - Damian Conway
+(youtube, &hellip; it&rsquo;s a presentation)</li>
+</ul>
+
+<p>reveal.js  - <a href="https://github.com/hakimel/refeal.js">https://github.com/hakimel/refeal.js</a></p>
+
+<ul>
+<li>alternates: impress.js  /  &ldquo;slide-e&rdquo; ??</li>
+<li>author preso in markdown.</li>
+</ul>
+
+<p>shellinabox - <a href="http://code.google.com/p/shellinabox">http://code.google.com/p/shellinabox</a></p>
+
+<ul>
+<li>demo tool / terminal emulator in html5+ajax</li>
+<li>generally then fires off &lsquo;screen&rsquo;
+
+<ul>
+<li>has a script that reattaches to an existing screen session</li>
+</ul></li>
+<li>shell in a box is included in the markdown
+
+<ul>
+<li>using inline html</li>
+</ul></li>
+<li>alternate:  novnc which does X</li>
+</ul>
+
+<p>qrcode.js</p>
+
+<ul>
+<li>engage your audience while presenting - point them to resources</li>
+<li>use url shortener to make qr code smaller.  the <href> anchor is
+the qr code and the body of the href was text above/below the qr
+code.</li>
+</ul>
+
+<p>GitHub Pages</p>
+
+<ul>
+<li>push published presentation to gh-pages</li>
+<li>keep source on trunk</li>
+<li>combine with git submodules
+
+<ul>
+<li>includes reveal.js and qrcode.js through submodule</li>
+</ul></li>
+</ul>
+
+<p>Trick: embeds a google analytics cookie to track popularity</p>
+
+<p>Little Tricks</p>
+
+<ul>
+<li>Google Fonts</li>
+<li>Visuals from Flickr (many CC licensed)
+
+<ul>
+<li>Flickr community is very good at tagging</li>
+</ul></li>
+<li><a href="https://www.flickr.com/search/?sort=relevance&amp;text=%s&amp;license=1,2,4,5">https://www.flickr.com/search/?sort=relevance&amp;text=%s&amp;license=1,2,4,5</a>
+
+<ul>
+<li>trick from Baron Swartz</li>
+</ul></li>
+<li>Chrome search
+
+<ul>
+<li>same trick w/ google search, see slides for url</li>
+</ul></li>
+</ul>
+
+<p><a href="https://github.com/fghaas/oscon2014-presentationtoolbox">https://github.com/fghaas/oscon2014-presentationtoolbox</a></p>
+
+</main>
+
+  <footer>
+  
+  <hr/>
+  <h1 id="comments">Comments</h1>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "egustafson" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-59717139-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+  
+  <hr/>
+  &copy; <a href="http://www.elfwerks.org/ericg">Eric Gustafson</a> 2017 | <a href="https://github.com/egustafson">Github</a> | <a href="https://twitter.com/elfwerks">Twitter</a>
+  
+  </footer>
+  </body>
+</html>
+

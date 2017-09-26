@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Monitoring on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/tags/monitoring/</link>
+    <description>Recent content in Monitoring on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 22 Jun 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/tags/monitoring/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Monitorama 2015</title>
+      <link>https://egustafson.github.io/post/monitorama-2015/</link>
+      <pubDate>Mon, 22 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/monitorama-2015/</guid>
+      <description>This year&amp;rsquo;s Monitorama was another success for @obfuscurity and the monitoring community. My one line observation of this years event is that the event was &amp;ldquo;less pragmatic&amp;rdquo; than last year. I would rate the more abstract qualities of quality, diversity, and my overall desire to attend the same as last year &amp;ndash; high. My personal preference for this, and most, conferences is pragmatism and so I call this out; my ranking of presentations certainly reflects this, more so than any general vote of quality.</description>
+    </item>
+    
+    <item>
+      <title>Simple collectd with Web Graphs</title>
+      <link>https://egustafson.github.io/post/collectd-web-graphs/</link>
+      <pubDate>Tue, 10 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/collectd-web-graphs/</guid>
+      <description>I want to collect machine metrics and I want to display them as a pretty set of graphs through a web browser. Here&amp;rsquo;s how I do it:
+ Install collectd &amp;ndash; this gathers the metrics. Install lighttpd &amp;ndash; my web server preference, also install php. Download and install collectd graph panel (CGP) &amp;ndash; a PHP webapp.  That&amp;rsquo;s the short version.
+Installation The following walk through will demonstrate the installation using Ubuntu Oneiric (11.</description>
+    </item>
+    
+  </channel>
+</rss>

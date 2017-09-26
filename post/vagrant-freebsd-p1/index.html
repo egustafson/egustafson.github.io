@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vagrant FreeBSD Appliance Box - Part 1 | Stuff I&#39;ve Figured Out</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+        <link rel="stylesheet" href="/css/style_custom.css" />
+
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/credits/">Credits</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Vagrant FreeBSD Appliance Box - Part 1</span></h1>
+<h2 class="author">Eric Gustafson</h2>
+<h2 class="date">2015/03/25</h2>
+</div>
+
+<main>
+
+
+<p>A Vagrant &lsquo;network appliance&rsquo; based on FreeBSD.</p>
+
+<blockquote>
+<p><em>Author&rsquo;s note: This posting was rushed in an attempt to capture the knowledge
+gathered thus far in my learning process.  The posting is a bit of a work in
+progress - expect updates over the next few weeks as the process is refined.</em></p>
+</blockquote>
+
+<p>This is part 1, (and take, 1 I suspect), describing the creation of a Vagrant Box
+intended to be used as a firewall / router appliance with Vagrant.  I have
+reached the limits of VirtualBox with respect to networking and the solution is
+to stop using VirtualBox&rsquo;s built in networking and build an appliance that
+provides the needed functionality.  This &ldquo;appliance&rdquo; will sit between a
+host-only network, where the rest of any development project will sit, and &ldquo;the
+outside&rdquo;.  The outside can be accessed through either NAT or Bridged networking
+with the pseudo-default NAT adapter configured as the first adapter in Vagrant.</p>
+
+<p>This appliance &ldquo;box&rdquo; should be an evolving project.  The first step is to create
+a VirtualBox image, along with Vagrant control files, package it as a &ldquo;Vagrant
+Box&rdquo;, and publish it on HashiCorp&rsquo;s Atlas repository &ndash; possibly other
+locations as well.  Subsequent steps will elaborate configuration of the network
+functions through a Vagrantfile, or ancillary configuration file.</p>
+
+<p>The initial network functionality that this project will be seeking to provide
+is:</p>
+
+<ul>
+<li>IPv6 Support &ndash; not easily controlled through VirtualBox/Vagrant.</li>
+<li>DHCP Configuration, both v4 and DHCPv6.</li>
+<li>DNS Service, again with IPv6 and v4 support.</li>
+<li>Configurable IPv6 Tunneling for public v6 connectivity.</li>
+<li>Configurable IPv4 NAT for public v4 connectivity.</li>
+</ul>
+
+<h1 id="creating-a-freebsd-vagrant-box">Creating a FreeBSD Vagrant Box</h1>
+
+<p>The process I followed started like many of the other articles written about how
+to create <a href="https://docs.vagrantup.com/v2/boxes/base.html">Vagrant Base Boxes</a>.  See the <a href="#references">References</a> section at the end of this article for links to other
+postings I pulled inspiration from.</p>
+
+<p>The primary difference, in my mind, between building a generic Vagrant Base Box
+and an &ldquo;appliance&rdquo; box is that resources and host configuration should be
+specialized for the purpose and not generalized for flexibility.  To that end,
+my choices of configuration are aimed at minimum resource utilization and
+specific configuration for the purpose.  It should be noted that, just like
+other Vagrant box definitions, this one can be modified to suit individual
+purposes as well.</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Box Name:</td>
+<td>freebsd-10.1-amd64-gateway</td>
+</tr>
+
+<tr>
+<td>Type:</td>
+<td>BSD / FreeBSD</td>
+</tr>
+
+<tr>
+<td>Memory:</td>
+<td>384 MB</td>
+</tr>
+
+<tr>
+<td>CPU:</td>
+<td>1</td>
+</tr>
+
+<tr>
+<td>Disk:</td>
+<td>4G (dynamic VMDK)</td>
+</tr>
+
+<tr>
+<td>Network 1:</td>
+<td>NAT (para-virtualized controller)</td>
+</tr>
+
+<tr>
+<td>Port Forward:</td>
+<td>- Name: SSH <br/> - Protocol: TCP <br/> - Host Port: 2222 </br> - Guest Port: 22</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="install-freebsd-onto-a-virtualbox-host">Install FreeBSD onto a VirtualBox host:</h2>
+
+<p>The image was created by installing FreeBSD 10.1 from the ISO image taking the
+following steps:</p>
+
+<ul>
+<li>Hostname: gw</li>
+<li>No optional components installed</li>
+<li>Partitions: (no swap)
+
+<ul>
+<li>freebsd-boot: 512k</li>
+<li>freebsd-root(UFS): remainder</li>
+</ul></li>
+<li>Root password: &lsquo;vagrant&rsquo;</li>
+<li>Timezone: UTC</li>
+<li>Services started at boot:  sshd, ntpd</li>
+<li>User: &lsquo;vagrant&rsquo; w/ password &lsquo;vagrant&rsquo;, shell: csh, group &lsquo;vagrant&rsquo; + &lsquo;wheel&rsquo;</li>
+</ul>
+
+<h2 id="reboot-and-configure-the-vm">Reboot and Configure the VM</h2>
+
+<p>Log in as root and update the system:</p>
+
+<pre><code class="language-bash">$ freebsd-update fetch
+$ freebsd-update install
+$ pkg update
+$ pkg upgrade
+</code></pre>
+
+<p>Install <code>sudo</code> and <code>bash</code>; configure the <code>vagrant</code> user to have sudo access with out
+entering a password:</p>
+
+<pre><code class="language-bash">$ pkg install bash
+# follow the instructions regarding `fdesc`
+$ mount -t fdescfs fdesc /dev/fd
+$ echo &quot;fdesc  /dev/fd  fdescfs   rw  0  0&quot; &gt;&gt; /etc/fstab
+#
+$ pkg install sudo
+$ echo &quot;vagrant ALL=(ALL) NOPASSWD:ALL&quot; &gt; /usr/local/etc/sudoers.d/vagrant
+</code></pre>
+
+<p>Log out and log back in as user <code>vagrant</code>.  Configure SSH access for user
+<code>vagrant</code> using the Vagrant public keys:</p>
+
+<pre><code class="language-bash">$ sudo pkg install wget
+$ mkdir -p ~/.ssh
+$ wget --no-check-certificate \
+       https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub \
+       -O ~/.ssh/authorized_keys
+$ chmod 0700 ~/.ssh
+$ chmod 0400 ~/.ssh/authorized_keys
+</code></pre>
+
+<p>Ensure the the following are set in the <code>/etc/ssh/sshd_config</code> file:</p>
+
+<pre><code>Port  22
+PubkeyAuthentication  yes
+AuthorizedKeysFile  %h/.ssh/authorized_keys
+PermitEmptyPasswords  no
+</code></pre>
+
+<p>Add additional packages.  These packages are required to make the host into an
+appliance, or are utilitarian in nature:</p>
+
+<pre><code class="language-bash"># Required
+$ sudo pkg install dnsmasq
+$ sudo pkg install python
+# Utilities
+$ sudo pkg install bind-tools
+$ sudo pkg install curl
+</code></pre>
+
+<p>Shutdown the VM in preparation for packaging:</p>
+
+<pre><code>$ sudo shutdown -p now
+</code></pre>
+
+<h2 id="package-the-box">Package the Box</h2>
+
+<p>From the VirtualBox host machine:</p>
+
+<pre><code class="language-bash">$ vagrant package --base freebsd-10.1-amd64-gateway
+</code></pre>
+
+<p>Note that the VirtualBox VM name is &ldquo;freebsd-10.1-amd64-gateway&rdquo;.</p>
+
+<h1 id="references">References</h1>
+
+<dl>
+<dt>Building Vagrant Boxen</dt>
+<dd><a href="http://williamwalker.me/blog/creating-a-custom-vagrant-box.html">http://williamwalker.me/blog/creating-a-custom-vagrant-box.html</a></dd>
+<dd><a href="https://blog.engineyard.com/2014/building-a-vagrant-box">https://blog.engineyard.com/2014/building-a-vagrant-box</a></dd>
+<dd><a href="http://www.skoblenick.com/vagrant/creating-a-custom-box-from-scratch/">http://www.skoblenick.com/vagrant/creating-a-custom-box-from-scratch/</a></dd>
+<dt>Previous Articles on IPv6</dt>
+<dd><a href="https://egustafson.github.io/post/ipv6-tunneling/">IPv6 Tunneling over IPv4 Networks</a></dd>
+<dd><a href="https://egustafson.github.io/post/ipv6-dhcpv6/">IPv6 Network (Auto) Configuration</a></dd>
+</dl>
+
+<!--
+Local Variables:
+fill-column: 80
+End:
+-->
+
+</main>
+
+  <footer>
+  
+  <hr/>
+  <h1 id="comments">Comments</h1>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "egustafson" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-59717139-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+  
+  <hr/>
+  &copy; <a href="http://www.elfwerks.org/ericg">Eric Gustafson</a> 2017 | <a href="https://github.com/egustafson">Github</a> | <a href="https://twitter.com/elfwerks">Twitter</a>
+  
+  </footer>
+  </body>
+</html>
+

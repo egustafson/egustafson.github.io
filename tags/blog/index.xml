@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/tags/blog/</link>
+    <description>Recent content in Blog on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 29 Jul 2014 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/tags/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Installing Pelican on Cygwin</title>
+      <link>https://egustafson.github.io/post/pelican-cygwin/</link>
+      <pubDate>Tue, 29 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/pelican-cygwin/</guid>
+      <description>One of the many good reasons I chose Pelican as a static blog site generator was because I felt confident I could deploy and use the tools under Windows, with Cygwin. What I couldn&amp;rsquo;t find was any reference to success installing Pelican under Cygwin. It turns out that the combination is not difficult to make work. Here is my success story installing Pelican under Cygwin.
+Prerequisites  Windows &amp;ndash; hopefully obvious.</description>
+    </item>
+    
+    <item>
+      <title>Migrating to Pelican</title>
+      <link>https://egustafson.github.io/post/migrating-pelican/</link>
+      <pubDate>Thu, 10 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/migrating-pelican/</guid>
+      <description>After a 2 year hiatus, I&amp;rsquo;m working towards writing more about work and technology. I gave Octopress a try, but in the end concluded that I wanted a Python_ solution. I evaluated a few packages: Hyde, Nikola, and Pelican. There were two other Python based static site generators that I did not look at, but should probably take a look at &amp;ndash; both got positive mentions in the blogosphere: Acrylamid and mynt.</description>
+    </item>
+    
+  </channel>
+</rss>

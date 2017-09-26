@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>IPv6 on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/tags/ipv6/</link>
+    <description>Recent content in IPv6 on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 06 Mar 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/tags/ipv6/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>IPv6 Network (Auto) Configuration</title>
+      <link>https://egustafson.github.io/post/ipv6-dhcpv6/</link>
+      <pubDate>Fri, 06 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/ipv6-dhcpv6/</guid>
+      <description>In my previous article, IPv6 Tunneling over IPv4 Networks, I discussed how to connect a LAN to the IPv6 public Internet. This article continues the theme, discussing the issues surrounding the LAN&amp;rsquo;s configuration for IPv6.
+Looking at how LAN&amp;rsquo;s are configured for IPv4 proves to be instructive. Many of the techniques, and all of the patterns turn out to have parallels in IPv6. During the design of IPv6 engineers took the opportunity for refactoring using lessons learned from IPv4.</description>
+    </item>
+    
+    <item>
+      <title>IPv6 Tunneling over IPv4 Networks</title>
+      <link>https://egustafson.github.io/post/ipv6-tunneling/</link>
+      <pubDate>Wed, 25 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/ipv6-tunneling/</guid>
+      <description>Connecting to the v6 world from afar It turns out that proposing IPv6 as a &amp;ldquo;solution&amp;rdquo; for various networking problems in the Cloud and Container, read &amp;lsquo;Docker&amp;rsquo;, spaces opens a small Pandora&amp;rsquo;s Box of questions. This article is the first in a series discussing pragmatic IPv6 issues along side multiple environments using it. The goal of exploring IPv6 in these articles is to solve, or provide possible solutions, to problems.</description>
+    </item>
+    
+  </channel>
+</rss>

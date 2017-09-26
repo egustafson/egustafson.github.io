@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Virtualbox on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/tags/virtualbox/</link>
+    <description>Recent content in Virtualbox on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 19 Aug 2014 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/tags/virtualbox/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Diskless Install of Ubuntu with PXE &amp; Dnsmasq</title>
+      <link>https://egustafson.github.io/post/pxe-install-ubuntu/</link>
+      <pubDate>Tue, 19 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/pxe-install-ubuntu/</guid>
+      <description>The other day I received a &amp;ldquo;server&amp;rdquo; (HP Z620) as part of work. I set out to integrate it into a new subnet to be used like a mini-cloud LAN. Since my &amp;ldquo;lab&amp;rdquo; is a floor down from my office my first goal was to make this &amp;ldquo;server&amp;rdquo; remote everything, right down to the BIOS. This way I could reboot and even reload the bare metal OS remotely. The Z620 has Intel AMT and I&amp;rsquo;ve progressed that to the point where I can remotely power on/off the machine &amp;ndash; more on that in another article.</description>
+    </item>
+    
+  </channel>
+</rss>

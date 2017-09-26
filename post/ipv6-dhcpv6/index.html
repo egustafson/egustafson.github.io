@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IPv6 Network (Auto) Configuration | Stuff I&#39;ve Figured Out</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+        <link rel="stylesheet" href="/css/style_custom.css" />
+
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/credits/">Credits</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">IPv6 Network (Auto) Configuration</span></h1>
+<h2 class="author">Eric Gustafson</h2>
+<h2 class="date">2015/03/06</h2>
+</div>
+
+<main>
+
+
+<p>In my previous article, <a href="https://egustafson.github.io/post/ipv6-tunneling/">IPv6 Tunneling over IPv4 Networks</a>, I
+discussed how to connect a LAN to the IPv6 public Internet.  This article
+continues the theme, discussing the issues surrounding the LAN&rsquo;s configuration
+for IPv6.</p>
+
+<p>Looking at how LAN&rsquo;s are configured for IPv4 proves to be instructive.  Many of
+the techniques, and all of the patterns turn out to have parallels in IPv6.
+During the design of IPv6 engineers took the opportunity for refactoring using
+lessons learned from IPv4.  Initial host configuration was an area that received
+some attention, and so, we will explore the new methods provided by IPv6 as well
+as the traditional techniques carried forward from IPv4.</p>
+
+<h1 id="network-autoconfiguration">Network Autoconfiguration</h1>
+
+<p>The goal here is to identify how hosts joining an IPv6 network can come to
+discover and then interoperate on that network.  The network <em>may</em> also have
+IPv4, but it should not be required.  Specifically, the goal is to show how
+hosts can, with emphasis towards automation, configure themselves on an <strong><em>IPv6
+only</em></strong> network.  The same (pre)configuration should also work if the network
+happens to support IPv4, and the hosts should then configure and join the IPv4
+network as well.</p>
+
+<p>There are two use cases that are used to vet the proposed methods.  The first is
+the &ldquo;small lab&rdquo; use case.  Think of a small, less than 100 hosts, lab
+environment, or SOHO office.  In this sort of environment some of the hosts are
+very dynamic, and some are more static with specific functions assigned to them;
+for instance, a mail, or IRC server.  The second use case is the prototype
+environment for a distributed application.  Often such environments are created
+with VM&rsquo;s using tools such as <a href="https://www.vagrantup.com">Vagrant</a> inside a
+developer&rsquo;s laptop.  Such environments can be paused and restarted, relocated,
+and the hosts are often destroyed and recreated for a &ldquo;fresh install&rdquo;.  In both
+cases, formal rigor in configuring and maintaining the network are not as
+important as a degree of automation combined with flexibility to manually adjust
+things as needed for the task at hand.</p>
+
+<p>In an IPv4 world, <a href="https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol">DHCP</a> combined with <a href="https://en.wikipedia.org/wiki/Domain_Name_System">DNS</a> are the go-to tools for such
+configuration.  As luck has it, both are available in the IPv6 world as
+well. DNS remains unchanged, except for the addition of the <a href="https://en.wikipedia.org/wiki/IPv6_address#IPv6_addresses_in_the_Domain_Name_System">AAAA</a> record that
+holds IPv6 addresses; AAAA records are retrievable via IPv4 as well.  DHCP
+functions the same, but the specifics are adapted for IPv6 and to disambiguate,
+it is known as <a href="https://en.wikipedia.org/wiki/DHCPv6">DHCPv6</a>; there is a separate RFC: <a href="https://tools.ietf.org/html/rfc3315">RFC-3315</a>.</p>
+
+<h2 id="ipv6-autoconfiguration">IPv6 Autoconfiguration</h2>
+
+<p>During the design of IPv6, then codenamed &lsquo;IPng&rsquo;, the design of
+&ldquo;autoconfiguration&rdquo; for IP was refactored to support a more automated method by
+which hosts could join an IPv6 network.  In the base IPv4 protocol there is no
+explicit support for autoconfiguration.  In IPv6 autoconfiguration support was
+initially integrated into <a href="https://en.wikipedia.org/wiki/ICMPv6">ICMPv6</a>.  This comes in the form of <a href="https://en.wikipedia.org/wiki/Neighbor_Discovery_Protocol">Neighbor
+Discovery Protocol</a> (NDP) and includes the ability for a host to automatically
+discover:</p>
+
+<ul>
+<li>Neighbor Discovery and Advertisement, replacing IPv4&rsquo;s <a href="https://en.wikipedia.org/wiki/Address_Resolution_Protocol">ARP</a>.</li>
+<li>Network address prefix value.
+
+<ul>
+<li>Note: network address <em>prefix length</em> is fixed in IPv6 to /64.</li>
+</ul></li>
+<li>Link (L2) parameter discovery, such as MTU.</li>
+<li>Next-hop routing determination through Router Solicitation and Advertisement
+(RA).</li>
+<li>Duplicate address detection, thus allowing hosts to generate a host address
+and determine if it is a duplicate.  (If so, they will pick another).</li>
+</ul>
+
+<p>The above tools that made up the original NDP allow a host to perform what is
+formally called <a href="https://en.wikipedia.org/wiki/IPv6#Stateless_address_autoconfiguration_.28SLAAC.29">Stateless address autoconfiguration</a> (SLAAC).  Additionally,
+NDP, through Router Solicitation and Router Advertisement (RA), allows a host to
+define itself a unique host address, determine its network address, and
+router(s).  These are all the necessary details a host needs to start sending
+and receiving IP packets.  The IPng designers believed they had successfully
+refactored the base IP protocol, including ICMP, to handle autoconfiguration.</p>
+
+<p>In hindsight, the refactoring was not agile enough.  While hosts can configure
+the IP layer with SLAAC, it turns out that DHCPv4 is used provide added
+functionality beyond simply configuring the IP layer of a host.  The almost
+universally used feature of DHCP, beyond the IP layer, is communicating the DNS
+server&rsquo;s IP address.  SLAAC did not initially have support for this and thus
+DHCPv6 was born.  The ICMPv6 Router Advertisement was extended in <a href="https://tools.ietf.org/html/rfc6106">RFC-6106</a> to
+allow the inclusion of DNS configuration information in the RA message.</p>
+
+<p>RFC-6106, which allows DNS details in router advertisements, is not the end of
+the story.  Firstly, its adoption has been slow, and secondly, there remain
+additional configuration details not covered by the RFC that are desired when
+autoconfiguring hosts on an IP network.  In fact, <a href="https://en.wikipedia.org/wiki/Internet_Assigned_Numbers_Authority">IANA</a> cites well over 150
+option parameters registered for DHCP [<sup class="footnote-ref" id="fnref:1"><a rel="footnote" href="#fn:1">1</a></sup>].</p>
+
+<h2 id="stateful-and-stateless-dhcpv6">Stateful and Stateless DHCPv6</h2>
+
+<p>The ability for a host to autoconfigure, through SLAAC, it&rsquo;s IPv6 details gives
+rise to a new mode of use for DHCP - &ldquo;Stateless DHCPv6&rdquo;.  In this mode, the host
+first uses SLAAC to configure its IPv6 details and then uses DHCPv6 to request
+additional details like DNS, NTP, etc.  In this mode the host indicates it is
+operating &ldquo;stateless&rdquo; and the server does not perform address assignment.</p>
+
+<p>In addition to the stateless mode, DHCPv6 can also be used in a &ldquo;stateful&rdquo; mode
+where an IPv6 address is assigned from the server&rsquo;s pool of addresses.  IPv6
+allows and most often requires hosts to have multiple IPv6 addresses assigned to
+a single interface; the link-local address is an excellent example of this.
+Because hosts must support multiple addresses per interface it is possible to
+use both SLAAC and stateful DHCPv6 to configure a host.  If both methods are
+used then there will be multiple IPv6 addresses assigned to the interface.  The
+link-local address is also required, so using both methods will ensure the
+interface has at least three addresses.</p>
+
+<p>The late arrival of DNS configuration as part of SLAAC caused some vendors,
+Microsoft Windows most notably, to pursue client IPv6 autoconfiguration which
+required DHCPv6.  This makes the use of DHCPv6 a near requirement in any network
+that has liberal requirements for operating system support.</p>
+
+<h2 id="host-registration-in-dns">Host Registration in DNS</h2>
+
+<p>Providing DNS configuration to an autoconfiguring host does not imply
+registering that host in the local DNS tables.  In fact, neither DHCPv4, nor
+DHCPv6 address the issue of DNS registration for newly configured hosts.  In
+many environments, including lab and prototype use case environments,
+registering configured hosts ranges from very helpful to required.  Some clients
+will perform this task, but this behavior is not common enough to rely on it.</p>
+
+<p>There are a number of different tools to support registering hosts in DNS as
+they join a network, but one project is more appealing than the others for our
+given use cases:  <a href="http://www.thekelleys.org.uk/dnsmasq/doc.html">Dnsmasq</a>.  The Dnsmasq project combines DHCP and DNS in a
+single daemon and supports both IPv4 and IPv6.  Dnsmasq also supports portions
+of IPv6 autoconfiguration, including router advertisement (RA).  The feature
+that places Dnsmasq in the most appealing position is that its DHCP and DNS
+integration includes automatically registering DHCP leases in the DNS tables
+when a hostname is provided in the DHCP request; solving exactly the problem not
+explicitly addressed in DHCP or DNS specifications.</p>
+
+<p>Through experimentation it was determined that Windows and Mac OSX based systems
+consistently provide the hostname as part of their DHCP request.  Unfortunately,
+the most popular, and widely used, DHCP client, from <a href="https://www.isc.org/">ISC</a>, either does not, or is
+rarely configured to send the hostname.  Fortunately, an alternative DHCP client
+does: the <a href="https://roy.marples.name/projects/dhcpcd">dhcpcd</a> client.  Investigating the dhcpcd client also revealed that
+it is trivial to swap the ISC client for dhcpcd on most Linux hosts.</p>
+
+<h1 id="router-and-client-configuration">Router and Client Configuration</h1>
+
+<p>The following is the Dnsmasq_ configuration applied on the router that allows
+for the most effective autoconfiguration of IPv6:</p>
+
+<pre><code># dnsmasq configuration for router &quot;appliance&quot;
+no-resolv
+server=10.3.7.1
+
+local=/cloud1/
+
+domain=cloud1
+dhcp-fqdn
+
+enable-ra
+dhcp-option=option6:dns-server,[2001:db8:4b:222::1]
+dhcp-option=option6:dns-name,cloud1
+
+dhcp-range=::100,::1ff,constructor:em1
+</code></pre>
+
+<p>The configuration is broken down as follows:</p>
+
+<dl>
+<dt><code>no-resolve</code></dt>
+<dd>Disable using /etc/resolv.conf as a basis for configuring the dnsmasq server.
+This was done to make this example clearly explicit.</dd>
+<dt><code>server=10.3.7.1</code></dt>
+<dd>Configure the server that dnsmasq forwards all DNS requests it can not handle
+locally to.  Note that the forwarder does <em>not</em> need to be a IPv6 address,
+although it could be.  Multiple forwarders are configurable if desired.</dd>
+<dt><code>local=/cloud1/</code></dt>
+<dd>Declare the domain &ldquo;cloud1&rdquo; as the domain being served locally.</dd>
+<dt><code>domain=cloud1</code></dt>
+<dd>Declare the domain &ldquo;cloud1&rdquo; as the domain for all DHCP requests</dd>
+<dt><code>dhcp-fqdn</code></dt>
+<dd>Force all DHCP clients to be placed in the &ldquo;cloud1&rdquo; domain, regardless of what
+domain they specify in the DHCP request.</dd>
+<dt><code>enable-ra</code></dt>
+<dd>Perform IPv6 Router Advertisement as part of Dnsmasq&rsquo;s operation.  Other
+router advertisement daemons should not be run.  If the host Dnsmasq is
+running on is not the router then disable this.</dd>
+<dt><code>dhcp-option...dns-server</code></dt>
+<dd>Explicitly configure and ensure the <code>dns-server</code> option is sent in the DHCP
+reply.  The address listed is an address assigned to the &lsquo;em1&rsquo; interface on
+this host.</dd>
+<dt><code>dhcp-option...dns-name</code></dt>
+<dd>Send &lsquo;cloud1&rsquo; as the assigned domain to all clients performing DHCP requests.</dd>
+<dt><code>dhcp-range...</code></dt>
+<dd>Issue IPv6 addresses between ::100 and ::1ff in response to DHCP requests.
+The clause, &ldquo;<code>constructor:em1</code>&rdquo; directs the configuration to use the network
+prefix of the &lsquo;em1&rsquo; interface as the network prefix for the leased addresses.
+The actual address returned will be [em1 prefix]::[100-1ff].</dd>
+</dl>
+
+<p>Enabling the <code>log-dhcp</code> or <code>log-queries</code> parameters in Dnsmasq will enable
+verbose reporting of either DHCP or DNS is debugging is required.</p>
+
+<h2 id="client-dhcp-configuration">Client DHCP Configuration</h2>
+
+<p>No explicit configuration is required on the client side except replacing the
+ISC DHCP client with the dhcpcd client.  For Debian derived Linux
+installations:</p>
+
+<pre><code class="language-bash">&gt; sudo apt-get remove isc-dhcp-client isc-dhcp-common
+&gt; sudo apt-get install dhcpcd5
+</code></pre>
+
+<p>No configuration files need to be modified.</p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>By utilizing the Dnsmasq_ and dhcpcd_ projects a very simple configuration can
+be constructed that supports autoconfiguration of an IPv6 network.  This pattern
+can be utilized in both a heterogeneous lab and prototype environments,
+including Vagrant based setups on developer laptops.</p>
+
+<h1 id="references">References</h1>
+
+<dl>
+<dt>DHCPv6</dt>
+<dd><a href="https://en.wikipedia.org/wiki/DHCPv6">https://en.wikipedia.org/wiki/DHCPv6</a></dd>
+<dd><a href="https://tools.ietf.org/html/rfc3315">https://tools.ietf.org/html/rfc3315</a></dd>
+<dt>ICMPv6</dt>
+<dd><a href="https://en.wikipedia.org/wiki/ICMPv6">https://en.wikipedia.org/wiki/ICMPv6</a></dd>
+<dd><a href="https://tools.ietf.org/html/rfc4443">https://tools.ietf.org/html/rfc4443</a></dd>
+<dd><a href="https://tools.ietf.org/html/rfc6106">https://tools.ietf.org/html/rfc6106</a></dd>
+<dt>NDP - Neighbor Discovery Protocol:</dt>
+<dd><a href="https://en.wikipedia.org/wiki/Neighbor_Discovery_Protocol">https://en.wikipedia.org/wiki/Neighbor_Discovery_Protocol</a></dd>
+<dt>Dnsmasq - DHCP + DNS daemon</dt>
+<dd><a href="http://www.thekelleys.org.uk/dnsmasq/doc.html">http://www.thekelleys.org.uk/dnsmasq/doc.html</a></dd>
+<dt>dhcpcd - alternative DHCP client</dt>
+<dd><a href="http://roy.marples.name/projects/dhcpcd/index">http://roy.marples.name/projects/dhcpcd/index</a></dd>
+</dl>
+
+<!--
+Local Variables:
+fill-column: 80
+End:
+-->
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:1">DHCP and BOOTP Parameters: <a href="https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml">https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml</a>
+ <a class="footnote-return" href="#fnref:1">↩</a></li>
+</ol>
+</div>
+
+</main>
+
+  <footer>
+  
+  <hr/>
+  <h1 id="comments">Comments</h1>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "egustafson" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-59717139-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+  
+  <hr/>
+  &copy; <a href="http://www.elfwerks.org/ericg">Eric Gustafson</a> 2017 | <a href="https://github.com/egustafson">Github</a> | <a href="https://twitter.com/elfwerks">Twitter</a>
+  
+  </footer>
+  </body>
+</html>
+

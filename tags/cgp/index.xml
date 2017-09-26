@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CGP on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/tags/cgp/</link>
+    <description>Recent content in CGP on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 10 Apr 2012 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/tags/cgp/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Simple collectd with Web Graphs</title>
+      <link>https://egustafson.github.io/post/collectd-web-graphs/</link>
+      <pubDate>Tue, 10 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/collectd-web-graphs/</guid>
+      <description>I want to collect machine metrics and I want to display them as a pretty set of graphs through a web browser. Here&amp;rsquo;s how I do it:
+ Install collectd &amp;ndash; this gathers the metrics. Install lighttpd &amp;ndash; my web server preference, also install php. Download and install collectd graph panel (CGP) &amp;ndash; a PHP webapp.  That&amp;rsquo;s the short version.
+Installation The following walk through will demonstrate the installation using Ubuntu Oneiric (11.</description>
+    </item>
+    
+  </channel>
+</rss>

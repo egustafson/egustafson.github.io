@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Trip report on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/tags/trip-report/</link>
+    <description>Recent content in Trip report on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 22 Jun 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/tags/trip-report/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Monitorama 2015</title>
+      <link>https://egustafson.github.io/post/monitorama-2015/</link>
+      <pubDate>Mon, 22 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/monitorama-2015/</guid>
+      <description>This year&amp;rsquo;s Monitorama was another success for @obfuscurity and the monitoring community. My one line observation of this years event is that the event was &amp;ldquo;less pragmatic&amp;rdquo; than last year. I would rate the more abstract qualities of quality, diversity, and my overall desire to attend the same as last year &amp;ndash; high. My personal preference for this, and most, conferences is pragmatism and so I call this out; my ranking of presentations certainly reflects this, more so than any general vote of quality.</description>
+    </item>
+    
+    <item>
+      <title>OSCON 2014 Trip Report, part 2</title>
+      <link>https://egustafson.github.io/post/oscon-2014-p2/</link>
+      <pubDate>Fri, 08 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/oscon-2014-p2/</guid>
+      <description>Note (2017): this draft document was never completed. I am publishing it in its incomplete, draft state because there are a number of good links in the document &amp;ndash; reader beware.
+ In this second part of my trip report I have included my notes on each of the sessions I attended. The purpose of this post is two fold. First, as a place to archive my notes and catalog the materials of the presentation.</description>
+    </item>
+    
+    <item>
+      <title>OSCON 2014 Trip Report, part 1</title>
+      <link>https://egustafson.github.io/post/oscon-2014-p1/</link>
+      <pubDate>Thu, 31 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/post/oscon-2014-p1/</guid>
+      <description>This year&amp;rsquo;s OSCON was my first attendance of the conference; I was pleasantly surprised. The conference is 5 days, the first two of which are half day tutorial sessions, and the remaining 3 being the core conference. I attended the 3 core days of the conference, and my brain was completely overflowed by the end.
+In this post, part 1 of 2, the interesting items of note in the Keynote presentations are discussed.</description>
+    </item>
+    
+  </channel>
+</rss>

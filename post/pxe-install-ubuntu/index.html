@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Diskless Install of Ubuntu with PXE &amp; Dnsmasq | Stuff I&#39;ve Figured Out</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+        <link rel="stylesheet" href="/css/style_custom.css" />
+
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/credits/">Credits</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Diskless Install of Ubuntu with PXE &amp; Dnsmasq</span></h1>
+<h2 class="author">Eric Gustafson</h2>
+<h2 class="date">2014/08/19</h2>
+</div>
+
+<main>
+
+
+<p>The other day I received a &ldquo;server&rdquo; (HP Z620) as part of work.  I set out to
+integrate it into a new subnet to be used like a mini-cloud LAN.  Since my &ldquo;lab&rdquo;
+is a floor down from my office my first goal was to make this &ldquo;server&rdquo; remote
+everything, right down to the BIOS.  This way I could reboot and even <em>reload</em>
+the bare metal OS remotely.  The Z620 has <a href="https://en.wikipedia.org/wiki/Intel_Active_Management_Technology">Intel
+AMT</a> and I&rsquo;ve
+progressed that to the point where I can remotely power on/off the machine &ndash;
+more on that in another article.  The next step was to setup
+<a href="https://en.wikipedia.org/wiki/Preboot_Execution_Environment">PXE</a> booting.</p>
+
+<p>In my past I&rsquo;ve setup PXE environments, but as I started to reason through what
+I needed I realized that I had over simplified.  Did I want to PXE install, or
+PXE boot a kernel with the root filesystem on local disk?  Both actually, and
+maybe some other PXE acrobatics.  Step one: PXE boot into an installation and
+then automate the installation with a
+<a href="https://help.ubuntu.com/14.04/installation-guide/amd64/apb.html">preseed</a> file.</p>
+
+<h1 id="pxe-boot-to-install-ubuntu">PXE Boot to Install - Ubuntu</h1>
+
+<p>The <a href="https://help.ubuntu.com/14.04/installation-guide/amd64/index.html">Ubuntu Installation
+Guide</a> covers
+most of what is described below.  The one exception is that I prefer Dnsmasq_
+for its simplicity, and every PXE boot example I found seems to want to explain
+the process with the amalgamation of the ISC DHCP server, and one of the many,
+execellent tftpd servers.
+<a href="http://www.thekelleys.org.uk/dnsmasq/doc.html">Dnsmasq</a> was made for this, why
+is a more complex tool chain being consistently pushed?  &ndash; I don&rsquo;t know.</p>
+
+<p>Additionally, I, like many people, like prototyping in a virtual environment.  I
+use <a href="https://www.virtualbox.org/">VirtualBox</a>, and VirtualBox supports PXE
+booting.  In fact, there are a couple of ways to do a PXE boot in VirtualBox.
+This example will <strong>not</strong> use any of VirtualBox&rsquo;s built-in PXE boot features.
+Instead, two (virtual) hosts will be configured, one as the PXE boot server, and
+a second as the booted client.  This pattern mimics physical hardware, and, in
+fact, should be reproducable on physical equipment by simply ignoring the
+VirtualBox commentary.</p>
+
+<h2 id="prerequesites">Prerequesites</h2>
+
+<ol>
+<li>(optional) VirtualBox, host OS doesn&rsquo;t matter.  This article is written with
+VirtualBox instructions, ignoring the VirtualBox parts and using physical
+hardware should just work.</li>
+<li>A linux server.  Package install commands based on Ubuntu, any distribution
+should work; infact any OS with Dnsmasq should work the same.</li>
+<li>A client host &ndash; the disk on this machine will be <strong>erased</strong>.  The example
+will use a newly created VirtualBox host.</li>
+<li>A &ldquo;dhcp free&rdquo; LAN.  In this example, a VirtualBox &ldquo;Internal Network&rdquo; will
+serve as the LAN.</li>
+</ol>
+
+<h2 id="pxe-dhcp-and-a-clean-lan">PXE, DHCP, and a &ldquo;clean&rdquo; LAN</h2>
+
+<p>For those familiar with DHCP&rsquo;s broadcast use of the LAN, this section may be
+safely skipped.</p>
+
+<p>The first step in a &ldquo;PXE Boot&rdquo; is for the client host to perform a
+<a href="https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol">DHCP</a>
+request, or more precisely a DHCP discovery.  This amounts to the client sending
+a broadcast IP message on the connected LAN.  Because the client knows nothing
+of itself at this point, it can only broadcast a message requesting it&rsquo;s
+configuration, the &ldquo;C&rdquo; in DHCP.  Many LAN&rsquo;s support DHCP, including the default
+VirtualBox &ldquo;NAT&rdquo; LAN.  In order to PXE boot a specific response to the DHCP
+request must be given; the culmunation of this article in fact.  If the PXE
+booting client is &ldquo;placed&rdquo; on a LAN that already has a DHCP service present then
+it is possible that the existing service will respond, and respond with a
+generic response, not the PXE specific response this article details crafting.</p>
+
+<p>For this reason, the &ldquo;dhcp free&rdquo; LAN is stated above as a prerequisite.  If you
+know you have a DHCP free physical LAN then you&rsquo;re good; many home &ldquo;routers&rdquo;
+provide DHCP as part of their functionality &ndash; you&rsquo;ve been warned.</p>
+
+<p>VirtualBox&rsquo;s default network is the &ldquo;NAT&rdquo; network and it has a DHCP service
+embedded in the VirtualBox &lsquo;controller&rsquo;.  This LAN network can not be used.
+Details for configuring multiple VirtualBox networks will be given below for
+this very reason.</p>
+
+<h2 id="configuring-the-virtualbox-hosts-and-network-s">Configuring the VirtualBox Hosts and Network(s)</h2>
+
+<h2 id="configuring-dnsmasq-on-the-pxe-server">Configuring Dnsmasq on the PXE Server</h2>
+
+<h2 id="booting-the-pxe-client">Booting the PXE Client</h2>
+
+<h1 id="preseeding-to-automate-the-install">Preseeding to Automate the Install</h1>
+
+<p>TBD - coming in the 2nd part of this article.</p>
+
+<h1 id="to-be-continued">To be continued? &hellip;</h1>
+
+<p>Ideas for follow on articles around this topic:</p>
+
+<ul>
+<li>PXE Boot a &ldquo;cloud&rdquo; image, (think Amazon AMI/LXC ubuntu-cloud like), on bare
+metal &ndash; there are some gotcha&rsquo;s in this.</li>
+<li>PXE Boot every time.  A &ldquo;production&rdquo; environment where the bootloader is PXE,
+the kernel comes across the network, and the filesystem already exists on one
+of {local disk, <a href="https://en.wikipedia.org/wiki/Storage_area_network">SAN</a>,
+<a href="https://en.wikipedia.org/wiki/Network-attached_storage">NAS</a>}.</li>
+<li><em>PXE Acrobatics</em>: An advanced, intellegent system for PXE booting where
+sometimes an existing system is booted, and sometimes the host is
+reprovisioned, i.e. re-installed.</li>
+</ul>
+
+</main>
+
+  <footer>
+  
+  <hr/>
+  <h1 id="comments">Comments</h1>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "egustafson" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-59717139-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+  
+  <hr/>
+  &copy; <a href="http://www.elfwerks.org/ericg">Eric Gustafson</a> 2017 | <a href="https://github.com/egustafson">Github</a> | <a href="https://twitter.com/elfwerks">Twitter</a>
+  
+  </footer>
+  </body>
+</html>
+

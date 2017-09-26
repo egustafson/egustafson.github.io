@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MediaWiki with Lighttpd &amp; SQLite on Ubuntu | Stuff I&#39;ve Figured Out</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+        <link rel="stylesheet" href="/css/style_custom.css" />
+
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/credits/">Credits</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">MediaWiki with Lighttpd &amp; SQLite on Ubuntu</span></h1>
+<h2 class="author">Eric Gustafson</h2>
+<h2 class="date">2012/02/18</h2>
+</div>
+
+<main>
+
+
+<p>In rebuilding an old, and rarely used server that runs <a href="https://www.mediawiki.org/">MediaWiki</a> I
+reconsidered how to install all of the dependencies that MediaWiki
+sits on top of. My goal was to choose lightweight components. The only
+thing that would run on this web server would be MediaWiki, and the
+wiki would be lightly used. I concluded the following components were
+likely more suitable choices than the defaults MediaWiki and/or
+Ubuntu’s package system used.</p>
+
+<ul>
+<li><a href="http://www.lighttpd.net/">Lighttpd</a></li>
+<li><a href="https://www.sqlite.org">SQLite</a></li>
+</ul>
+
+<p>The second goal was, based on my preference for Ubuntu as a
+distribution, build MediaWiki on top of Ubuntu using just Ubuntu
+packages, no source installation. The principal value in this is that
+over time the components in use can be simply upgraded using the stock
+Ubuntu package mechanisms (i.e. <code>apt-get upgrade</code>).</p>
+
+<p>The following is the sequence I used to install MediaWiki. This
+installation guide is based on Ubuntu Oneiric (11.10).</p>
+
+<h1 id="install-prerequisites">Install Prerequisites</h1>
+
+<p>(note, <code>sudo</code> is generally required, but dropped from the commands
+below)</p>
+
+<pre><code class="language-sh"># apt-get install lighttpd
+# apt-get install php5-cgi php5
+</code></pre>
+
+<p>next, edit <code>/etc/php5/cgi/php.ini</code> to enable php5 in lighttpd and
+uncomment the line:</p>
+
+<pre><code>cgi.fix_pathinfo=1
+</code></pre>
+
+<p>Then enable the fastcgi configuration in lighttpd:</p>
+
+<pre><code class="language-sh"># lighttpd-enable-mod fastcgi
+# lighttpd-enable-mod fastcgi-php
+# service lighttpd force-reload
+</code></pre>
+
+<p>Install php5-sqlite:</p>
+
+<pre><code class="language-sh"># apt-get install php5-sqlite
+# service lighttpd restart
+</code></pre>
+
+<p>Install optional extras that MediaWiki will take advantage of:</p>
+
+<pre><code class="language-sh"># apt-get install imagemagick php5-gd php5-cli
+# service lighttpd restart
+</code></pre>
+
+<h1 id="install-mediawiki">Install MediaWiki</h1>
+
+<p>Note: The MediaWiki package in Ubuntu (Oneiric) has &lsquo;mysql-server’
+listed as a <em>recommends</em> dependency. This has the implication that
+unless explicitly forced to <strong>NOT</strong> include the dependency, it will be
+included as part of the package install. This is accomplished with the
+<code>--no-install-recommends</code>.</p>
+
+<pre><code class="language-sh"># apt-get --no-install-recommends install mediawiki
+# apt-get install mediawiki-math
+</code></pre>
+
+<h1 id="configure-mediawiki">Configure MediaWiki</h1>
+
+<p>Add the following to lighttpd&rsquo;s configuration:</p>
+
+<pre><code class="language-apache">alias.url += ( &quot;/wiki&quot; =&gt; &quot;/var/lib/mediawiki/&quot; )
+</code></pre>
+
+<p>restart lighttpd to effect the configuration change:</p>
+
+<pre><code class="language-sh"># service lighttpd restart
+</code></pre>
+
+<p>Create a data directory for MediaWiki to store the SQLite database in:</p>
+
+<pre><code class="language-sh"># mkdir /var/lib/mediawiki-data
+# chown www-data.www-data /var/lib/mediawiki-data
+</code></pre>
+
+<p>Browse to the wiki root: <code>http://hostname/wiki</code> and complete
+configuration through the web browser.</p>
+
+<blockquote>
+<p>...</p>
+</blockquote>
+
+<p>Following browser configuration, copy the generated configuration to
+the permanent location, as specified on the final browser page:</p>
+
+<pre><code class="language-sh"># cp /var/lib/mediawiki/config/LocalSettings.php \
+     /etc/mediawiki/LocalSettings.php
+# chown www-data /etc/mediawiki/LocalSettings.php
+# chmod 600 /etc/mediawiki/LocalSettings.php
+# rm -rf /var/lib/mediawiki/config
+</code></pre>
+
+<p>Done.</p>
+
+</main>
+
+  <footer>
+  
+  <hr/>
+  <h1 id="comments">Comments</h1>
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "egustafson" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-59717139-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+  
+  <hr/>
+  &copy; <a href="http://www.elfwerks.org/ericg">Eric Gustafson</a> 2017 | <a href="https://github.com/egustafson">Github</a> | <a href="https://twitter.com/elfwerks">Twitter</a>
+  
+  </footer>
+  </body>
+</html>
+

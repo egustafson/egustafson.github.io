@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Stuff I&#39;ve Figured Out</title>
+    <link>https://egustafson.github.io/tags/</link>
+    <description>Recent content in Tags on Stuff I&#39;ve Figured Out</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 29 Jul 2014 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://egustafson.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Blog</title>
+      <link>https://egustafson.github.io/tags/blog/</link>
+      <pubDate>Tue, 29 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/blog/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CGP</title>
+      <link>https://egustafson.github.io/tags/cgp/</link>
+      <pubDate>Tue, 10 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/cgp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ceph</title>
+      <link>https://egustafson.github.io/tags/ceph/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/ceph/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Collectd</title>
+      <link>https://egustafson.github.io/tags/collectd/</link>
+      <pubDate>Tue, 10 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/collectd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cygwin</title>
+      <link>https://egustafson.github.io/tags/cygwin/</link>
+      <pubDate>Tue, 29 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/cygwin/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DHCP</title>
+      <link>https://egustafson.github.io/tags/dhcp/</link>
+      <pubDate>Fri, 06 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/dhcp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DNS</title>
+      <link>https://egustafson.github.io/tags/dns/</link>
+      <pubDate>Fri, 06 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/dns/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Debian</title>
+      <link>https://egustafson.github.io/tags/debian/</link>
+      <pubDate>Tue, 19 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/debian/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Dnsmasq</title>
+      <link>https://egustafson.github.io/tags/dnsmasq/</link>
+      <pubDate>Fri, 06 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/dnsmasq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>FreeBSD</title>
+      <link>https://egustafson.github.io/tags/freebsd/</link>
+      <pubDate>Wed, 25 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/freebsd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IPv6</title>
+      <link>https://egustafson.github.io/tags/ipv6/</link>
+      <pubDate>Fri, 06 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/ipv6/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Install</title>
+      <link>https://egustafson.github.io/tags/install/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/install/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Lighttpd</title>
+      <link>https://egustafson.github.io/tags/lighttpd/</link>
+      <pubDate>Tue, 10 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/lighttpd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>https://egustafson.github.io/tags/linux/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Mediawiki</title>
+      <link>https://egustafson.github.io/tags/mediawiki/</link>
+      <pubDate>Sat, 18 Feb 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/mediawiki/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Monitorama</title>
+      <link>https://egustafson.github.io/tags/monitorama/</link>
+      <pubDate>Mon, 22 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/monitorama/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Monitoring</title>
+      <link>https://egustafson.github.io/tags/monitoring/</link>
+      <pubDate>Mon, 22 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/monitoring/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>NAT</title>
+      <link>https://egustafson.github.io/tags/nat/</link>
+      <pubDate>Wed, 25 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/nat/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OSCON</title>
+      <link>https://egustafson.github.io/tags/oscon/</link>
+      <pubDate>Fri, 08 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/oscon/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>PXE</title>
+      <link>https://egustafson.github.io/tags/pxe/</link>
+      <pubDate>Tue, 19 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/pxe/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Pelican</title>
+      <link>https://egustafson.github.io/tags/pelican/</link>
+      <pubDate>Tue, 29 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/pelican/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Persistence</title>
+      <link>https://egustafson.github.io/tags/persistence/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/persistence/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Preseed</title>
+      <link>https://egustafson.github.io/tags/preseed/</link>
+      <pubDate>Tue, 19 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/preseed/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>https://egustafson.github.io/tags/python/</link>
+      <pubDate>Thu, 10 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>RFC2893</title>
+      <link>https://egustafson.github.io/tags/rfc2893/</link>
+      <pubDate>Wed, 25 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/rfc2893/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sqlite</title>
+      <link>https://egustafson.github.io/tags/sqlite/</link>
+      <pubDate>Sat, 18 Feb 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/sqlite/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Storage</title>
+      <link>https://egustafson.github.io/tags/storage/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/storage/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sync</title>
+      <link>https://egustafson.github.io/tags/sync/</link>
+      <pubDate>Fri, 09 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/sync/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Syncthing</title>
+      <link>https://egustafson.github.io/tags/syncthing/</link>
+      <pubDate>Fri, 09 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/syncthing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Trip report</title>
+      <link>https://egustafson.github.io/tags/trip-report/</link>
+      <pubDate>Mon, 22 Jun 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/trip-report/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tunneling</title>
+      <link>https://egustafson.github.io/tags/tunneling/</link>
+      <pubDate>Wed, 25 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/tunneling/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ubuntu</title>
+      <link>https://egustafson.github.io/tags/ubuntu/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/ubuntu/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>VMWare</title>
+      <link>https://egustafson.github.io/tags/vmware/</link>
+      <pubDate>Tue, 10 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/vmware/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vagrant</title>
+      <link>https://egustafson.github.io/tags/vagrant/</link>
+      <pubDate>Wed, 25 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/vagrant/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>VirtualBox</title>
+      <link>https://egustafson.github.io/tags/virtualbox/</link>
+      <pubDate>Tue, 10 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/virtualbox/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Virtualbox</title>
+      <link>https://egustafson.github.io/tags/virtualbox/</link>
+      <pubDate>Tue, 19 Aug 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/virtualbox/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Virtualization</title>
+      <link>https://egustafson.github.io/tags/virtualization/</link>
+      <pubDate>Tue, 10 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/virtualization/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Wiki</title>
+      <link>https://egustafson.github.io/tags/wiki/</link>
+      <pubDate>Sat, 18 Feb 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://egustafson.github.io/tags/wiki/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
