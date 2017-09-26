@@ -1,10 +1,11 @@
 ---
-title:     "Installing Pelican on Cygwin"
-date:      2014-07-29
-slug:      pelican-cygwin
-author:    "Eric Gustafson"
-tags:      [ "pelican", "cygwin", "blog" ]
-category:  "HowTo"
+title:      Installing Pelican on Cygwin
+author:     Eric Gustafson
+date:       2014-07-29
+slug:       pelican-cygwin
+aliases:    ["pelican-cygwin.html"]
+tags:       [pelican, cygwin, blog]
+categories: "HowTo"
 ---
 
 One of the many good reasons I chose

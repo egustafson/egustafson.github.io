@@ -1,9 +1,11 @@
 ---
-title: Vagrant FreeBSD Appliance Box - Part 1
-date: 2015-03-25
-slug: vagrant-freebsd-p1
-author: Eric Gustafson
-tags: [Vagrant, FreeBSD]
+title:      Vagrant FreeBSD Appliance Box - Part 1
+author:     Eric Gustafson
+date:       2015-03-25
+slug:       vagrant-freebsd-p1
+aliases:    ["vagrant-freebsd-p1.html"]
+tags:       [Vagrant, FreeBSD]
+categories: "HowTo"
 ---
 
 A Vagrant 'network appliance' based on FreeBSD.

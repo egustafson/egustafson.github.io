@@ -1,3 +1,6 @@
 [submodule "themes/cactus"]
 	path = themes/cactus
 	url = https://github.com/digitalcraftsman/hugo-cactus-theme
+[submodule "themes/xmin"]
+	path = themes/xmin
+	url = https://github.com/yihui/hugo-xmin

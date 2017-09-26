@@ -1,10 +1,11 @@
 ---
-title:      "MediaWiki with Lighttpd & SQLite on Ubuntu"
+title:      MediaWiki with Lighttpd & SQLite on Ubuntu
+author:     Eric Gustafson
 date:       2012-02-18
-#slug:       mediawiki-lighttpd-sqlite
-author:     "Eric Gustafson"
-tags:       [ "lighttpd", "sqlite", "mediawiki", "wiki" ]
-category:   "HowTo"
+slug:       mediawiki-lighttpd-sqlite
+aliases:    ["mediawiki-lighttpd-sqlite.html"]
+tags:       [lighttpd, sqlite, mediawiki, wiki]
+categories: "HowTo"
 ---
 
 In rebuilding an old, and rarely used server that runs [MediaWiki](https://www.mediawiki.org/) I

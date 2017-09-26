@@ -1,9 +1,11 @@
 ---
-title: IPv6 Tunneling over IPv4 Networks
-date: 2015-02-25
-slug: ipv6-tunneling
-author: Eric Gustafson
-tags: [IPv6, Tunneling, NAT, RFC2893, FreeBSD, Linux]
+title:      IPv6 Tunneling over IPv4 Networks
+author:     Eric Gustafson
+date:       2015-02-25
+slug:       ipv6-tunneling
+aliases:    ["ipv6-tunneling.html"]
+tags:       [IPv6, Tunneling, NAT, RFC2893, FreeBSD, Linux]
+categories: "HowTo"
 ---
 
 ------------------------------------

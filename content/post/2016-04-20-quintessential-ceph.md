@@ -1,9 +1,10 @@
 ---
-title: Quintessential Ceph
-date: 2016-04-20
-slug: quintessential-ceph
-author: Eric Gustafson
-tags: [Linux, ceph, storage, persistence, install, ubuntu]
+title:    Quintessential Ceph
+author:   Eric Gustafson
+date:     2016-04-20
+slug:     quintessential-ceph
+aliases:  ["quintessential-ceph.html"]
+tags:     [Linux, ceph, storage, persistence, install, ubuntu]
 ---
 
 The following is my distillation of how to install [Ceph][] in the most minimal

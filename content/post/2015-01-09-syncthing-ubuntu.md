@@ -1,9 +1,11 @@
 ---
-title:   "Syncthing on Ubuntu"
-date:    2015-01-09
-slug:    syncthing-ubuntu
-author:  "Eric Gustafson"
-tags:    [install, ubuntu, sync, syncthing]
+title:      Syncthing on Ubuntu
+author:     Eric Gustafson
+date:       2015-01-09
+slug:       syncthing-ubuntu
+aliases:    ["syncthing-ubuntu.html"]
+tags:       [install, ubuntu, sync, syncthing]
+categories: "HowTo"
 ---
 
 Last month, after looking at [BitTorrent Sync][btsync] and realizing it was

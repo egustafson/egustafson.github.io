@@ -1,9 +1,11 @@
 ---
-title:   Nested Virtualization - VirtualBox inside ESXi
-date:    2015-02-10
-slug:    esxi-nested-virtualbox
-author:  Eric Gustafson
-tags:    [virtualization, VirtualBox, VMWare]
+title:      Nested Virtualization - VirtualBox inside ESXi
+author:     Eric Gustafson
+date:       2015-02-10
+slug:       esxi-nested-virtualbox
+aliases:    ["esxi-nested-virtualbox.html"]
+tags:       [virtualization, VirtualBox, VMWare]
+categories: "HowTo"
 ---
 
 This process describes how to configure an ESXi Linux guest so that the guest

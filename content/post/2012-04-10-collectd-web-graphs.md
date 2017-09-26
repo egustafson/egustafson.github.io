@@ -1,10 +1,11 @@
 ---
-title:     "Simple collectd with Web Graphs"
-date:      2012-04-10
-slug:      collectd-web-graphs
-author:    "Eric Gustafson"
-tags:      [ "monitoring", "lighttpd", "collectd", "CGP" ]
-category:  "HowTo"
+title:      Simple collectd with Web Graphs
+author:     Eric Gustafson
+date:       2012-04-10
+slug:       collectd-web-graphs
+aliases:    ["collectd-web-graphs.html"]
+tags:       [monitoring, lighttpd, collectd, CGP]
+categories: "HowTo"
 ---
 
 I want to collect machine metrics and I want to display them as a

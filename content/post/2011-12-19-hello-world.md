@@ -1,9 +1,10 @@
 ---
-title:    "Hello, World"
-date:     2011-12-09
-slug:     hello-world
-author:   "Eric Gustafson"
-category: "Random"
+title:      "Hello, World"
+author:     "Eric Gustafson"
+date:       2011-12-09
+slug:       hello-world
+aliases:    ["hello-world.html"]
+categories: "Random"
 ---
 
 Obligatory first post:
